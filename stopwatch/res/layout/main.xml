@@ -1,42 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
-    
-<com.geekyouup.android.ustopwatch.StopwatchView
-      android:id="@+id/swview"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	android:background="#ffffffff">
+
+<fragment android:name="com.geekyouup.android.ustopwatch.fragments.StopwatchFragment"
+      android:id="@+id/stopwatch_fragment"
       android:layout_width="fill_parent"
-      android:layout_height="fill_parent"/>
+      android:layout_height="fill_parent"
+      android:layout_weight="1"/>
 
-<TextView android:id="@+id/text"
-         android:layout_alignParentBottom="true"
-	     android:text="Ultimate Stopwatch"
-	     android:visibility="visible"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:textColor="#ff555555"
-         android:textSize="32sp"
-         android:layout_marginBottom="20dp"
-         android:layout_centerHorizontal="true"/>
+<LinearLayout
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+    android:gravity="center"
+    android:layout_weight="3"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_frame"
+    android:layout_margin="10dp">
 
-<ImageView
- 	android:id="@+id/resetButton"
- 	android:layout_width="wrap_content"
- 	android:layout_height="wrap_content"    	
- 	android:src="@drawable/resetbutton_selector"
- 	android:layout_alignParentTop="true"
- 	android:layout_alignParentRight="true"
- 	android:layout_marginTop="10dp"
- 	android:layout_marginRight="10dp"/>   
+<LinearLayout
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+    android:gravity="center"
+    android:layout_weight="2">
 
-<ImageView
- 	android:id="@+id/touchText"
- 	android:layout_width="wrap_content"
- 	android:layout_height="wrap_content"    	
- 	android:src="@drawable/touchtext"
- 	android:layout_alignParentTop="true"
- 	android:layout_alignParentLeft="true"
- 	android:layout_marginTop="35dp"
- 	android:layout_marginLeft="15dp"/>   
+<fragment class="android.support.v4.app.ListFragment" 
+            android:id="@+id/laptimes_fragment"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"/>
+</LinearLayout>
 
-</RelativeLayout>
+<LinearLayout
+    android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+    android:gravity="center"
+    android:layout_weight="1">
+<fragment android:name="com.geekyouup.android.ustopwatch.fragments.TimeFragment"
+            android:id="@+id/fragment_time"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" 
+            />
+</LinearLayout>
+
+</LinearLayout>
+
+
+</LinearLayout>

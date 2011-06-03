@@ -12,4 +12,7 @@
 	
 	<string name="saved_item_menu">Menu</string>
 	<string name="saved_item_delete">Delete</string>
+	
+	<bool name="is_pre_honeycomb_app">true</bool>
+	<bool name="is_honeycomb_app">false</bool>
 </resources>

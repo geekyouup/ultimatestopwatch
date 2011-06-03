@@ -1,13 +1,12 @@
 package com.geekyouup.android.ustopwatch;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import com.geekyouup.android.ustopwatch.StopwatchView.StopwatchThead;
-import android.app.Activity;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -15,343 +14,293 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.Gravity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class UltimateStopwatch extends Activity implements OnClickListener {
-	
+import com.geekyouup.android.ustopwatch.fragments.StopwatchFragment;
+import com.geekyouup.android.ustopwatch.fragments.TimeFragment;
+
+public class UltimateStopwatch extends FragmentActivity implements OnClickListener {
+
 	private TextView mTextView;
-	private static final String PREFS_NAME="USTOPWATCH_PREFS";
-	
-	private StopwatchView mStopWatchView;
-	private StopwatchThead mWatchThread;
+	private static final String PREFS_NAME = "USTOPWATCH_PREFS";
+	private static final String KEY_LAPTIME_X = "LAPTIME_";
+
 	private PowerManager mPowerMan;
-	private PowerManager.WakeLock mWakeLock; 
-	
-    private SoundPool soundPool; 
-    public static final int SOUND_ALARM = 1;
-    private HashMap<Integer, Integer> soundPoolMap;
-    private ImageView mResetBtn;
+	private PowerManager.WakeLock mWakeLock;
+
+	private SoundPool soundPool;
+	public static final int SOUND_ALARM = 1;
+	private HashMap<Integer, Integer> soundPoolMap;
+	private ImageView mResetBtn;
 	public static final String MSG_REQUEST_COUNTDOWN_DLG = "msg_usw_counter";
-	
-	private static final int MENU_STARTPAUSE = 0;
-	private static final int MENU_MODE = 2;
-	private static final int MENU_EXIT = 3;
+	public static final String MSG_UPDATE_COUNTER_TIME = "msg_update_counter";
+	public static final String MSG_NEW_TIME_DOUBLE = "msg_new_time_double";
+
+	private TimeFragment mCounterView;
+	private StopwatchFragment mStopwatchFragment;
 	private MenuItem mModeMenuItem;
 	private boolean mJustLaunched = false;
+
+	private double mCurrentTimeMillis = 0;
+	private ArrayList<Double> mLapTimes = new ArrayList<Double>();
+	private LapTimesBaseAdapter mLapTimeAdapter;
 	
 	/** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mJustLaunched=true;
-    }
-    
-    @Override
-    protected void onPause() {
-        super.onPause();       
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        if(settings != null)
-        {
-	        SharedPreferences.Editor editor = settings.edit();
-	        if(editor != null)
-	        {
-		        mWatchThread.saveState(editor);
-		        editor.commit();
-	        }
-        }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
+	    setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		mJustLaunched = true;
+	}
 
-        mStopWatchView.getThread().pause(); // pause when Activity pauses
-        mWakeLock.release();
-    }    
-    
-    @Override
-    protected void onResume() {
-        super.onResume();
-        
-    	if(!mJustLaunched)
-    	{
-    		removeSplashText();
-    		mJustLaunched=false;
-    	}
-        
-        //cancel next alarm if there is one, and clear notification bar
-        AlarmUpdater.cancelCountdownAlarm(this);
-        
-        setContentView(R.layout.main);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        
-        mStopWatchView = (StopwatchView) findViewById(R.id.swview);
-        mTextView = (TextView) findViewById(R.id.text);
-        mResetBtn = (ImageView) findViewById(R.id.resetButton);
-        mResetBtn.setOnClickListener(this);
-        
-        mWatchThread = mStopWatchView.getThread();
-        mWatchThread.setApplication(this);
-        mWatchThread.setHandler(new Handler() {
-            @Override
-            public void handleMessage(Message m) {
-            	if(m.getData().getBoolean(MSG_REQUEST_COUNTDOWN_DLG, false))
-            	{
-            		requestTimeDialog();
-            	}
-            }
-        });
-        
-        //if vars stored then use them
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        if(settings != null && settings.contains("state"))
-        {
-        	removeSplashText();
-        	mWatchThread.restoreState(settings);
-        	setToMode(mWatchThread.isStopwatchMode());
-        }
-
-        mWakeLock = mPowerMan.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Stopwatch");
-        mWakeLock.acquire();
-        
-        soundPool = new SoundPool(3, AudioManager.STREAM_NOTIFICATION, 100);
-        soundPoolMap = new HashMap<Integer, Integer>();
-        soundPoolMap.put(SOUND_ALARM, soundPool.load(this, R.raw.alarm, 1));
-     }
-
-    private void setToMode(boolean isStopwatch)
-    {
-    	if(mModeMenuItem != null)
-    	{
-	    	if(isStopwatch)
-	    	{
-	    		mModeMenuItem.setIcon(R.drawable.countdown);
-	    		mModeMenuItem.setTitle("Countdown");
-	    	}
-	    	else 
-	    	{
-	    		mModeMenuItem.setIcon(R.drawable.stopwatch);
-	    		mModeMenuItem.setTitle("Stopwatch");
-	    	}
-    	}
-    }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        
-        menu.add(0,MENU_STARTPAUSE,0,"Start/Pause").setIcon(R.drawable.play_pause);
-        if(mWatchThread.isStopwatchMode())
-        {
-        	mModeMenuItem = menu.add(0,MENU_MODE,2,"Countdown").setIcon(R.drawable.countdown);
-        }else
-        {
-        	mModeMenuItem = menu.add(0,MENU_MODE,2,"Stopwatch").setIcon(R.drawable.stopwatch);
-        }
-        menu.add(0, MENU_EXIT, 5, "Exit").setIcon(android.R.drawable.ic_lock_power_off );
-
-        return true;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-    	if(item.getItemId() == MENU_STARTPAUSE)
-    	{
-    		mWatchThread.goPauseUnpause();
-    	}else if(item.getItemId() == MENU_MODE)
-    	{
-			boolean newMode = !mWatchThread.isStopwatchMode();
-			mWatchThread.setIsStopwatchMode(newMode);
-			setToMode(newMode);
-			if(!newMode) //newMode = true is stopwatch, false=countdown
-			{
-			    requestTimeDialog();
+	@Override
+	protected void onPause() {
+		super.onPause();
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		if (settings != null) {
+			SharedPreferences.Editor editor = settings.edit();
+			if (editor != null) {
+				mStopwatchFragment.saveState(editor);
+				
+                if(mLapTimes!= null && mLapTimes.size()>0)
+                {
+                	for(int i=0;i<mLapTimes.size();i++) editor.putLong(KEY_LAPTIME_X+i,mLapTimes.get(i).longValue());
+                }
+				
+				editor.commit();
 			}
+		}
+
+		mStopwatchFragment.pause(); // pause when Activity pauses
+		mWakeLock.release();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+
+		if (!mJustLaunched) {
+			removeSplashText();
+			mJustLaunched = false;
+		}
+
+		// cancel next alarm if there is one, and clear notification bar
+		AlarmUpdater.cancelCountdownAlarm(this);
+
+		setContentView(R.layout.main);
+		
+		try {
+//			mTextView = (TextView) findViewById(R.id.text);
+		} catch (Exception e) {
+		}
+		
+		try {
+//			mResetBtn = (ImageView) findViewById(R.id.resetButton);
+//			mResetBtn.setOnClickListener(this);
+		} catch (Exception e) {
+		}
+
+		// not in all views
+		try {
+			mCounterView = (TimeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_time);
+		} catch (Exception e) {
+		}
+
+		mStopwatchFragment = (StopwatchFragment) getSupportFragmentManager().findFragmentById(R.id.stopwatch_fragment);
+		mStopwatchFragment.setApplication(this);
+		mStopwatchFragment.setHandler(new Handler() {
+			@Override
+			public void handleMessage(Message m) {
+				if (m.getData().getBoolean(MSG_REQUEST_COUNTDOWN_DLG, false)) {
+					requestTimeDialog();
+				} else if (mCounterView != null && m.getData().getBoolean(MSG_UPDATE_COUNTER_TIME, false)) {
+					mCurrentTimeMillis = m.getData().getDouble(MSG_NEW_TIME_DOUBLE);
+					if (mCounterView != null)
+						mCounterView.setTime(mCurrentTimeMillis);
+				}
+			}
+		});
+
+		// if vars stored then use them
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+		if (settings != null && settings.contains("state")) {
+			removeSplashText();
+			mStopwatchFragment.restoreState(settings);
+			setToMode(mStopwatchFragment.getMode());
 			
-    	}else if(item.getItemId() == MENU_EXIT)
-    	{
-    		try{getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().clear().commit();}catch(Exception e){}
-			finish();
-    	}
-    	
-    	return true;
-    }
-    
+            int lapTimeNum=0;
+            mLapTimes = new ArrayList<Double>();
+            while(settings.getLong(KEY_LAPTIME_X+lapTimeNum,-1L) != -1L)
+            {
+            	mLapTimes.add((double) settings.getLong(KEY_LAPTIME_X+lapTimeNum,0L));
+            	lapTimeNum++;
+            }
+		}
+		
+		mLapTimeAdapter = new LapTimesBaseAdapter(this, mLapTimes);
+		try {
+			ListFragment mLapTimesFragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.laptimes_fragment);
+			mLapTimesFragment.setListAdapter(mLapTimeAdapter);
+		} catch (Exception e) {
+			Log.e("USW", "LapTime fail!!!", e);
+		}
+
+		mWakeLock = mPowerMan.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Stopwatch");
+		mWakeLock.acquire();
+
+		soundPool = new SoundPool(3, AudioManager.STREAM_NOTIFICATION, 100);
+		soundPoolMap = new HashMap<Integer, Integer>();
+		soundPoolMap.put(SOUND_ALARM, soundPool.load(this, R.raw.alarm, 1));
+	}
+
+	private void setToMode(int mode) {
+		if (mModeMenuItem != null) {
+			if (mode==StopwatchFragment.MODE_STOPWATCH) {
+				mModeMenuItem.setIcon(R.drawable.countdown);
+				mModeMenuItem.setTitle("Countdown");
+			} else {
+				mModeMenuItem.setIcon(R.drawable.stopwatch);
+				mModeMenuItem.setTitle("Stopwatch");
+			}
+		}
+	}
+	
+	public void storeLapTime(double lapTime)
+	{
+		Log.d("USW","New LapTime: " + lapTime);
+		mLapTimes.add(0,lapTime);
+		mLapTimeAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.menu_playpause) {
+			mStopwatchFragment.goPauseUnpause();
+		} else if (item.getItemId() == R.id.menu_switchmode) {
+			int newMode = (mStopwatchFragment.getMode()==StopwatchFragment.MODE_STOPWATCH)?StopwatchFragment.MODE_COUNTDOWN:StopwatchFragment.MODE_STOPWATCH;
+			mStopwatchFragment.setMode(newMode);
+			setToMode(newMode);
+			if (newMode==StopwatchFragment.MODE_COUNTDOWN)
+			{
+				requestTimeDialog();
+			}
+
+		} else if (item.getItemId() == R.id.menu_reset) {
+			reset();
+		}else if (item.getItemId()== R.id.menu_laptime)
+		{
+			storeLapTime(mCurrentTimeMillis);
+		}
+
+		return true;
+	}
+
 	public void onClick(View v) {
 		removeSplashText();
-		if(v==mResetBtn)
-		{
-			mWatchThread.reset();
-			if(!mWatchThread.isStopwatchMode()) requestTimeDialog();
-		}
+
+		if (v == mResetBtn)
+			reset();
 	}
-	
-	public void removeSplashText()
-	{
-		mTextView.setVisibility(View.GONE);
+
+	private void reset() {
+		mStopwatchFragment.reset();
+		
+		mLapTimes.clear();
+		mLapTimeAdapter.notifyDataSetChanged();
+		
+		if (mCounterView != null)
+			mCounterView.resetTime();
+		
+		if (mStopwatchFragment.getMode()==StopwatchFragment.MODE_COUNTDOWN)
+			requestTimeDialog();
 	}
-	
-	private int mSecsValue = 0;
-	private int mMinsValue = 0;
-	private int mHoursValue = 0;
+
+	public void removeSplashText() {
+		if (mTextView != null)
+			mTextView.setVisibility(View.GONE);
+	}
+
+
 	private boolean mDialogOnScreen = false;
-	public void requestTimeDialog()
-	{
-		//stop stacking of dialogs
-		if(mDialogOnScreen) return;
-		
-		try{removeSplashText();}catch(Exception e){}
-		
-        LayoutInflater inflator = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View countdownView = inflator.inflate(R.layout.countdown, null);
+	public void requestTimeDialog() {
+		// stop stacking of dialogs
+		if (mDialogOnScreen)
+			return;
 
-		final TextView mSecsText = (TextView) countdownView.findViewById(R.id.secsTxt);
-		final TextView mMinsText = (TextView) countdownView.findViewById(R.id.minsTxt);
-		final TextView mHoursText = (TextView) countdownView.findViewById(R.id.hoursTxt);
-		mSecsText.setText(mSecsValue+"");
-		mSecsText.addTextChangedListener(new TextWatcher() {
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if(s != null && s.length()==0){mSecsValue=0;} 
-				else try{mSecsValue = Integer.parseInt(s.toString());}catch(Exception e){};
-			}
-			@Override public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
-			@Override public void afterTextChanged(Editable s) {}
-		});
-		
-		mMinsText.setText(mMinsValue+"");
-		mMinsText.addTextChangedListener(new TextWatcher() {
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if(s != null && s.length()==0){mMinsValue=0;} 
-				else try{mMinsValue = Integer.parseInt(s.toString());}catch(Exception e){};
-			}
-			@Override public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
-			@Override public void afterTextChanged(Editable s) {}
-		});
-		
-		mHoursText.setText(mHoursValue+"");
-		mHoursText.addTextChangedListener(new TextWatcher() {
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if(s != null && s.length()==0){mHoursValue=0;} 
-				else try{mHoursValue = Integer.parseInt(s.toString());}catch(Exception e){};
-			}
-			@Override public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
-			@Override public void afterTextChanged(Editable s) {}
-		});
-		
-	    Button mSecsIncr = (Button) countdownView.findViewById(R.id.secsBtnUp);
-	    mSecsIncr.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mSecsValue=(mSecsValue+1)%60;
-				mSecsText.setText(mSecsValue+"");
-			}
-		});
-	    
-	    Button mSecsDown= (Button) countdownView.findViewById(R.id.secsBtnDn);
-	    mSecsDown.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mSecsValue--;
-				if(mSecsValue<0) mSecsValue=60+mSecsValue;
-				mSecsText.setText(mSecsValue+"");
-			}
-		});
+		try {
+			removeSplashText();
+		} catch (Exception e) {
+		}
 
-	    Button mMinsIncr = (Button) countdownView.findViewById(R.id.minsBtnUp);
-	    mMinsIncr.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mMinsValue=(mMinsValue+1)%60;
-				mMinsText.setText(mMinsValue+"");
-			}
-		});
-	    
-	    Button mMinsDown= (Button) countdownView.findViewById(R.id.minsBtnDn);
-	    mMinsDown.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mMinsValue--;
-				if(mMinsValue<0)mMinsValue=60+mMinsValue;
-				mMinsText.setText(mMinsValue+"");
-			}
-		});
-	    
-	    Button mHoursIncr = (Button) countdownView.findViewById(R.id.hoursBtnUp);
-	    mHoursIncr.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mHoursValue=(mHoursValue+1)%100;
-				mHoursText.setText(mHoursValue+"");
-			}
-		});
-	    
-	    Button mHoursDown= (Button) countdownView.findViewById(R.id.hoursBtnDn);
-	    mHoursDown.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mHoursValue--;
-				if(mHoursValue<0)mHoursValue=100+mHoursValue;
-				mHoursText.setText(mHoursValue+"");
-			}
-		});
-	    
-	    LinearLayout ll = new LinearLayout(this);
-	    ll.setOrientation(LinearLayout.HORIZONTAL);
-	    ll.addView(countdownView);
-	    ll.setGravity(Gravity.CENTER);
 
-	    AlertDialog mSelectTime = new AlertDialog.Builder(this).create();
-	    mSelectTime.setView(ll);
-	    mSelectTime.setTitle(getString(R.string.timer_title));
-	    mSelectTime.setButton(getString(R.string.timer_start), new DialogInterface.OnClickListener(){
+		LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View ll = TimeUtils.createTimeSelectDialogLayout(this, inflator);
+
+		AlertDialog mSelectTime = new AlertDialog.Builder(this).create();
+		mSelectTime.setView(ll);
+		mSelectTime.setTitle(getString(R.string.timer_title));
+		mSelectTime.setButton(getString(R.string.timer_start), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				removeSplashText();
-				mDialogOnScreen=false;
-				mWatchThread.setTime(mHoursValue, mMinsValue,mSecsValue);
-			}});
-	    mSelectTime.setButton2(getString(R.string.timer_cancel), new DialogInterface.OnClickListener(){
+				mDialogOnScreen = false;
+				mStopwatchFragment.setTime(TimeUtils.getDlgHours(), TimeUtils.getDlgMins(), TimeUtils.getDlgSecs());
+			}
+		});
+		mSelectTime.setButton2(getString(R.string.timer_cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				mDialogOnScreen=false;
-			}});
-	    mSelectTime.show();
-	    
-	    mDialogOnScreen=true;
+				mDialogOnScreen = false;
+			}
+		});
+		mSelectTime.show();
+
+		mDialogOnScreen = true;
 	}
 
-	/*** Capture Back Button and use for browser back, else quit ****/
-	public boolean onKeyDown(int keyCode, KeyEvent event) 
-	{
-		if(keyCode == KeyEvent.KEYCODE_BACK)
-		{
-			try{getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().clear().commit();}catch(Exception e){}
+	/*** Capture Back Button to clear prefs when user is quitting on purpose, else quit ****/
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			try {
+				getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().clear().commit();
+			} catch (Exception e) {
+			}
 			return super.onKeyDown(keyCode, event);
-		}else if(keyCode == KeyEvent.KEYCODE_VOLUME_UP)
-		{
-        	try{((AudioManager)getSystemService(Context.AUDIO_SERVICE)).adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);}catch(Exception e){}
-			return true;
-		}else if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
-		{
-        	try{((AudioManager)getSystemService(Context.AUDIO_SERVICE)).adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);}catch(Exception e){}
-			return true;
-		}else //not back button or no history to go back to
+		} else // not back button or no history to go back to
 		{
 			return super.onKeyDown(keyCode, event);
 		}
 	}
-	
-    public void playAlarm() {
-        AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        float streamVolume = mgr.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
-        soundPool.play(soundPoolMap.get(SOUND_ALARM), streamVolume, streamVolume, 1, 0, 1f);
-    } 
-    
-	public void notifyCountdownComplete()
-	{
-        playAlarm();
-		
-        Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(1000);
+
+	public void playAlarm() {
+		AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		float streamVolume = mgr.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+		soundPool.play(soundPoolMap.get(SOUND_ALARM), streamVolume, streamVolume, 1, 0, 1f);
+	}
+
+	public void notifyCountdownComplete() {
+		playAlarm();
+
+		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		vibrator.vibrate(1000);
 	}
 }

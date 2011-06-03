@@ -16,7 +16,6 @@
 
 package com.geekyouup.android.ustopwatch;
 
-import java.util.ArrayList;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -24,12 +23,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -40,8 +39,8 @@ import android.view.View;
 /**
  * Animated view that draws the stopwatch, takes keystrokes, etc.
  */
-class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
-    class StopwatchThead extends Thread implements OnTouchListener {
+public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
+    public class StopwatchThead extends Thread implements OnTouchListener {
         /*
          * State-tracking constants
          */
@@ -53,14 +52,12 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
         private static final String KEY_LASTTIME = "lasttime";
         private static final String KEY_NOWTIME = "currenttime";
         private static final String KEY_STOPWATCH_MODE = "stopwatchmode";
-        private static final String KEY_LAPTIME_X = "laptime_";
         
         /*
          * Member (state) fields
          */
         /** The drawable to use as the background of the animation canvas */
-        private Bitmap mBackgroundImage;      
-        private Bitmap mBackgroundBottomImage; 
+        private Bitmap mBackgroundImage;       
         private int mBackgroundStartY;
         private int mAppOffsetX=0;
         private double mMinsAngle = 0;
@@ -86,19 +83,9 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
         
         /** Used to figure out elapsed time between frames */
         private long mLastTime;
-
-        /** Paint to draw the lines on screen. */
-        private Paint mTextPaint;
-        private Paint mSmallTextPaint;
-        
-        private Drawable mUpArrow;
-        private Drawable mDownArrow;
         
         private Drawable mSecHand;
         private Drawable mMinHand;
-        
-        private ArrayList<String> mLapTimes = new ArrayList<String>(); 
-        private int mTopLaptime = 0;
         
         /** The state of the game. One of READY, RUNNING, PAUSE, LOSE, or WIN */
         private int mMode=STATE_READY;
@@ -111,18 +98,16 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
         private UltimateStopwatch mApp;
         private Handler mHandler;
         private Context mContext;
-
+        
         public StopwatchThead(SurfaceHolder surfaceHolder, Context context) {
             // get handles to some important objects
             mSurfaceHolder = surfaceHolder;
             mContext = context;
             Resources res = context.getResources();
+            
             // load background image as a Bitmap instead of a Drawable b/c
             // we don't need to transform it and it's faster to draw this way
             mBackgroundImage = BitmapFactory.decodeResource(res,R.drawable.background);
-            mBackgroundBottomImage = BitmapFactory.decodeResource(res,R.drawable.background_bottom);
-            mUpArrow = context.getResources().getDrawable(R.drawable.up);
-            mDownArrow = context.getResources().getDrawable(R.drawable.down);
             mSecHand = context.getResources().getDrawable(R.drawable.sechand);
             mMinHand = context.getResources().getDrawable(R.drawable.minhand);
             
@@ -130,19 +115,6 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             mSecsHandLength = mSecHand.getIntrinsicHeight();
             mBackgroundStartY = (mCanvasHeight-mBackgroundImage.getHeight())/2;
             mAppOffsetX = (mCanvasWidth-mBackgroundImage.getWidth())/2;
-           
-            // Initialize paints for speedometer
-            mTextPaint = new Paint();
-            mTextPaint.setAntiAlias(true);
-            mTextPaint.setTextSize(32);
-            mTextPaint.setARGB(255,128,128,128);
-            mTextPaint.setDither(true);
-            
-            mSmallTextPaint = new Paint();
-            mSmallTextPaint.setAntiAlias(true);
-            mSmallTextPaint.setTextSize(10);
-            mSmallTextPaint.setARGB(255,128,128,128);
-            mSmallTextPaint.setDither(true);
         }
         
         public void setApplication(UltimateStopwatch mApp)
@@ -188,12 +160,10 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 	            mMinsAngle=0;
 	            mSecsAngle=0;
 	            mDisplayTimeMillis=0;
-	            mLapTimes = new ArrayList<String>();
 	            mMillisPart ="000";
 	            mSecsPart="00";
 	            mMinsPart = "00";
 	            mHoursPart = "00";
-	            mTopLaptime=0;
         	}
         }
         
@@ -205,7 +175,6 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 	            mMinsAngle=(Math.PI*2*((double) minute/30.0));
 	            mSecsAngle=(Math.PI*2*((double) seconds/60.0));
 	            mDisplayTimeMillis=hour*3600000+minute*60000+seconds*1000;
-	            mLapTimes = new ArrayList<String>();
 	            mMillisPart ="000";
 	            mSecsPart=(seconds<10?"0":"") + seconds;
 	            mMinsPart = (minute<10?"0":"") + minute;
@@ -248,7 +217,7 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
         public void saveState(SharedPreferences.Editor map) {
             synchronized (mSurfaceHolder) {
                 //if (map != null) {
-                	if(!isStopwatchMode() || mDisplayTimeMillis>0 || (mLapTimes!=null&& mLapTimes.size()>0))
+                	if(!isStopwatchMode() || mDisplayTimeMillis>0)
                 	{
                 		if(!isStopwatchMode() && mDisplayTimeMillis>0)
                 		{
@@ -258,10 +227,6 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 	                	map.putInt(KEY_STATE,mMode);
 	                    map.putLong(KEY_LASTTIME,mLastTime);
 	                    map.putLong (KEY_NOWTIME, (long) mDisplayTimeMillis);
-	                    if(mLapTimes!= null && mLapTimes.size()>0)
-	                    {
-	                    	for(int i=0;i<mLapTimes.size();i++) map.putString(KEY_LAPTIME_X+i,mLapTimes.get(i));
-	                    }
 	                    map.putBoolean(KEY_STOPWATCH_MODE, mStopwatchMode);
                 	}else
                 	{
@@ -286,14 +251,6 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             		setState(savedState.getInt(KEY_STATE,STATE_PAUSE));
 	                mLastTime = savedState.getLong(KEY_LASTTIME,System.currentTimeMillis());
 	                mDisplayTimeMillis = savedState.getLong(KEY_NOWTIME,0);
-	                int lapTimeNum=0;
-	                mLapTimes = new ArrayList<String>();
-	                while(savedState.getString(KEY_LAPTIME_X+lapTimeNum,null) != null)
-	                {
-	                	mLapTimes.add(savedState.getString(KEY_LAPTIME_X+lapTimeNum,""));
-	                	lapTimeNum++;
-	                }
-	                
 	                mStopwatchMode = savedState.getBoolean(KEY_STOPWATCH_MODE, true);
 	            }
             }
@@ -355,7 +312,7 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         /**
-         * Draws the ship, fuel/speed bars, and background to the provided
+         * Draws the background and hands
          * Canvas.
          */
         private void doDraw(Canvas canvas) {
@@ -363,33 +320,6 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             // so this is like clearing the screen.
         	canvas.drawColor(Color.WHITE);
             canvas.drawBitmap(mBackgroundImage, mAppOffsetX,mBackgroundStartY, null);
-            canvas.drawBitmap(mBackgroundBottomImage, mAppOffsetX,mCanvasHeight-mBackgroundBottomImage.getHeight(), null);
-            
-            //see if we should draw up arrow on lap times
-            if(mTopLaptime>0)
-            {
-                mUpArrow.setBounds(44+mAppOffsetX, mCanvasHeight-70, 54+mAppOffsetX, mCanvasHeight-64);
-                mUpArrow.draw(canvas);
-            }
-            
-            //draw lap times
-            if(mMode!=STATE_READY)
-            {
-            	canvas.drawText(mHoursPart+":"+mMinsPart+":"+mSecsPart+"."+mMillisPart,120+mAppOffsetX, mCanvasHeight-25, mTextPaint);
-            	if(isStopwatchMode())
-            	{
-	            	canvas.drawText("lap"+(mTopLaptime+1)+" "+ (mLapTimes.size()>mTopLaptime?mLapTimes.get(mTopLaptime):""),13+mAppOffsetX,mCanvasHeight-54,mSmallTextPaint);
-	            	canvas.drawText("lap"+(mTopLaptime+2) + " " + (mLapTimes.size()>mTopLaptime+1?mLapTimes.get(mTopLaptime+1):""),13+mAppOffsetX,mCanvasHeight-34,mSmallTextPaint);
-	            	canvas.drawText("lap"+(mTopLaptime+3) + " "+ (mLapTimes.size()>mTopLaptime+2?mLapTimes.get(mTopLaptime+2):""),13+mAppOffsetX,mCanvasHeight-14,mSmallTextPaint);
-            	}
-            }
-            
-            //see if we should draw down arrow on lap times
-            if(mTopLaptime<mLapTimes.size()-3)
-            {
-                mDownArrow.setBounds(44+mAppOffsetX, mCanvasHeight-10, 54+mAppOffsetX, mCanvasHeight-4);
-                mDownArrow.draw(canvas);
-            }
             
             // Draw the secs hand with its current rotation
             canvas.save();
@@ -408,9 +338,7 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 
         
         /**
-         * Figures the bike state (x, y, ...) based on the passage of
-         * realtime. Does not invalidate(). Called at the start of draw().
-         * Detects the end-of-game and sets the UI to the next state.
+         * Update the time
          */
         private void updatePhysics() {
             long now = System.currentTimeMillis();
@@ -421,18 +349,16 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             mMinsAngle=twoPI*(mDisplayTimeMillis/1800000.0); //mins is 0 to 30
             mSecsAngle=twoPI*(mDisplayTimeMillis/60000.0);
             
-            int numHours = (int) Math.floor(mDisplayTimeMillis/3600000);
-            mHoursPart = (numHours<10?"0":"")+numHours;
-            
-            int numMins = (int) Math.floor(mDisplayTimeMillis/60000 - numHours*60);
-            mMinsPart = (numMins<10?"0":"") + numMins;
-            
-            int numSecs = (int) Math.floor(mDisplayTimeMillis/1000 - numMins*60-numHours*3600);
-            mSecsPart = (numSecs<10?"0":"") + numSecs;
-            
-            int numMillis = ((int)(mDisplayTimeMillis-numHours*3600000-numMins*60000-numSecs*1000));
-            mMillisPart = (numMillis<10?"00":(numMillis<100?"0":"")) + numMillis;
-            
+            //send the time back to the Activity to update the other views
+			if(mHandler != null)
+			{
+        		Message msg = mHandler.obtainMessage();
+    	        Bundle b = new Bundle();
+    	        b.putBoolean(UltimateStopwatch.MSG_UPDATE_COUNTER_TIME, true);
+    	        b.putDouble(UltimateStopwatch.MSG_NEW_TIME_DOUBLE, mDisplayTimeMillis);
+    	        msg.setData(b);
+    	        mHandler.sendMessage(msg);
+			}
             mLastTime = now;
             
             //stop timer at end
@@ -442,7 +368,6 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             	if(mApp!=null)
             	{
             		mApp.notifyCountdownComplete();
-            		//mApp.requestTimeDialog(); //need a handler to pass this back
         			if(mHandler != null)
         			{
 	            		Message msg = mHandler.obtainMessage();
@@ -459,32 +384,13 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 		public boolean onTouch(View v, MotionEvent event) {
 			if(event.getAction()==MotionEvent.ACTION_DOWN)
 			{
-				if(event.getY()<mCanvasHeight-80) //pause at top of screen
-				{
-					goPauseUnpause();
-				}else if(isStopwatchMode() && mDisplayTimeMillis!=0)//lap time at bottom
-				{
-					if(event.getX()>mCanvasWidth/2)
-					{
-						mLapTimes.add(mHoursPart+":"+mMinsPart+":"+mSecsPart+"."+mMillisPart);
-						if(mLapTimes.size()>3)mTopLaptime=mLapTimes.size()-3;
-					}else if(event.getY()>mCanvasHeight-30)
-					{
-						if(mTopLaptime<mLapTimes.size()-3) mTopLaptime++;
-					}else
-					{
-						if(mTopLaptime>0) mTopLaptime--;
-					}
-
-				}
+				goPauseUnpause();
 			}
 			return true;
 		}
 		
 		public void goPauseUnpause()
 		{
-			if(mApp != null) mApp.removeSplashText();
-			
 			if(mMode == STATE_PAUSE)
 			{
 				unpause();
@@ -494,11 +400,6 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 			}else{
 				doStart();
 			}
-		}
-		
-		public ArrayList<String> getLaptimes()
-		{
-			return mLapTimes;
 		}
 		
 		public String getTime()
@@ -517,47 +418,27 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 			resetVars();
 		}
 		
-		public boolean doTrackBall(MotionEvent event)
-		{
-			if(event.getAction()==MotionEvent.ACTION_DOWN)
-			{
-				//track click, record lap time
-				mLapTimes.add(getTime());
-			}else
-			{
-				float yPos = event.getY();
-				if(yPos<0)
-				{
-					if(mTopLaptime>0) mTopLaptime--;
-				}
-				else if(yPos>0)
-				{
-					if(mTopLaptime<mLapTimes.size()-3) mTopLaptime++;
-				}
-			}
-			
-			return true;
-		}
-		
 		//none trackball devices
 		public boolean doKeypress(int keyCode)
 		{
-			if(keyCode ==KeyEvent.KEYCODE_DPAD_UP)
-			{
-				if(mTopLaptime>0) mTopLaptime--;
-				return true;
-			}
-			else if(keyCode ==KeyEvent.KEYCODE_DPAD_DOWN)
-			{
-				if(mTopLaptime<mLapTimes.size()-3) mTopLaptime++;
-				return true;
-			}else if(keyCode ==KeyEvent.KEYCODE_DPAD_CENTER || keyCode ==KeyEvent.KEYCODE_SPACE)
+			if(keyCode ==KeyEvent.KEYCODE_DPAD_CENTER || keyCode ==KeyEvent.KEYCODE_SPACE)
 			{
 				goPauseUnpause();
 				return true;
 			}
 			return false;
 		}
+		
+		public boolean doTrackBall(MotionEvent event)
+		{
+			if(event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				goPauseUnpause();
+				return true;
+			}
+			return false;
+		}
+		
 		
         /* Callback invoked when the surface dimensions change. */
         public void setSurfaceSize(int width, int height) {
@@ -569,6 +450,8 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
                 mMinsCenterY = mSecsCenterY-46;
                 mBackgroundStartY = (height-mBackgroundImage.getHeight())/2;
                 mAppOffsetX = (width-mBackgroundImage.getWidth())/2;
+                
+                Log.d("StopWatch","AppXOffset: " + mAppOffsetX + ", bgImageWidht: " + mBackgroundImage.getWidth() );
             }
         }
     }
@@ -581,7 +464,7 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
         // register our interest in hearing about changes to our surface
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
-
+        
         // create thread only; it's started in surfaceCreated()
         thread = new StopwatchThead(holder, context);
         setOnTouchListener(thread);
@@ -623,6 +506,7 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
     /* Callback invoked when the surface dimensions change. */
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
             int height) {
+    	Log.d("StopWatch","Width: " + width + ", height: " + height);
         thread.setSurfaceSize(width, height);
     }
 

@@ -5,6 +5,9 @@
 	android:orientation="vertical"
 	android:background="#ffffffff">
 
+<!--  LinearLayout android:layout_height="40dp" android:layout_width="match_parent" android:background="@color/text_light_grey" /-->
+
+
 <fragment android:name="com.geekyouup.android.ustopwatch.fragments.StopwatchFragment"
       android:id="@+id/stopwatch_fragment"
       android:layout_width="fill_parent"

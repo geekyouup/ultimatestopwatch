@@ -11,14 +11,11 @@
         <activity android:name=".UltimateStopwatchLauncher"
                   android:label="@string/app_name"
                   android:theme="@android:style/Theme.NoTitleBar"
-                  android:windowSoftInputMode="adjustNothing">
-
-        </activity>
+                  android:windowSoftInputMode="adjustNothing"/>
 
         <activity android:name=".UltimateStopwatch"
                   android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar"
-                  android:configChanges="orientation|keyboardHidden">
+                  android:theme="@android:style/Theme.NoTitleBar">
                 <intent-filter>
                    <action android:name="android.intent.action.MAIN" />
                    <category android:name="android.intent.category.LAUNCHER" />

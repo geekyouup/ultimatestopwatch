@@ -7,6 +7,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -25,14 +28,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.geekyouup.android.ustopwatch.fragments.StopwatchFragment;
 import com.geekyouup.android.ustopwatch.fragments.TimeFragment;
 
-public class UltimateStopwatch extends FragmentActivity implements OnClickListener {
+public class UltimateStopwatch extends FragmentActivity implements OnClickListener, LapTimeRecorder {
 
-	private TextView mTextView;
 	private static final String PREFS_NAME = "USTOPWATCH_PREFS";
 	private static final String KEY_LAPTIME_X = "LAPTIME_";
 
@@ -63,6 +64,13 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 	    setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		mJustLaunched = true;
+		
+		//stop landscape more on QVGA/HVGA
+		int screenSize = getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK;
+		if(screenSize == Configuration.SCREENLAYOUT_SIZE_SMALL || screenSize==Configuration.SCREENLAYOUT_SIZE_NORMAL)
+		{
+			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		}
 	}
 
 	@Override
@@ -92,7 +100,6 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 		super.onResume();
 
 		if (!mJustLaunched) {
-			removeSplashText();
 			mJustLaunched = false;
 		}
 
@@ -100,21 +107,11 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 		AlarmUpdater.cancelCountdownAlarm(this);
 
 		setContentView(R.layout.main);
-		
-		try {
-//			mTextView = (TextView) findViewById(R.id.text);
-		} catch (Exception e) {
-		}
-		
-		try {
-//			mResetBtn = (ImageView) findViewById(R.id.resetButton);
-//			mResetBtn.setOnClickListener(this);
-		} catch (Exception e) {
-		}
 
 		// not in all views
 		try {
 			mCounterView = (TimeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_time);
+			mCounterView.setLapTimeRecorder(this);
 		} catch (Exception e) {
 		}
 
@@ -136,7 +133,6 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 		// if vars stored then use them
 		SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
 		if (settings != null && settings.contains("state")) {
-			removeSplashText();
 			mStopwatchFragment.restoreState(settings);
 			setToMode(mStopwatchFragment.getMode());
 			
@@ -152,6 +148,7 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 		mLapTimeAdapter = new LapTimesBaseAdapter(this, mLapTimes);
 		try {
 			ListFragment mLapTimesFragment = (ListFragment) getSupportFragmentManager().findFragmentById(R.id.laptimes_fragment);
+			mLapTimesFragment.getListView().setCacheColorHint(Color.WHITE);
 			mLapTimesFragment.setListAdapter(mLapTimeAdapter);
 		} catch (Exception e) {
 			Log.e("USW", "LapTime fail!!!", e);
@@ -177,12 +174,12 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 		}
 	}
 	
-	public void storeLapTime(double lapTime)
+	/*public void storeLapTime(double lapTime)
 	{
 		Log.d("USW","New LapTime: " + lapTime);
 		mLapTimes.add(0,lapTime);
 		mLapTimeAdapter.notifyDataSetChanged();
-	}
+	}*/
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -210,15 +207,13 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 			reset();
 		}else if (item.getItemId()== R.id.menu_laptime)
 		{
-			storeLapTime(mCurrentTimeMillis);
+			recordTime();
 		}
 
 		return true;
 	}
 
 	public void onClick(View v) {
-		removeSplashText();
-
 		if (v == mResetBtn)
 			reset();
 	}
@@ -236,23 +231,11 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 			requestTimeDialog();
 	}
 
-	public void removeSplashText() {
-		if (mTextView != null)
-			mTextView.setVisibility(View.GONE);
-	}
-
-
 	private boolean mDialogOnScreen = false;
 	public void requestTimeDialog() {
 		// stop stacking of dialogs
 		if (mDialogOnScreen)
 			return;
-
-		try {
-			removeSplashText();
-		} catch (Exception e) {
-		}
-
 
 		LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View ll = TimeUtils.createTimeSelectDialogLayout(this, inflator);
@@ -262,7 +245,6 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 		mSelectTime.setTitle(getString(R.string.timer_title));
 		mSelectTime.setButton(getString(R.string.timer_start), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				removeSplashText();
 				mDialogOnScreen = false;
 				mStopwatchFragment.setTime(TimeUtils.getDlgHours(), TimeUtils.getDlgMins(), TimeUtils.getDlgSecs());
 			}
@@ -302,5 +284,11 @@ public class UltimateStopwatch extends FragmentActivity implements OnClickListen
 
 		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		vibrator.vibrate(1000);
+	}
+
+	@Override
+	public void recordTime() {
+		mLapTimes.add(0,mCurrentTimeMillis);
+		mLapTimeAdapter.notifyDataSetChanged();
 	}
 }

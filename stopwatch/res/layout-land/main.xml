@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="40dp" android:layout_width="match_parent" android:background="@color/text_light_grey" />
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="horizontal"
 	android:background="@color/white">
 
@@ -56,4 +61,5 @@
 		</LinearLayout>
 
 	</LinearLayout>
+</LinearLayout>
 </LinearLayout>

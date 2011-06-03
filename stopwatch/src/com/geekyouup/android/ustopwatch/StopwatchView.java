@@ -108,6 +108,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
             // load background image as a Bitmap instead of a Drawable b/c
             // we don't need to transform it and it's faster to draw this way
             mBackgroundImage = BitmapFactory.decodeResource(res,R.drawable.background);
+            
             mSecHand = context.getResources().getDrawable(R.drawable.sechand);
             mMinHand = context.getResources().getDrawable(R.drawable.minhand);
             
@@ -446,6 +447,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
             synchronized (mSurfaceHolder) {
                 mCanvasWidth = width;
                 mCanvasHeight = height;
+                
+               /* if(mCanvasHeight < mBackgroundImage.getHeight())
+                {
+                	mBackgroundImage = Bitmap.createScaledBitmap(mBackgroundImage,(int)((double) mBackgroundImage.getWidth()* ((double)mCanvasHeight/(double)mBackgroundImage.getHeight())), mCanvasHeight, false);
+                }*/
+                
+                
                 mSecsCenterY = height/2;
                 mMinsCenterY = mSecsCenterY-46;
                 mBackgroundStartY = (height-mBackgroundImage.getHeight())/2;

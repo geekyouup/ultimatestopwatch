@@ -11,7 +11,11 @@
 			android:name="com.geekyouup.android.ustopwatch.fragments.StopwatchFragment"
 			android:id="@+id/stopwatch_fragment" android:layout_width="fill_parent"
 			android:layout_height="fill_parent" />
-
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:textColor="@color/text_grey"
+			android:textSize="@dimen/small_font" android:layout_alignParentTop="true"
+			android:layout_alignParentLeft="true" android:layout_marginTop="5dp"
+			android:paddingRight="10dp" android:text="@string/touch_to_start" />
 	</RelativeLayout>
 
 	<LinearLayout android:layout_width="fill_parent"
@@ -26,7 +30,6 @@
 			<fragment android:name="com.geekyouup.android.ustopwatch.fragments.TimeFragment"
 				android:id="@+id/fragment_time" android:layout_width="match_parent"
 				android:layout_height="match_parent" />
-
 		</RelativeLayout>
 
 		<LinearLayout android:layout_weight="1"
@@ -34,20 +37,8 @@
 			android:orientation="vertical" android:background="@drawable/bg_frame"
 			android:layout_margin="@dimen/frame_padding">
 
-			<LinearLayout android:layout_width="fill_parent"
-				android:layout_height="wrap_content" android:orientation="horizontal"
-				android:gravity="center_horizontal">
-				<TextView android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:gravity="center_horizontal"
-					android:text="Lap Times" android:textColor="@color/text_grey"
-					android:textSize="20pt" android:paddingRight="30dp" />
-				<TextView android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:gravity="center_horizontal"
-					android:text="Split Times" android:textColor="@color/text_light_grey"
-					android:textSize="20pt" />
-			</LinearLayout>
-
-			<fragment android:name="com.geekyouup.android.ustopwatch.fragments.LapTimesFragment"
+			<fragment
+				android:name="com.geekyouup.android.ustopwatch.fragments.LapTimesFragment"
 				android:id="@+id/laptimes_fragment" android:layout_width="fill_parent"
 				android:layout_height="fill_parent" />
 

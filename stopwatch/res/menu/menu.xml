@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_playpause"
-          android:title="Start/Stop" 
+          android:title="@string/startstop" 
           android:showAsAction="ifRoom"/>
     <item android:id="@+id/menu_switchmode"
-          android:title="Mode"
+          android:title="@string/mode"
           android:showAsAction="ifRoom" />
     <item android:id="@+id/menu_reset"
-          android:title="Reset"
+          android:title="@string/reset"
           android:showAsAction="ifRoom" />          
     <item android:id="@+id/menu_laptime"
-          android:title="Laptime"
+          android:title="@string/laptime"
           android:showAsAction="ifRoom" />  
 </menu>

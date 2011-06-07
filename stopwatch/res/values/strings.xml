@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Ultimate Stopwatch</string>
     <string name="app_name">Ultimate Stopwatch</string>
     
     <string name="mode_ready">Android Stopwatch\nTouch to Start</string>
@@ -13,6 +12,15 @@
 	<string name="saved_item_menu">Menu</string>
 	<string name="saved_item_delete">Delete</string>
 	
-	<bool name="is_pre_honeycomb_app">true</bool>
-	<bool name="is_honeycomb_app">false</bool>
+	<string name="touch_to_record">Touch to record lap time</string>
+	<string name="touch_to_start">Touch to Start/Pause</string>
+	<string name="splittimes">Split Times</string>
+	<string name="laptimes">Lap Times</string>
+
+	<string name="laptime">Lap Time</string>
+	<string name="reset">Reset</string>
+	<string name="startstop">Start/Pause</string>
+	<string name="mode">Mode</string>
+	<string name="stopwatch">Stopwatch Mode</string>
+	<string name="countdown">Countdown Mode</string>
 </resources>

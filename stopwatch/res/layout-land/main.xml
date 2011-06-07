@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:orientation="vertical">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_height="40dp" android:layout_width="match_parent" android:background="@color/text_light_grey" />
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:orientation="horizontal"
-	android:background="@color/white">
+	android:orientation="horizontal" android:background="@color/white">
 
 	<RelativeLayout android:layout_weight="1"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
@@ -15,8 +10,7 @@
 
 		<fragment
 			android:name="com.geekyouup.android.ustopwatch.fragments.StopwatchFragment"
-			android:id="@+id/stopwatch_fragment" 
-			android:layout_width="fill_parent"
+			android:id="@+id/stopwatch_fragment" android:layout_width="fill_parent"
 			android:layout_height="fill_parent" />
 
 	</RelativeLayout>
@@ -41,25 +35,12 @@
 			android:orientation="vertical" android:background="@drawable/bg_frame"
 			android:layout_margin="@dimen/frame_padding">
 
-			<LinearLayout android:layout_width="fill_parent"
-				android:layout_height="wrap_content" android:orientation="horizontal"
-				android:gravity="center_horizontal">
-				<TextView android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:gravity="center_horizontal"
-					android:text="Lap Times" android:textColor="@color/text_grey"
-					android:textSize="8pt" android:paddingRight="20dp" />
-				<TextView android:layout_width="wrap_content"
-					android:layout_height="wrap_content" android:gravity="center_horizontal"
-					android:text="Split Times" android:textColor="@color/text_light_grey"
-					android:textSize="8pt" />
-			</LinearLayout>
-
-			<fragment android:name="com.geekyouup.android.ustopwatch.fragments.LapTimesFragment"
+			<fragment
+				android:name="com.geekyouup.android.ustopwatch.fragments.LapTimesFragment"
 				android:id="@+id/laptimes_fragment" android:layout_width="fill_parent"
-				android:layout_height="fill_parent"/>
+				android:layout_height="fill_parent" />
 
 		</LinearLayout>
 
 	</LinearLayout>
-</LinearLayout>
 </LinearLayout>

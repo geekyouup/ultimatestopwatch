@@ -4,11 +4,11 @@ android:layout_width="fill_parent"
 android:layout_height="fill_parent"
 android:orientation="vertical">
 <TextView android:id="@+id/counter_digits"
-			android:textSize="48pt"
+			android:textSize="@dimen/counter_font"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
 			android:gravity="center"
-			android:paddingRight="20dp"
+			android:paddingRight="2dp"
 			android:text="00:00:00.000"
-			android:textColor="@color/text_grey"/>
+			android:textColor="@color/text_light_grey"/>
 </LinearLayout>

@@ -44,7 +44,7 @@ android:layout_weight="1">
 		android:textColor="@color/text_grey"
 		android:textSize="20pt"/>
 
-<fragment class="android.support.v4.app.ListFragment" 
+<fragment android:name="com.geekyouup.android.ustopwatch.fragments.LapTimesFragment"
             android:id="@+id/laptimes_fragment"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent"/>

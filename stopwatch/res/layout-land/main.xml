@@ -54,7 +54,7 @@
 					android:textSize="8pt" />
 			</LinearLayout>
 
-			<fragment class="android.support.v4.app.ListFragment"
+			<fragment android:name="com.geekyouup.android.ustopwatch.fragments.LapTimesFragment"
 				android:id="@+id/laptimes_fragment" android:layout_width="fill_parent"
 				android:layout_height="fill_parent"/>
 

@@ -8,38 +8,37 @@ import android.util.Log;
 
 public class UltimateStopwatchLauncher extends Activity {
 
-	private static boolean IS_HONEYCOMB =
-		android.os.Build.VERSION.SDK_INT >=
-		 android.os.Build.VERSION_CODES.HONEYCOMB;
-	
+	private static boolean IS_HONEYCOMB = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		 Intent startActivityIntent = null;
-		 if (IS_HONEYCOMB && isXLargeScreen())
-		   startActivityIntent = new Intent(this, UltimateStopwatchTabletActivity.class);
-		 else
-		   startActivityIntent = new Intent(this, UltimateStopwatch.class);
+		Intent startActivityIntent = null;
+		if (IS_HONEYCOMB && isXLargeScreen())
+		{
+			Log.d("USW","Launching TABLET Version");
+			startActivityIntent = new Intent(this, UltimateStopwatchTabletActivity.class);
+		}
+		else
+			startActivityIntent = new Intent(this, UltimateStopwatch.class);
 
-		 startActivity(startActivityIntent);
-		 finish();
+		startActivity(startActivityIntent);
+		finish();
 	}
-	
-	private boolean isXLargeScreen()
-	{
 
-		Log.d("Stopwartch","SCREEN LAYOUT: "+ (getResources().getConfiguration().screenLayout & 
-			    Configuration.SCREENLAYOUT_SIZE_MASK) + ", is HC: " + IS_HONEYCOMB );
+	private boolean isXLargeScreen() {
 
-		if ((getResources().getConfiguration().screenLayout & 
-			    Configuration.SCREENLAYOUT_SIZE_MASK) == 
-			        Configuration.SCREENLAYOUT_SIZE_XLARGE) {
-			
+		Log.d("Stopwartch", "SCREEN LAYOUT: "
+				+ (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) + ", is HC: "
+				+ IS_HONEYCOMB);
+
+		if ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
+
 			return true;
 		}
 
 		return false;
 	}
-	
+
 }

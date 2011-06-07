@@ -1,4 +1,4 @@
-package com.geekyouup.android.ustopwatch;
+package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.ArrayList;
 
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.geekyouup.android.ustopwatch.R;
+import com.geekyouup.android.ustopwatch.TimeUtils;
 
 public class LapTimesBaseAdapter extends BaseAdapter {
 
@@ -49,7 +52,9 @@ public class LapTimesBaseAdapter extends BaseAdapter {
 		TextView t = (TextView) v.findViewById(R.id.laptime_text);
 		if(position<mDataSet.size()-1 && mDataSet.size()>1)
 		{
-			t.setText(TimeUtils.createTimeString(mDataSet.get(position)-mDataSet.get(position+1)));
+			double laptime= mDataSet.get(position)-mDataSet.get(position+1);
+			if(laptime<0) laptime = mDataSet.get(position);
+			t.setText(TimeUtils.createTimeString(laptime));
 		}else{
 			t.setText(TimeUtils.createTimeString(mDataSet.get(position)));
 		}

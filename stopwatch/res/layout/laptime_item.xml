@@ -9,8 +9,7 @@ android:background="@color/white">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical|right"
-    android:textSize="14dp"
-    android:padding="2dp"
+    android:textSize="12dp"
     android:textColor="@color/text_grey"
 />
 <TextView
@@ -18,8 +17,7 @@ android:background="@color/white">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical|right"
-    android:textSize="10dp"
-    android:textColor="@color/text_light_grey"
-    android:padding="2dp"
+    android:textSize="8dp"
+    android:textColor="@color/text_grey"
 />
 </LinearLayout>

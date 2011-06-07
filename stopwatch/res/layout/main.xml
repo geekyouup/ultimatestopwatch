@@ -1,53 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-	android:orientation="vertical"
-	android:background="#ffffffff">
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:background="#ffffffff">
 
-<!--  LinearLayout android:layout_height="40dp" android:layout_width="match_parent" android:background="@color/text_light_grey" /-->
+	<!-- LinearLayout android:layout_height="40dp" android:layout_width="match_parent" 
+		android:background="@color/text_light_grey" / -->
 
 
-<fragment android:name="com.geekyouup.android.ustopwatch.fragments.StopwatchFragment"
-      android:id="@+id/stopwatch_fragment"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:layout_weight="1"/>
+	<fragment
+		android:name="com.geekyouup.android.ustopwatch.fragments.StopwatchFragment"
+		android:id="@+id/stopwatch_fragment" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_weight="1" />
 
-<LinearLayout
-    android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-    android:gravity="center"
-    android:layout_weight="3"
-    android:orientation="horizontal"
-    android:background="@drawable/bg_frame"
-    android:layout_margin="10dp">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:gravity="center"
+		android:layout_weight="4" android:orientation="horizontal"
+		android:background="@drawable/bg_frame" android:layout_margin="10dp">
 
-<LinearLayout
-    android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-    android:gravity="center"
-    android:layout_weight="2">
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:gravity="center"
+			android:layout_weight="2" android:orientation="vertical">
 
-<fragment class="android.support.v4.app.ListFragment" 
-            android:id="@+id/laptimes_fragment"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"/>
-</LinearLayout>
+			<fragment android:name="com.geekyouup.android.ustopwatch.fragments.LapTimesFragment"
+				android:id="@+id/laptimes_fragment" android:layout_width="fill_parent"
+				android:layout_height="fill_parent" />
+		</LinearLayout>
 
-<LinearLayout
-    android:layout_width="fill_parent"
-	android:layout_height="fill_parent"
-    android:gravity="center"
-    android:layout_weight="1">
-<fragment android:name="com.geekyouup.android.ustopwatch.fragments.TimeFragment"
-            android:id="@+id/fragment_time"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" 
-            />
-</LinearLayout>
+		<RelativeLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:gravity="center_vertical"
+			android:layout_weight="1">
+			<fragment android:name="com.geekyouup.android.ustopwatch.fragments.TimeFragment"
+				android:id="@+id/fragment_time" android:layout_width="wrap_content"
+				android:layout_height="fill_parent" android:layout_alignParentRight="true" />
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:textColor="@color/text_grey"
+				android:textSize="8dp" android:text="Touch to record lap time"
+				android:layout_alignParentBottom="true"
+				android:layout_alignParentRight="true" android:layout_marginTop="5dp"
+				android:paddingRight="5dp" />
 
-</LinearLayout>
+		</RelativeLayout>
+
+	</LinearLayout>
 
 
 </LinearLayout>

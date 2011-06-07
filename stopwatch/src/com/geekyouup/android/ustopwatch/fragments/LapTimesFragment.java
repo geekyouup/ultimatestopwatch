@@ -7,6 +7,12 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ViewFlipper;
+
+import com.geekyouup.android.ustopwatch.R;
 
 
 public class LapTimesFragment extends ListFragment{
@@ -15,10 +21,20 @@ public class LapTimesFragment extends ListFragment{
 	private final ArrayList<Double> mLapTimes = new ArrayList<Double>();
 	private static final String PREFS_NAME_LAPTIMES = "usw_prefs_laptimes";
 	private static final String KEY_LAPTIME_X = "LAPTIME_";
+	private int mCurrentMode = StopwatchFragment.MODE_STOPWATCH;
+	private ViewFlipper mViewFlipper;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View v = inflater.inflate(R.layout.laptimes_fragment, container, false);
+		try{mViewFlipper = (ViewFlipper) v.findViewById(R.id.laptimes_viewflipper);}
+		catch(Exception e){}
+		return v;
 	}
 	
 	@Override
@@ -77,6 +93,21 @@ public class LapTimesFragment extends ListFragment{
 	{
 		mLapTimes.add(0,time);
 		mAdapter.notifyDataSetChanged();
+	}
+	
+	public void setMode(int mode)
+	{
+		//if(mode==mCurrentMode) return;
+		
+		if(mViewFlipper!= null)mViewFlipper.showNext();
+		
+		if(mode == StopwatchFragment.MODE_STOPWATCH)
+		{
+			
+		}else
+		{
+			
+		}
 	}
 	
 }

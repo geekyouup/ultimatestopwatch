@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.geekyouup.android.ustopwatch.fragments.LapTimesFragment;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchFragment;
@@ -119,6 +120,7 @@ public class UltimateStopwatch extends FragmentActivity implements LapTimeRecord
 		} else if (item.getItemId() == R.id.menu_switchmode) {
 			int newMode = (mStopwatchFragment.getMode()==StopwatchFragment.MODE_STOPWATCH)?StopwatchFragment.MODE_COUNTDOWN:StopwatchFragment.MODE_STOPWATCH;
 			mStopwatchFragment.setMode(newMode);
+			mLapTimesFragment.setMode(newMode);
 
 			if (newMode==StopwatchFragment.MODE_COUNTDOWN)
 			{

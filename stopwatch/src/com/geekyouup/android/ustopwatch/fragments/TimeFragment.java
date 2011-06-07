@@ -21,7 +21,7 @@ public class TimeFragment extends Fragment implements OnClickListener{
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View timeView = inflater.inflate(R.layout.time_fragment, container, false);
 		mCounter = (TextView) timeView.findViewById(R.id.counter_digits);
-		mCounter.setOnClickListener(this);
+		if(mCounter!=null)mCounter.setOnClickListener(this);
 		return timeView;
 	}
 

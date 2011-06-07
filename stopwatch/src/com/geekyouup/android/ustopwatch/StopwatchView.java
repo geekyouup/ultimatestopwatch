@@ -354,13 +354,6 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			}
 		}
 
-		public boolean onTouch(View v, MotionEvent event) {
-			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				startStop();
-			}
-			return true;
-		}
-
 		public void startStop() {
 			if (mMode == STATE_PAUSE) {
 				unpause();
@@ -380,6 +373,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			resetVars();
 		}
 
+		public boolean onTouch(View v, MotionEvent event) {
+			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				startStop();
+			}
+			return true;
+		}
+		
 		// none trackball devices
 		public boolean doKeypress(int keyCode) {
 			if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_SPACE) {
@@ -389,6 +389,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			return false;
 		}
 
+		//trackball device
 		public boolean doTrackBall(MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				startStop();

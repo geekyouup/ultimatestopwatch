@@ -179,9 +179,12 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				Canvas c = null;
 				try {
 					c = mSurfaceHolder.lockCanvas(null);
-					synchronized (mSurfaceHolder) {
-						if (mMode == STATE_RUNNING) updatePhysics();
-						doDraw(c);
+					if(c!= null)
+					{
+						synchronized (mSurfaceHolder) {
+							if (mMode == STATE_RUNNING) updatePhysics();
+							doDraw(c);
+						}
 					}
 				} finally {
 					// do this in a finally so that if an exception is thrown
@@ -320,6 +323,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			mMinsAngle = twoPI * (mDisplayTimeMillis / 1800000.0);
 			mSecsAngle = twoPI * (mDisplayTimeMillis / 60000.0);
 
+			if(mDisplayTimeMillis<0) mDisplayTimeMillis=0;
+			
 			// send the time back to the Activity to update the other views
 			broadcastClockTime(mDisplayTimeMillis);
 			mLastTime = now;

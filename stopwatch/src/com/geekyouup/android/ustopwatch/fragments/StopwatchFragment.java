@@ -10,9 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.geekyouup.android.ustopwatch.StopwatchView;
-import com.geekyouup.android.ustopwatch.StopwatchView.StopwatchThead;
-import com.geekyouup.android.ustopwatch.UltimateStopwatch;
+import com.geekyouup.android.ustopwatch.fragments.StopwatchView;
+import com.geekyouup.android.ustopwatch.fragments.StopwatchView.StopwatchThead;
+import com.geekyouup.android.ustopwatch.fragments.UltimateStopwatchFragments;
 
 public class StopwatchFragment  extends Fragment {
 
@@ -20,7 +20,7 @@ public class StopwatchFragment  extends Fragment {
 	private StopwatchThead mWatchThread;
 	public static final int MODE_STOPWATCH=0;
 	public static final int MODE_COUNTDOWN=1;
-	private UltimateStopwatch mApp;
+	private UltimateStopwatchFragments mApp;
 	private Handler mHandler;
 	
 	private static final String PREFS_NAME="USW_SWFRAG_PREFS";
@@ -87,7 +87,7 @@ public class StopwatchFragment  extends Fragment {
 		mWatchThread.setTime(hour, minute, seconds);
 	}
 	
-	public void setApplication(UltimateStopwatch app)
+	public void setApplication(UltimateStopwatchFragments app)
 	{
 		mApp = app;
 		if(mWatchThread!= null) mWatchThread.setApplication(app);

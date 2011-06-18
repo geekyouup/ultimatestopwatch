@@ -10,7 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.geekyouup.android.ustopwatch.R;
-import com.geekyouup.android.ustopwatch.TimeUtils;
 
 public class LapTimesBaseAdapter extends BaseAdapter {
 

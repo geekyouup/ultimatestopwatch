@@ -2,11 +2,11 @@ package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.ArrayList;
 
+import android.app.ListFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +21,6 @@ public class LapTimesFragment extends ListFragment{
 	private final ArrayList<Double> mLapTimes = new ArrayList<Double>();
 	private static final String PREFS_NAME_LAPTIMES = "usw_prefs_laptimes";
 	private static final String KEY_LAPTIME_X = "LAPTIME_";
-	private int mCurrentMode = StopwatchFragment.MODE_STOPWATCH;
 	private ViewFlipper mViewFlipper;
 	
 	@Override

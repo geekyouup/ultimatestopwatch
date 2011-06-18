@@ -1,8 +1,6 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
 import com.geekyouup.android.ustopwatch.R;
-import com.geekyouup.android.ustopwatch.R.id;
-import com.geekyouup.android.ustopwatch.R.layout;
 
 import android.content.Context;
 import android.text.Editable;

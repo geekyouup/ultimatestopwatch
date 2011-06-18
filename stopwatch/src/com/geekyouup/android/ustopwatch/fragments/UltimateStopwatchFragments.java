@@ -2,6 +2,7 @@ package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,7 +15,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,7 +29,7 @@ import com.geekyouup.android.ustopwatch.fragments.StopwatchFragment;
 import com.geekyouup.android.ustopwatch.fragments.TimeFragment;
 import com.geekyouup.android.ustopwatch.fragments.TimeUtils;
 
-public class UltimateStopwatchFragments extends FragmentActivity implements LapTimeRecorder {
+public class UltimateStopwatchFragments extends Activity implements LapTimeRecorder {
 
 	private PowerManager mPowerMan;
 	private PowerManager.WakeLock mWakeLock;
@@ -65,10 +65,10 @@ public class UltimateStopwatchFragments extends FragmentActivity implements LapT
 		}
 		
 		// not in all views
-		mCounterView = (TimeFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_time);
+		mCounterView = (TimeFragment) getFragmentManager().findFragmentById(R.id.fragment_time);
 		mCounterView.setLapTimeRecorder(this);
 
-		mStopwatchFragment = (StopwatchFragment) getSupportFragmentManager().findFragmentById(R.id.stopwatch_fragment);
+		mStopwatchFragment = (StopwatchFragment) getFragmentManager().findFragmentById(R.id.stopwatch_fragment);
 		mStopwatchFragment.setApplication(this);
 		mStopwatchFragment.setHandler(new Handler() {
 			@Override
@@ -83,7 +83,7 @@ public class UltimateStopwatchFragments extends FragmentActivity implements LapT
 			}
 		});
 		
-		mLapTimesFragment = (LapTimesFragment) getSupportFragmentManager().findFragmentById(R.id.laptimes_fragment);
+		mLapTimesFragment = (LapTimesFragment) getFragmentManager().findFragmentById(R.id.laptimes_fragment);
 		
 		soundPool = new SoundPool(3, AudioManager.STREAM_NOTIFICATION, 100);
 		soundPoolMap = new HashMap<Integer, Integer>();

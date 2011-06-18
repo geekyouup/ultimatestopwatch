@@ -1,10 +1,10 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,7 @@ import com.geekyouup.android.ustopwatch.fragments.StopwatchView;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchView.StopwatchThead;
 import com.geekyouup.android.ustopwatch.fragments.UltimateStopwatchFragments;
 
-public class StopwatchFragment  extends Fragment {
+public class StopwatchFragment extends Fragment {
 
 	private StopwatchView mStopwatchView;
 	private StopwatchThead mWatchThread;

@@ -3,6 +3,5 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="lib" path="/Developer/android-sdk/extras/android/compatibility/v4/android-support-v4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

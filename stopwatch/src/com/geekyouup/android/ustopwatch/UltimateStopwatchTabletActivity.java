@@ -1,5 +1,7 @@
 package com.geekyouup.android.ustopwatch;
 
-public class UltimateStopwatchTabletActivity extends UltimateStopwatch {
+import com.geekyouup.android.ustopwatch.fragments.UltimateStopwatchFragments;
+
+public class UltimateStopwatchTabletActivity extends UltimateStopwatchFragments {
 
 }

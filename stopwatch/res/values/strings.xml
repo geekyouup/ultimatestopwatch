@@ -23,4 +23,11 @@
 	<string name="mode">Mode</string>
 	<string name="stopwatch">Stopwatch Mode</string>
 	<string name="countdown">Countdown Mode</string>
+	
+ 	<string name="hours">Hours</string>
+	<string name="mins">Mins</string>
+	<string name="secs">Secs</string>
+	
+	<string name="countdown_complete">Countdown Complete!</string>
+	
 </resources>

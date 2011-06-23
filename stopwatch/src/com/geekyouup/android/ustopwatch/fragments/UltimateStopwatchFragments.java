@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.NumberPicker;
 
 import com.geekyouup.android.ustopwatch.AlarmUpdater;
 import com.geekyouup.android.ustopwatch.R;
@@ -30,7 +31,6 @@ import com.geekyouup.android.ustopwatch.fragments.LapTimeRecorder;
 import com.geekyouup.android.ustopwatch.fragments.LapTimesFragment;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchFragment;
 import com.geekyouup.android.ustopwatch.fragments.TimeFragment;
-import com.geekyouup.android.ustopwatch.fragments.TimeUtils;
 
 public class UltimateStopwatchFragments extends Activity implements
 		LapTimeRecorder {
@@ -95,7 +95,7 @@ public class UltimateStopwatchFragments extends Activity implements
 		mLapTimesFragment = (LapTimesFragment) getFragmentManager()
 				.findFragmentById(R.id.laptimes_fragment);
 
-		soundPool = new SoundPool(3, AudioManager.STREAM_NOTIFICATION, 100);
+		soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
 		soundPoolMap = new HashMap<Integer, Integer>();
 		soundPoolMap.put(SOUND_ALARM, soundPool.load(this, R.raw.alarm, 1));
 	}
@@ -161,8 +161,6 @@ public class UltimateStopwatchFragments extends Activity implements
 			oa.start();
 		} else if (item.getItemId() == R.id.menu_reset) {
 			reset();
-		} else if (item.getItemId() == R.id.menu_laptime) {
-			recordTime();
 		}
 
 		return true;
@@ -181,14 +179,29 @@ public class UltimateStopwatchFragments extends Activity implements
 
 	private boolean mDialogOnScreen = false;
 
+	private static int mHoursValue = 0;
+	private static int mMinsValue = 0;
+	private static int mSecsValue = 0;
 	public void requestTimeDialog() {
 		// stop stacking of dialogs
 		if (mDialogOnScreen)
 			return;
 
 		LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View ll = TimeUtils.createTimeSelectDialogLayout(this, inflator);
+		View ll = inflator.inflate(R.layout.countdown_picker,null);
+		
+		final NumberPicker npHours = (NumberPicker) ll.findViewById(R.id.numberPickerHours);
+		npHours.setMaxValue(99);
+		npHours.setValue(mHoursValue);
+		
+		final NumberPicker npMins = (NumberPicker) ll.findViewById(R.id.numberPickerMins);
+		npMins.setMaxValue(59);
+		npMins.setValue(mMinsValue);
 
+		final NumberPicker npSecs = (NumberPicker) ll.findViewById(R.id.numberPickerSecs);
+		npSecs.setMaxValue(59);
+		npSecs.setValue(mSecsValue);
+		
 		AlertDialog mSelectTime = new AlertDialog.Builder(this).create();
 		mSelectTime.setView(ll);
 		mSelectTime.setTitle(getString(R.string.timer_title));
@@ -196,8 +209,11 @@ public class UltimateStopwatchFragments extends Activity implements
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						mDialogOnScreen = false;
-						mStopwatchFragment.setTime(TimeUtils.getDlgHours(),
-								TimeUtils.getDlgMins(), TimeUtils.getDlgSecs());
+						mHoursValue = npHours.getValue();
+						mMinsValue = npMins.getValue();
+						mSecsValue = npSecs.getValue();
+						mStopwatchFragment.setTime(mHoursValue,
+								mMinsValue, mSecsValue);
 					}
 				});
 		mSelectTime.setButton2(getString(R.string.timer_cancel),
@@ -214,7 +230,7 @@ public class UltimateStopwatchFragments extends Activity implements
 	public void playAlarm() {
 		AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		float streamVolume = mgr
-				.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+				.getStreamVolume(AudioManager.STREAM_MUSIC);
 		soundPool.play(soundPoolMap.get(SOUND_ALARM), streamVolume,
 				streamVolume, 1, 0, 1f);
 	}

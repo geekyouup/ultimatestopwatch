@@ -21,6 +21,7 @@ public class LapTimesFragment extends ListFragment{
 	private final ArrayList<Double> mLapTimes = new ArrayList<Double>();
 	private static final String PREFS_NAME_LAPTIMES = "usw_prefs_laptimes";
 	private static final String KEY_LAPTIME_X = "LAPTIME_";
+	private static final String KEY_CURRENT_VIEW = "current_view";
 	private ViewFlipper mViewFlipper;
 	
 	@Override
@@ -57,7 +58,7 @@ public class LapTimesFragment extends ListFragment{
                 {
                 	for(int i=0;i<mLapTimes.size();i++) editor.putLong(KEY_LAPTIME_X+i,mLapTimes.get(i).longValue());
                 }
-				
+				if(mViewFlipper!=null) editor.putInt(KEY_CURRENT_VIEW, mViewFlipper.getDisplayedChild());
 				editor.commit();
 			}
 		}
@@ -79,6 +80,8 @@ public class LapTimesFragment extends ListFragment{
             	lapTimeNum++;
             }
             mAdapter.notifyDataSetChanged();
+            
+            setMode(settings.getInt(KEY_CURRENT_VIEW, 0));
 		}
 	}
 
@@ -98,14 +101,9 @@ public class LapTimesFragment extends ListFragment{
 	{
 		//if(mode==mCurrentMode) return;
 		
-		if(mViewFlipper!= null)mViewFlipper.showNext();
-		
-		if(mode == StopwatchFragment.MODE_STOPWATCH)
+		if(mViewFlipper!= null)
 		{
-			
-		}else
-		{
-			
+			mViewFlipper.setDisplayedChild(mode);
 		}
 	}
 	

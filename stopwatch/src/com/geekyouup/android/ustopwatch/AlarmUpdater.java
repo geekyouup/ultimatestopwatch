@@ -45,7 +45,7 @@ public class AlarmUpdater {
 
         private void notifyStatusBar() {
             // Set the icon, scrolling text and timestamp
-            Notification notification = new Notification(R.drawable.icon, "Countdown Complete!",System.currentTimeMillis());
+            Notification notification = new Notification(R.drawable.icon,getString(R.string.countdown_complete),System.currentTimeMillis());
             
             try
             {
@@ -61,10 +61,10 @@ public class AlarmUpdater {
             notification.defaults |= (Notification.DEFAULT_ALL);
             
             // The PendingIntent to launch our activity if the user selects this notification
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,new Intent(this,UltimateStopwatch.class),0);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,new Intent(this,UltimateStopwatchLauncher.class),0);
 
             // Set the info for the views that show in the notification panel.
-            notification.setLatestEventInfo(this, getString(R.string.app_name), "Countdown Complete!", contentIntent);
+            notification.setLatestEventInfo(this, getString(R.string.app_name), getString(R.string.countdown_complete), contentIntent);
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             // We use a layout id because it is a unique number.  We use it later to cancel.
             notificationManager.notify(R.layout.main, notification);

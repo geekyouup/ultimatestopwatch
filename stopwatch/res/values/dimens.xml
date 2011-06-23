@@ -4,4 +4,5 @@
 	<dimen name="small_font">8dp</dimen>
 	<dimen name="large_font">36dp</dimen>
 	<dimen name="counter_font">30dp</dimen>
+	<dimen name="launchtext_size">32sp</dimen>
 </resources>

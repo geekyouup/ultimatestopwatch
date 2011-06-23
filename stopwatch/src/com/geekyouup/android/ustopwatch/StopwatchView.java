@@ -76,13 +76,16 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 
         private int mCanvasWidth = 320;
         private int mCanvasHeight = 480;
-        private int mSecsCenterX = 156;
+        private int mCanvasCenterX = 156;
         private int mSecsCenterY = 230;
         private int mSecsHandLength = 0;
+        private int mSecsHandHalfWidth=10;
+        private int mMinsHandHalfWidth=10;
         
-        private final int mMinsCenterX = 156;
         private int mMinsCenterY = 185;
         private int mMinsHandLength = 0;
+        
+        private boolean isWVGA = false;
         
         /** Used to figure out elapsed time between frames */
         private long mLastTime;
@@ -128,6 +131,9 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             
             mMinsHandLength = mMinHand.getIntrinsicHeight();
             mSecsHandLength = mSecHand.getIntrinsicHeight();
+            mSecsHandHalfWidth = mSecHand.getIntrinsicWidth()/2;
+            mMinsHandHalfWidth = mMinHand.getIntrinsicWidth()/2;
+            
             mBackgroundStartY = (mCanvasHeight-mBackgroundImage.getHeight())/2;
             mAppOffsetX = (mCanvasWidth-mBackgroundImage.getWidth())/2;
            
@@ -363,24 +369,24 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             // so this is like clearing the screen.
         	canvas.drawColor(Color.WHITE);
             canvas.drawBitmap(mBackgroundImage, mAppOffsetX,mBackgroundStartY, null);
-            canvas.drawBitmap(mBackgroundBottomImage, mAppOffsetX,mCanvasHeight-mBackgroundBottomImage.getHeight(), null);
+            canvas.drawBitmap(mBackgroundBottomImage, 0,mCanvasHeight-mBackgroundBottomImage.getHeight(), null);
             
             //see if we should draw up arrow on lap times
             if(mTopLaptime>0)
             {
-                mUpArrow.setBounds(44+mAppOffsetX, mCanvasHeight-70, 54+mAppOffsetX, mCanvasHeight-64);
+                mUpArrow.setBounds(44+mAppOffsetX, mCanvasHeight-70-(isWVGA?36:0), 54+mAppOffsetX, mCanvasHeight-64-(isWVGA?36:0));
                 mUpArrow.draw(canvas);
             }
             
             //draw lap times
             if(mMode!=STATE_READY)
             {
-            	canvas.drawText(mHoursPart+":"+mMinsPart+":"+mSecsPart+"."+mMillisPart,120+mAppOffsetX, mCanvasHeight-25, mTextPaint);
+            	canvas.drawText(mHoursPart+":"+mMinsPart+":"+mSecsPart+"."+mMillisPart,120+mAppOffsetX+(isWVGA?55:0), mCanvasHeight-25-(isWVGA?16:0), mTextPaint);
             	if(isStopwatchMode())
             	{
-	            	canvas.drawText("lap"+(mTopLaptime+1)+" "+ (mLapTimes.size()>mTopLaptime?mLapTimes.get(mTopLaptime):""),13+mAppOffsetX,mCanvasHeight-54,mSmallTextPaint);
-	            	canvas.drawText("lap"+(mTopLaptime+2) + " " + (mLapTimes.size()>mTopLaptime+1?mLapTimes.get(mTopLaptime+1):""),13+mAppOffsetX,mCanvasHeight-34,mSmallTextPaint);
-	            	canvas.drawText("lap"+(mTopLaptime+3) + " "+ (mLapTimes.size()>mTopLaptime+2?mLapTimes.get(mTopLaptime+2):""),13+mAppOffsetX,mCanvasHeight-14,mSmallTextPaint);
+	            	canvas.drawText("lap"+(mTopLaptime+1)+" "+ (mLapTimes.size()>mTopLaptime?mLapTimes.get(mTopLaptime):""),13+mAppOffsetX+(isWVGA?8:0),mCanvasHeight-54-(isWVGA?28:0),mSmallTextPaint);
+	            	canvas.drawText("lap"+(mTopLaptime+2) + " " + (mLapTimes.size()>mTopLaptime+1?mLapTimes.get(mTopLaptime+1):""),13+mAppOffsetX+(isWVGA?8:0),mCanvasHeight-34-(isWVGA?19:0),mSmallTextPaint);
+	            	canvas.drawText("lap"+(mTopLaptime+3) + " "+ (mLapTimes.size()>mTopLaptime+2?mLapTimes.get(mTopLaptime+2):""),13+mAppOffsetX+(isWVGA?8:0),mCanvasHeight-14-(isWVGA?10:0),mSmallTextPaint);
             	}
             }
             
@@ -393,15 +399,15 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             
             // Draw the secs hand with its current rotation
             canvas.save();
-            canvas.rotate((float) Math.toDegrees(mSecsAngle), mSecsCenterX+mAppOffsetX,mSecsCenterY);
-            mSecHand.setBounds(mSecsCenterX-10+mAppOffsetX, mSecsCenterY-mSecsHandLength+26, mSecsCenterX+10+mAppOffsetX, mSecsCenterY+26);
+            canvas.rotate((float) Math.toDegrees(mSecsAngle), mCanvasCenterX,mSecsCenterY);
+            mSecHand.setBounds(mCanvasCenterX-mSecsHandHalfWidth, mSecsCenterY-mSecsHandLength+(isWVGA?38:26), mCanvasCenterX+mSecsHandHalfWidth, mSecsCenterY+(isWVGA?38:26));
             mSecHand.draw(canvas);
             canvas.restore();
             
             //draw the mins hand with its current rotatiom
             canvas.save();
-            canvas.rotate((float) Math.toDegrees(mMinsAngle), mMinsCenterX+mAppOffsetX,mMinsCenterY);
-            mMinHand.setBounds(mMinsCenterX-3+mAppOffsetX, mMinsCenterY-mMinsHandLength+10, mMinsCenterX+4+mAppOffsetX, mMinsCenterY+10);
+            canvas.rotate((float) Math.toDegrees(mMinsAngle), mCanvasCenterX,mMinsCenterY);
+            mMinHand.setBounds(mCanvasCenterX-mMinsHandHalfWidth, mMinsCenterY-mMinsHandLength+(isWVGA?15:10), mCanvasCenterX+mMinsHandHalfWidth, mMinsCenterY+(isWVGA?15:10));
             mMinHand.draw(canvas);
             canvas.restore();
         }
@@ -565,10 +571,18 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             synchronized (mSurfaceHolder) {
                 mCanvasWidth = width;
                 mCanvasHeight = height;
-                mSecsCenterY = height/2;
-                mMinsCenterY = mSecsCenterY-46;
-                mBackgroundStartY = (height-mBackgroundImage.getHeight())/2;
-                mAppOffsetX = (width-mBackgroundImage.getWidth())/2;
+                
+                isWVGA = mCanvasWidth>=480;
+                
+                mSecsCenterY = mCanvasHeight/2;
+                mMinsCenterY = mSecsCenterY-(isWVGA?75:43);
+                mBackgroundStartY = (mCanvasHeight-mBackgroundImage.getHeight())/2;
+                mAppOffsetX = (mCanvasWidth-mBackgroundImage.getWidth())/2;
+                
+                mCanvasCenterX = width/2;
+                
+                mTextPaint.setTextSize(isWVGA?48:32);
+                mSmallTextPaint.setTextSize(isWVGA?15:10);
             }
         }
     }

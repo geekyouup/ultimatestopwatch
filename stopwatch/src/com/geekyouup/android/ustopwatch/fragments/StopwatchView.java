@@ -76,7 +76,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private int mSecsCenterY = 230;
 		private int mSecsHandLength = 0;
 
-		private final int mMinsCenterX = 156;
+		private int mMinsCenterX = 156;
 		private int mMinsCenterY = 185;
 		private int mMinsHandLength = 0;
 
@@ -293,17 +293,17 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 			// Draw the secs hand with its current rotation
 			canvas.save();
-			canvas.rotate((float) Math.toDegrees(mSecsAngle), mSecsCenterX + mAppOffsetX, mSecsCenterY + mAppOffsetY);
-			mSecHand.setBounds(mSecsCenterX - 10 + mAppOffsetX, mSecsCenterY - mSecsHandLength + 26 + mAppOffsetY,
-					mSecsCenterX + 10 + mAppOffsetX, mSecsCenterY + mAppOffsetY + 26);
+			canvas.rotate((float) Math.toDegrees(mSecsAngle), mSecsCenterX, mSecsCenterY + mAppOffsetY);
+			mSecHand.setBounds(mSecsCenterX - 10, mSecsCenterY - mSecsHandLength + 26 + mAppOffsetY,
+					mSecsCenterX + 10, mSecsCenterY + mAppOffsetY + 26);
 			mSecHand.draw(canvas);
 			canvas.restore();
 
 			// draw the mins hand with its current rotatiom
 			canvas.save();
-			canvas.rotate((float) Math.toDegrees(mMinsAngle), mMinsCenterX + mAppOffsetX, mMinsCenterY + mAppOffsetY);
-			mMinHand.setBounds(mMinsCenterX - 3 + mAppOffsetX, mMinsCenterY - mMinsHandLength + 10 + mAppOffsetY,
-					mMinsCenterX + 4 + mAppOffsetX, mMinsCenterY + mAppOffsetY + 10);
+			canvas.rotate((float) Math.toDegrees(mMinsAngle), mMinsCenterX, mMinsCenterY + mAppOffsetY);
+			mMinHand.setBounds(mMinsCenterX - 3, mMinsCenterY - mMinsHandLength + 10 + mAppOffsetY,
+					mMinsCenterX + 4, mMinsCenterY + mAppOffsetY + 10);
 			mMinHand.draw(canvas);
 			canvas.restore();
 		}
@@ -426,13 +426,16 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				}
 
 				mSecsCenterY = height / 2;
-				mMinsCenterY = mSecsCenterY - 46;
+				mMinsCenterY = mSecsCenterY - 44;
 				mBackgroundStartY = (height - mBackgroundImage.getHeight()) / 2;
 				if (mBackgroundStartY < 0)
 					mAppOffsetY = -mBackgroundStartY;
 
 				mAppOffsetX = (width - mBackgroundImage.getWidth()) / 2;
 
+				mSecsCenterX = width/2;
+				mMinsCenterX = width/2;
+				
 				Log.d("StopWatch", "AppXOffset: " + mAppOffsetX + ", bgImageWidht: " + mBackgroundImage.getWidth());
 			}
 		}

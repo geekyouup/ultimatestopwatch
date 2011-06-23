@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.geekyouup.android.ustopwatch.R;
+import com.geekyouup.android.ustopwatch.TimeUtils;
 
 public class TimeFragment extends Fragment implements OnClickListener{
 

@@ -1,7 +1,7 @@
 package com.geekyouup.android.ustopwatch;
 
 import java.util.HashMap;
-import com.geekyouup.android.ustopwatch.StopwatchView.StopwatchThead;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -15,8 +15,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,10 +22,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.geekyouup.android.ustopwatch.StopwatchView.StopwatchThead;
 
 public class UltimateStopwatch extends Activity implements OnClickListener {
 	
@@ -47,7 +46,6 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
 	
 	private static final int MENU_STARTPAUSE = 0;
 	private static final int MENU_MODE = 2;
-	private static final int MENU_EXIT = 3;
 	private MenuItem mModeMenuItem;
 	private boolean mJustLaunched = false;
 	
@@ -56,6 +54,7 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         mJustLaunched=true;
     }
     
@@ -122,7 +121,7 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
         mWakeLock = mPowerMan.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Stopwatch");
         mWakeLock.acquire();
         
-        soundPool = new SoundPool(3, AudioManager.STREAM_NOTIFICATION, 100);
+        soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
         soundPoolMap = new HashMap<Integer, Integer>();
         soundPoolMap.put(SOUND_ALARM, soundPool.load(this, R.raw.alarm, 1));
      }
@@ -156,8 +155,7 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
         {
         	mModeMenuItem = menu.add(0,MENU_MODE,2,"Stopwatch").setIcon(R.drawable.stopwatch);
         }
-        menu.add(0, MENU_EXIT, 5, "Exit").setIcon(android.R.drawable.ic_lock_power_off );
-
+        
         return true;
     }
     
@@ -176,10 +174,6 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
 			    requestTimeDialog();
 			}
 			
-    	}else if(item.getItemId() == MENU_EXIT)
-    	{
-    		try{getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().clear().commit();}catch(Exception e){}
-			finish();
     	}
     	
     	return true;
@@ -199,9 +193,6 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
 		mTextView.setVisibility(View.GONE);
 	}
 	
-	private int mSecsValue = 0;
-	private int mMinsValue = 0;
-	private int mHoursValue = 0;
 	private boolean mDialogOnScreen = false;
 	public void requestTimeDialog()
 	{
@@ -211,91 +202,7 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
 		try{removeSplashText();}catch(Exception e){}
 		
         LayoutInflater inflator = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View countdownView = inflator.inflate(R.layout.countdown, null);
-
-		final TextView mSecsText = (TextView) countdownView.findViewById(R.id.secsTxt);
-		final TextView mMinsText = (TextView) countdownView.findViewById(R.id.minsTxt);
-		final TextView mHoursText = (TextView) countdownView.findViewById(R.id.hoursTxt);
-		mSecsText.setText(mSecsValue+"");
-		mSecsText.addTextChangedListener(new TextWatcher() {
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if(s != null && s.length()==0){mSecsValue=0;} 
-				else try{mSecsValue = Integer.parseInt(s.toString());}catch(Exception e){};
-			}
-			@Override public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
-			@Override public void afterTextChanged(Editable s) {}
-		});
-		
-		mMinsText.setText(mMinsValue+"");
-		mMinsText.addTextChangedListener(new TextWatcher() {
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if(s != null && s.length()==0){mMinsValue=0;} 
-				else try{mMinsValue = Integer.parseInt(s.toString());}catch(Exception e){};
-			}
-			@Override public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
-			@Override public void afterTextChanged(Editable s) {}
-		});
-		
-		mHoursText.setText(mHoursValue+"");
-		mHoursText.addTextChangedListener(new TextWatcher() {
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if(s != null && s.length()==0){mHoursValue=0;} 
-				else try{mHoursValue = Integer.parseInt(s.toString());}catch(Exception e){};
-			}
-			@Override public void beforeTextChanged(CharSequence s, int start, int count,int after) {}
-			@Override public void afterTextChanged(Editable s) {}
-		});
-		
-	    Button mSecsIncr = (Button) countdownView.findViewById(R.id.secsBtnUp);
-	    mSecsIncr.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mSecsValue=(mSecsValue+1)%60;
-				mSecsText.setText(mSecsValue+"");
-			}
-		});
-	    
-	    Button mSecsDown= (Button) countdownView.findViewById(R.id.secsBtnDn);
-	    mSecsDown.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mSecsValue--;
-				if(mSecsValue<0) mSecsValue=60+mSecsValue;
-				mSecsText.setText(mSecsValue+"");
-			}
-		});
-
-	    Button mMinsIncr = (Button) countdownView.findViewById(R.id.minsBtnUp);
-	    mMinsIncr.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mMinsValue=(mMinsValue+1)%60;
-				mMinsText.setText(mMinsValue+"");
-			}
-		});
-	    
-	    Button mMinsDown= (Button) countdownView.findViewById(R.id.minsBtnDn);
-	    mMinsDown.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mMinsValue--;
-				if(mMinsValue<0)mMinsValue=60+mMinsValue;
-				mMinsText.setText(mMinsValue+"");
-			}
-		});
-	    
-	    Button mHoursIncr = (Button) countdownView.findViewById(R.id.hoursBtnUp);
-	    mHoursIncr.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mHoursValue=(mHoursValue+1)%100;
-				mHoursText.setText(mHoursValue+"");
-			}
-		});
-	    
-	    Button mHoursDown= (Button) countdownView.findViewById(R.id.hoursBtnDn);
-	    mHoursDown.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				mHoursValue--;
-				if(mHoursValue<0)mHoursValue=100+mHoursValue;
-				mHoursText.setText(mHoursValue+"");
-			}
-		});
+	    View countdownView = TimeUtils.createTimeSelectDialogLayout(this, inflator);
 	    
 	    LinearLayout ll = new LinearLayout(this);
 	    ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -309,7 +216,7 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
 			public void onClick(DialogInterface dialog, int which) {
 				removeSplashText();
 				mDialogOnScreen=false;
-				mWatchThread.setTime(mHoursValue, mMinsValue,mSecsValue);
+				mWatchThread.setTime(TimeUtils.getDlgHours(), TimeUtils.getDlgMins(),TimeUtils.getDlgSecs());
 			}});
 	    mSelectTime.setButton2(getString(R.string.timer_cancel), new DialogInterface.OnClickListener(){
 			public void onClick(DialogInterface dialog, int which) {
@@ -327,14 +234,6 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
 		{
 			try{getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().clear().commit();}catch(Exception e){}
 			return super.onKeyDown(keyCode, event);
-		}else if(keyCode == KeyEvent.KEYCODE_VOLUME_UP)
-		{
-        	try{((AudioManager)getSystemService(Context.AUDIO_SERVICE)).adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);}catch(Exception e){}
-			return true;
-		}else if(keyCode == KeyEvent.KEYCODE_VOLUME_DOWN)
-		{
-        	try{((AudioManager)getSystemService(Context.AUDIO_SERVICE)).adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);}catch(Exception e){}
-			return true;
 		}else //not back button or no history to go back to
 		{
 			return super.onKeyDown(keyCode, event);
@@ -343,7 +242,7 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
 	
     public void playAlarm() {
         AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        float streamVolume = mgr.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
+        float streamVolume = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
         soundPool.play(soundPoolMap.get(SOUND_ALARM), streamVolume, streamVolume, 1, 0, 1f);
     } 
     

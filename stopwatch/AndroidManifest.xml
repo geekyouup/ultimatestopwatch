@@ -6,7 +6,7 @@
       android:installLocation="auto">
     <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="11" />
     <application android:icon="@drawable/icon" 
-    	android:label="@string/app_name" android:debuggable="true"
+    	android:label="@string/app_name" android:debuggable="false"
     	android:hardwareAccelerated="true">
         
         <activity android:name=".UltimateStopwatchLauncher"

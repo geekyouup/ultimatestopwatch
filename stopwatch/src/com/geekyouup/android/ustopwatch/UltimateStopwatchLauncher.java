@@ -14,12 +14,11 @@ public class UltimateStopwatchLauncher extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Intent startActivityIntent = null;
-		if (IS_HONEYCOMB && isXLargeScreen())
-		{
+		if (IS_HONEYCOMB && isXLargeScreen()) {
 			startActivityIntent = new Intent(this, UltimateStopwatchTabletActivity.class);
-		}
-		else
+		} else {
 			startActivityIntent = new Intent(this, UltimateStopwatch.class);
+		}
 
 		startActivity(startActivityIntent);
 		finish();

@@ -37,13 +37,12 @@
 	</LinearLayout>
 
 	<RelativeLayout android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_weight="3" android:background="@drawable/bg_frame"
-		android:layout_margin="@dimen/frame_padding">
+		android:layout_height="fill_parent" android:layout_weight="3"
+		android:background="@drawable/bg_frame" android:layout_margin="@dimen/frame_padding">
 
 		<fragment android:name="com.geekyouup.android.ustopwatch.fragments.TimeFragment"
 			android:id="@+id/fragment_time" android:layout_width="match_parent"
-			android:layout_height="match_parent"/>
+			android:layout_height="match_parent" />
 
 	</RelativeLayout>
 

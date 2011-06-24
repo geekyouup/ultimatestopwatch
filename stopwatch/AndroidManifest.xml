@@ -1,40 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.geekyouup.android.ustopwatch" 
-      android:versionCode="22" 
-      android:versionName="4.0.1"
-      android:installLocation="auto">
-    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="11" />
-    <application android:icon="@drawable/icon" 
-    	android:label="@string/app_name" android:debuggable="false"
-    	android:hardwareAccelerated="true">
-        
-        <activity android:name=".UltimateStopwatchLauncher"
-                  android:label="@string/app_name"
-                  android:windowSoftInputMode="adjustNothing">
-                <intent-filter>
-                   <action android:name="android.intent.action.MAIN" />
-                   <category android:name="android.intent.category.LAUNCHER" />
-                </intent-filter>                       
-        </activity>
+	package="com.geekyouup.android.ustopwatch" android:versionCode="22"
+	android:versionName="4.0.1" android:installLocation="auto">
+	<uses-sdk android:minSdkVersion="4" android:targetSdkVersion="11" />
+	<application android:icon="@drawable/icon" android:label="@string/app_name"
+		android:debuggable="false" android:hardwareAccelerated="true">
 
-        <activity android:name=".UltimateStopwatch"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar"/>
-        
-        <activity android:name=".UltimateStopwatchTabletActivity"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.Holo.Light"
-                  android:windowSoftInputMode="adjustNothing"/>
-        
-        <service android:name=".AlarmUpdater$UpdateService" />  
+		<activity android:name=".UltimateStopwatchLauncher"
+			android:label="@string/app_name" android:windowSoftInputMode="adjustNothing">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
 
-    </application>
-      
-<uses-permission android:name="android.permission.WAKE_LOCK"/>
-<uses-permission android:name="android.permission.VIBRATE"/>
-<supports-screens android:smallScreens="true" 
-                  android:normalScreens="true"
-                  android:largeScreens="true"
-                  android:xlargeScreens="true"/> 
+		<activity android:name=".UltimateStopwatch" android:label="@string/app_name"
+			android:theme="@android:style/Theme.NoTitleBar" />
+
+		<activity android:name=".UltimateStopwatchTabletActivity"
+			android:label="@string/app_name" android:theme="@android:style/Theme.Holo.Light"
+			android:windowSoftInputMode="adjustNothing" />
+
+		<service android:name=".AlarmUpdater$UpdateService" />
+
+	</application>
+
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<supports-screens android:smallScreens="true"
+		android:normalScreens="true" android:largeScreens="true"
+		android:xlargeScreens="true" />
 </manifest> 

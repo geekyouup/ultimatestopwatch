@@ -31,7 +31,7 @@ public class AlarmUpdater {
 		PendingIntent piWakeUp = PendingIntent.getService(context,0, defineIntent, 0);
         alarmMan.cancel(piWakeUp);
         
-		if(inMillis != -1) alarmMan.set(AlarmManager.RTC, System.currentTimeMillis()+inMillis, piWakeUp);
+		if(inMillis != -1) alarmMan.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+inMillis, piWakeUp);
 	}
 	
     public static class UpdateService extends Service {

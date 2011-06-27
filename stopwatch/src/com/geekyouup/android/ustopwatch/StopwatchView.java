@@ -256,7 +256,7 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
                 //if (map != null) {
                 	if(!isStopwatchMode() || mDisplayTimeMillis>0 || (mLapTimes!=null&& mLapTimes.size()>0))
                 	{
-                		if(!isStopwatchMode() && mDisplayTimeMillis>0)
+                		if(!isStopwatchMode() && mDisplayTimeMillis>0 && mMode == STATE_RUNNING)
                 		{
                 			AlarmUpdater.setCountdownAlarm(mContext, (long)mDisplayTimeMillis);
                 		}

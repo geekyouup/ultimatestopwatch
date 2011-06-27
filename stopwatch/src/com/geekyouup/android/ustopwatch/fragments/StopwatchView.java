@@ -210,7 +210,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		public void saveState(SharedPreferences.Editor map) {
 			synchronized (mSurfaceHolder) {
 				if (!isStopwatchMode() || mDisplayTimeMillis > 0) {
-					if (!isStopwatchMode() && mDisplayTimeMillis > 0) {
+					if (!isStopwatchMode() && mDisplayTimeMillis > 0 && mMode == STATE_RUNNING) {
 						AlarmUpdater.setCountdownAlarm(mContext, (long) mDisplayTimeMillis);
 					}
 

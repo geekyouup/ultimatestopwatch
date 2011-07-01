@@ -14,14 +14,19 @@ public class AlarmUpdater {
 
 	public static void cancelCountdownAlarm(Context context)
 	{
-		AlarmManager alarmMan = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-		Intent defineIntent = new Intent(context,UpdateService.class);
-		PendingIntent piWakeUp = PendingIntent.getService(context,0, defineIntent, 0);
-        alarmMan.cancel(piWakeUp);
+		try
+		{
+			AlarmManager alarmMan = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+			Intent defineIntent = new Intent(context,UpdateService.class);
+			PendingIntent piWakeUp = PendingIntent.getService(context,0, defineIntent, 0);
+	        alarmMan.cancel(piWakeUp);
+		}catch(Exception e){}
         
-        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.main);
+		try
+		{
+			((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.main);
+		}catch(Exception e){}
 	}
-	
 	//cancels alarm then sets new one
 	public static void setCountdownAlarm(Context context, long inMillis)
 	{

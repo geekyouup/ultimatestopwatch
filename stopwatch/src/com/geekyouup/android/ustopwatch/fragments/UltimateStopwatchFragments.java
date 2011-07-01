@@ -61,6 +61,10 @@ public class UltimateStopwatchFragments extends Activity implements
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
+		soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
+		soundPoolMap = new HashMap<Integer, Integer>();
+		soundPoolMap.put(SOUND_ALARM, soundPool.load(this, R.raw.alarm, 1));
+		
 		// stop landscape more on QVGA/HVGA
 		int screenSize = getResources().getConfiguration().screenLayout
 				& Configuration.SCREENLAYOUT_SIZE_MASK;
@@ -94,10 +98,6 @@ public class UltimateStopwatchFragments extends Activity implements
 
 		mLapTimesFragment = (LapTimesFragment) getFragmentManager()
 				.findFragmentById(R.id.laptimes_fragment);
-
-		soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
-		soundPoolMap = new HashMap<Integer, Integer>();
-		soundPoolMap.put(SOUND_ALARM, soundPool.load(this, R.raw.alarm, 1));
 	}
 
 	@Override
@@ -228,11 +228,14 @@ public class UltimateStopwatchFragments extends Activity implements
 	}
 
 	public void playAlarm() {
-		AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-		float streamVolume = mgr
-				.getStreamVolume(AudioManager.STREAM_MUSIC);
-		soundPool.play(soundPoolMap.get(SOUND_ALARM), streamVolume,
-				streamVolume, 1, 0, 1f);
+		try
+		{
+			AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			float streamVolume = mgr
+					.getStreamVolume(AudioManager.STREAM_MUSIC);
+			soundPool.play(soundPoolMap.get(SOUND_ALARM), streamVolume,
+					streamVolume, 1, 0, 1f);
+		}catch(Exception e){}
 	}
 
 	public void notifyCountdownComplete() {

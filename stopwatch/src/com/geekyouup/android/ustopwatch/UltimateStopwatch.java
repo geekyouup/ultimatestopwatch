@@ -16,7 +16,6 @@ import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -109,6 +108,13 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
             }
         });
         
+        mWakeLock = mPowerMan.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, getString(R.string.stopwatch));
+        mWakeLock.acquire();
+        
+        soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
+        soundPoolMap = new HashMap<Integer, Integer>();
+        soundPoolMap.put(SOUND_ALARM, soundPool.load(this, R.raw.alarm, 1));
+
         //if vars stored then use them
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         if(settings != null && settings.contains("state"))
@@ -117,14 +123,7 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
         	mWatchThread.restoreState(settings);
         	setToMode(mWatchThread.isStopwatchMode());
         }
-
-        mWakeLock = mPowerMan.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "Stopwatch");
-        mWakeLock.acquire();
-        
-        soundPool = new SoundPool(3, AudioManager.STREAM_MUSIC, 100);
-        soundPoolMap = new HashMap<Integer, Integer>();
-        soundPoolMap.put(SOUND_ALARM, soundPool.load(this, R.raw.alarm, 1));
-     }
+    }
 
     private void setToMode(boolean isStopwatch)
     {
@@ -133,12 +132,12 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
 	    	if(isStopwatch)
 	    	{
 	    		mModeMenuItem.setIcon(R.drawable.countdown);
-	    		mModeMenuItem.setTitle("Countdown");
+	    		mModeMenuItem.setTitle(getString(R.string.countdown));
 	    	}
 	    	else 
 	    	{
 	    		mModeMenuItem.setIcon(R.drawable.stopwatch);
-	    		mModeMenuItem.setTitle("Stopwatch");
+	    		mModeMenuItem.setTitle(getString(R.string.stopwatch));
 	    	}
     	}
     }
@@ -147,13 +146,13 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         
-        menu.add(0,MENU_STARTPAUSE,0,"Start/Pause").setIcon(R.drawable.play_pause);
+        menu.add(0,MENU_STARTPAUSE,0,getString(R.string.startstop)).setIcon(R.drawable.play_pause);
         if(mWatchThread.isStopwatchMode())
         {
-        	mModeMenuItem = menu.add(0,MENU_MODE,2,"Countdown").setIcon(R.drawable.countdown);
+        	mModeMenuItem = menu.add(0,MENU_MODE,2,getString(R.string.countdown)).setIcon(R.drawable.countdown);
         }else
         {
-        	mModeMenuItem = menu.add(0,MENU_MODE,2,"Stopwatch").setIcon(R.drawable.stopwatch);
+        	mModeMenuItem = menu.add(0,MENU_MODE,2,getString(R.string.stopwatch)).setIcon(R.drawable.stopwatch);
         }
         
         return true;
@@ -227,23 +226,13 @@ public class UltimateStopwatch extends Activity implements OnClickListener {
 	    mDialogOnScreen=true;
 	}
 
-	/*** Capture Back Button and use for browser back, else quit ****/
-	public boolean onKeyDown(int keyCode, KeyEvent event) 
-	{
-		if(keyCode == KeyEvent.KEYCODE_BACK)
-		{
-			try{getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().clear().commit();}catch(Exception e){}
-			return super.onKeyDown(keyCode, event);
-		}else //not back button or no history to go back to
-		{
-			return super.onKeyDown(keyCode, event);
-		}
-	}
-	
     public void playAlarm() {
-        AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        float streamVolume = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
-        soundPool.play(soundPoolMap.get(SOUND_ALARM), streamVolume, streamVolume, 1, 0, 1f);
+        try
+        {
+	    	AudioManager mgr = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+	        float streamVolume = mgr.getStreamVolume(AudioManager.STREAM_MUSIC);
+	        soundPool.play(soundPoolMap.get(SOUND_ALARM), streamVolume, streamVolume, 1, 0, 1f);
+        }catch(Exception e){}
     } 
     
 	public void notifyCountdownComplete()

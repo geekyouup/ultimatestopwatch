@@ -212,6 +212,9 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				if (!isStopwatchMode() || mDisplayTimeMillis > 0) {
 					if (!isStopwatchMode() && mDisplayTimeMillis > 0 && mMode == STATE_RUNNING) {
 						AlarmUpdater.setCountdownAlarm(mContext, (long) mDisplayTimeMillis);
+					}else
+					{
+						AlarmUpdater.cancelCountdownAlarm(mContext); //just to be sure
 					}
 
 					map.putInt(KEY_STATE, mMode);
@@ -236,7 +239,11 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 					mLastTime = savedState.getLong(KEY_LASTTIME, System.currentTimeMillis());
 					mDisplayTimeMillis = savedState.getLong(KEY_NOWTIME, 0);
 					mStopwatchMode = savedState.getBoolean(KEY_STOPWATCH_MODE, true);
+					
+					updatePhysics();
 				}
+				
+				AlarmUpdater.cancelCountdownAlarm(mContext); //just to be sure
 			}
 		}
 
@@ -314,10 +321,16 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private void updatePhysics() {
 			long now = System.currentTimeMillis();
 
-			if (isStopwatchMode())
-				mDisplayTimeMillis += (now - mLastTime);
-			else
-				mDisplayTimeMillis -= (now - mLastTime);
+			if(mMode == STATE_RUNNING)
+			{
+				if (isStopwatchMode())
+					mDisplayTimeMillis += (now - mLastTime);
+				else
+					mDisplayTimeMillis -= (now - mLastTime);
+			}else
+			{
+				mLastTime=now;
+			}
 
 			// mins is 0 to 30
 			mMinsAngle = twoPI * (mDisplayTimeMillis / 1800000.0);

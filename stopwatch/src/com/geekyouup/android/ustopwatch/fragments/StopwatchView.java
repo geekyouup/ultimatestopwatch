@@ -178,6 +178,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			while (mRun) {
 				Canvas c = null;
 				try {
+					//auto double buffer by locking canvas
 					c = mSurfaceHolder.lockCanvas(null);
 					if(c!= null)
 					{
@@ -187,9 +188,6 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 						}
 					}
 				} finally {
-					// do this in a finally so that if an exception is thrown
-					// during the above, we don't leave the Surface in an
-					// inconsistent state
 					if (c != null) {
 						mSurfaceHolder.unlockCanvasAndPost(c);
 					}
@@ -199,6 +197,70 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 					}
 				}
 			}
+		}
+		
+		/**
+		 * Update the time
+		 */
+		private void updatePhysics() {
+			long now = System.currentTimeMillis();
+
+			if(mMode == STATE_RUNNING)
+			{
+				if (isStopwatchMode())
+					mDisplayTimeMillis += (now - mLastTime);
+				else
+					mDisplayTimeMillis -= (now - mLastTime);
+			}else
+			{
+				mLastTime=now;
+			}
+
+			// mins is 0 to 30
+			mMinsAngle = twoPI * (mDisplayTimeMillis / 1800000.0);
+			mSecsAngle = twoPI * (mDisplayTimeMillis / 60000.0);
+
+			if(mDisplayTimeMillis<0) mDisplayTimeMillis=0;
+			
+			// send the time back to the Activity to update the other views
+			broadcastClockTime(mDisplayTimeMillis);
+			mLastTime = now;
+
+			// stop timer at end
+			if (mMode == STATE_RUNNING && !isStopwatchMode() && mDisplayTimeMillis <= 0) {
+				resetVars(); // applies pause state
+				if (mApp != null) {
+					mApp.notifyCountdownComplete();
+					requestCountdownDialog();
+				}
+
+			}
+		}		
+		
+		/**
+		 * Draws the background and hands on the Canvas.
+		 */
+		private void doDraw(Canvas canvas) {
+			// Draw the background image. Operations on the Canvas accumulate
+			// so this is like clearing the screen.
+			canvas.drawColor(Color.WHITE);
+			canvas.drawBitmap(mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
+
+			// Draw the secs hand with its current rotation
+			canvas.save();
+			canvas.rotate((float) Math.toDegrees(mSecsAngle), mSecsCenterX, mSecsCenterY + mAppOffsetY);
+			mSecHand.setBounds(mSecsCenterX - 10, mSecsCenterY - mSecsHandLength + 26 + mAppOffsetY,
+					mSecsCenterX + 10, mSecsCenterY + mAppOffsetY + 26);
+			mSecHand.draw(canvas);
+			canvas.restore();
+
+			// draw the mins hand with its current rotatiom
+			canvas.save();
+			canvas.rotate((float) Math.toDegrees(mMinsAngle), mMinsCenterX, mMinsCenterY + mAppOffsetY);
+			mMinHand.setBounds(mMinsCenterX - 3, mMinsCenterY - mMinsHandLength + 10 + mAppOffsetY,
+					mMinsCenterX + 4, mMinsCenterY + mAppOffsetY + 10);
+			mMinHand.draw(canvas);
+			canvas.restore();
 		}
 
 		/**
@@ -289,70 +351,6 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			}
 		}
 
-		/**
-		 * Draws the background and hands on the Canvas.
-		 */
-		private void doDraw(Canvas canvas) {
-			// Draw the background image. Operations on the Canvas accumulate
-			// so this is like clearing the screen.
-			canvas.drawColor(Color.WHITE);
-			canvas.drawBitmap(mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
-
-			// Draw the secs hand with its current rotation
-			canvas.save();
-			canvas.rotate((float) Math.toDegrees(mSecsAngle), mSecsCenterX, mSecsCenterY + mAppOffsetY);
-			mSecHand.setBounds(mSecsCenterX - 10, mSecsCenterY - mSecsHandLength + 26 + mAppOffsetY,
-					mSecsCenterX + 10, mSecsCenterY + mAppOffsetY + 26);
-			mSecHand.draw(canvas);
-			canvas.restore();
-
-			// draw the mins hand with its current rotatiom
-			canvas.save();
-			canvas.rotate((float) Math.toDegrees(mMinsAngle), mMinsCenterX, mMinsCenterY + mAppOffsetY);
-			mMinHand.setBounds(mMinsCenterX - 3, mMinsCenterY - mMinsHandLength + 10 + mAppOffsetY,
-					mMinsCenterX + 4, mMinsCenterY + mAppOffsetY + 10);
-			mMinHand.draw(canvas);
-			canvas.restore();
-		}
-
-		/**
-		 * Update the time
-		 */
-		private void updatePhysics() {
-			long now = System.currentTimeMillis();
-
-			if(mMode == STATE_RUNNING)
-			{
-				if (isStopwatchMode())
-					mDisplayTimeMillis += (now - mLastTime);
-				else
-					mDisplayTimeMillis -= (now - mLastTime);
-			}else
-			{
-				mLastTime=now;
-			}
-
-			// mins is 0 to 30
-			mMinsAngle = twoPI * (mDisplayTimeMillis / 1800000.0);
-			mSecsAngle = twoPI * (mDisplayTimeMillis / 60000.0);
-
-			if(mDisplayTimeMillis<0) mDisplayTimeMillis=0;
-			
-			// send the time back to the Activity to update the other views
-			broadcastClockTime(mDisplayTimeMillis);
-			mLastTime = now;
-
-			// stop timer at end
-			if (mMode == STATE_RUNNING && !isStopwatchMode() && mDisplayTimeMillis <= 0) {
-				resetVars(); // applies pause state
-				if (mApp != null) {
-					mApp.notifyCountdownComplete();
-					requestCountdownDialog();
-				}
-
-			}
-		}
-		
 		private void broadcastClockTime(double mTime)
 		{
 			if (mHandler != null) {

@@ -9,24 +9,19 @@
 
 		<RelativeLayout android:layout_weight="1"
 			android:layout_width="fill_parent" android:layout_height="fill_parent"
-			android:background="@drawable/bg_frame" android:layout_margin="@dimen/frame_padding">
+			android:background="@color/background" android:layout_margin="@dimen/frame_padding">
 
 			<fragment
 				android:name="com.geekyouup.android.ustopwatch.fragments.StopwatchFragment"
 				android:id="@+id/stopwatch_fragment" android:layout_width="fill_parent"
 				android:layout_height="fill_parent" />
-			<TextView android:layout_width="wrap_content"
-				android:layout_height="wrap_content" android:textColor="@color/text_grey"
-				android:textSize="@dimen/small_font" android:layout_alignParentTop="true"
-				android:layout_alignParentLeft="true" android:layout_marginTop="5dp"
-				android:paddingRight="10dp" android:text="@string/touch_to_start" />
 
 		</RelativeLayout>
 
 		<LinearLayout android:layout_weight="1"
 			android:layout_width="fill_parent" android:layout_height="fill_parent"
 			android:padding="5dp" android:orientation="vertical"
-			android:background="@drawable/bg_frame" android:layout_margin="@dimen/frame_padding">
+			android:background="@color/background" android:layout_margin="@dimen/frame_padding">
 
 			<fragment
 				android:name="com.geekyouup.android.ustopwatch.fragments.LapTimesFragment"
@@ -38,7 +33,7 @@
 
 	<RelativeLayout android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:layout_weight="3"
-		android:background="@drawable/bg_frame" android:layout_margin="@dimen/frame_padding">
+		android:background="@color/background" android:layout_margin="@dimen/frame_padding">
 
 		<fragment android:name="com.geekyouup.android.ustopwatch.fragments.TimeFragment"
 			android:id="@+id/fragment_time" android:layout_width="match_parent"

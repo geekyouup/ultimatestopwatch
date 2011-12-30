@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_playpause"
-          android:title="@string/startstop" 
-          android:showAsAction="ifRoom"/>
     <item android:id="@+id/menu_switchmode"
           android:title="@string/mode"
-          android:showAsAction="ifRoom" />
-    <item android:id="@+id/menu_reset"
-          android:title="@string/reset"
-          android:showAsAction="ifRoom" />          
+          android:showAsAction="ifRoom" />      
 </menu>

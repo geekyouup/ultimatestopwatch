@@ -12,8 +12,7 @@
 	<string name="saved_item_menu">Menu</string>
 	<string name="saved_item_delete">Delete</string>
 	
-	<string name="touch_to_record">Touch to record lap time</string>
-	<string name="touch_to_start">Touch to Start/Pause</string>
+	<string name="save_time">save time</string>
 	<string name="splittimes">Split Times</string>
 	<string name="laptimes">Lap Times</string>
 

@@ -21,15 +21,20 @@ public class TimeUtils {
 	private static int mHoursValue = 0;
 
 	public static String createTimeString(double time) {
-		if (time == 0)
-			return START_TIME;
-
+		if (time == 0) return START_TIME;
+		boolean isNeg = false;
+		if(time<0)
+		{
+			isNeg=true;
+			time=-time;
+		}
+		
 		int numHours = (int) Math.floor(time / 3600000);
 		int numMins = (int) Math.floor(time / 60000 - numHours * 60);
 		int numSecs = (int) Math.floor(time / 1000 - numMins * 60 - numHours * 3600);
 		int numMillis = ((int) (time - numHours * 3600000 - numMins * 60000 - numSecs * 1000));
 
-		return ((numHours < 10 ? "0" : "") + numHours) + ":" + ((numMins < 10 ? "0" : "") + numMins) + ":"
+		return (isNeg?"-":"")+((numHours < 10 ? "0" : "") + numHours) + ":" + ((numMins < 10 ? "0" : "") + numMins) + ":"
 				+ ((numSecs < 10 ? "0" : "") + numSecs) + "." + (numMillis < 10 ? "00" : (numMillis < 100 ? "0" : ""))
 				+ numMillis;
 	}

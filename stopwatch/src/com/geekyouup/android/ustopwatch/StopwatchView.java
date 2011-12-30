@@ -55,12 +55,15 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
         private static final String KEY_STOPWATCH_MODE = "stopwatchmode";
         private static final String KEY_LAPTIME_X = "laptime_";
         
+        private boolean mTouching=false;
+        
         /*
          * Member (state) fields
          */
         /** The drawable to use as the background of the animation canvas */
-        private Bitmap mBackgroundImage;      
-        private Bitmap mBackgroundBottomImage; 
+        private Bitmap mBackgroundImage;   
+        private Bitmap mBackgroundImageClick;  
+        //private Bitmap mBackgroundBottomImage; 
         private int mBackgroundStartY;
         private int mAppOffsetX=0;
         private double mMinsAngle = 0;
@@ -92,10 +95,10 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 
         /** Paint to draw the lines on screen. */
         private Paint mTextPaint;
-        private Paint mSmallTextPaint;
+        //private Paint mSmallTextPaint;
         
-        private Drawable mUpArrow;
-        private Drawable mDownArrow;
+        //private Drawable mUpArrow;
+       // private Drawable mDownArrow;
         
         private Drawable mSecHand;
         private Drawable mMinHand;
@@ -123,9 +126,10 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             // load background image as a Bitmap instead of a Drawable b/c
             // we don't need to transform it and it's faster to draw this way
             mBackgroundImage = BitmapFactory.decodeResource(res,R.drawable.background);
-            mBackgroundBottomImage = BitmapFactory.decodeResource(res,R.drawable.background_bottom);
-            mUpArrow = context.getResources().getDrawable(R.drawable.up);
-            mDownArrow = context.getResources().getDrawable(R.drawable.down);
+            mBackgroundImageClick = BitmapFactory.decodeResource(res,R.drawable.background_click);
+            
+            //mUpArrow = context.getResources().getDrawable(R.drawable.up);
+            //mDownArrow = context.getResources().getDrawable(R.drawable.down);
             mSecHand = context.getResources().getDrawable(R.drawable.sechand);
             mMinHand = context.getResources().getDrawable(R.drawable.minhand);
             
@@ -138,17 +142,18 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             mAppOffsetX = (mCanvasWidth-mBackgroundImage.getWidth())/2;
            
             // Initialize paints for speedometer
+            
             mTextPaint = new Paint();
             mTextPaint.setAntiAlias(true);
             mTextPaint.setTextSize(32);
             mTextPaint.setARGB(255,128,128,128);
             mTextPaint.setDither(true);
             
-            mSmallTextPaint = new Paint();
+            /*mSmallTextPaint = new Paint();
             mSmallTextPaint.setAntiAlias(true);
             mSmallTextPaint.setTextSize(10);
             mSmallTextPaint.setARGB(255,128,128,128);
-            mSmallTextPaint.setDither(true);
+            mSmallTextPaint.setDither(true);*/
         }
         
         public void setApplication(UltimateStopwatch mApp)
@@ -369,34 +374,42 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
             // Draw the background image. Operations on the Canvas accumulate
             // so this is like clearing the screen.
         	canvas.drawColor(Color.WHITE);
-            canvas.drawBitmap(mBackgroundImage, mAppOffsetX,mBackgroundStartY, null);
-            canvas.drawBitmap(mBackgroundBottomImage, 0,mCanvasHeight-mBackgroundBottomImage.getHeight(), null);
+            canvas.drawBitmap(mTouching?mBackgroundImageClick:mBackgroundImage, mAppOffsetX,mBackgroundStartY, null);
+            //canvas.drawBitmap(mBackgroundBottomImage, 0,mCanvasHeight-mBackgroundBottomImage.getHeight(), null);
             
-            //see if we should draw up arrow on lap times
+            /*
+             //see if we should draw up arrow on lap times
+             
             if(mTopLaptime>0)
             {
                 mUpArrow.setBounds(44+mAppOffsetX, mCanvasHeight-70-(isWVGA?36:0), 54+mAppOffsetX, mCanvasHeight-64-(isWVGA?36:0));
                 mUpArrow.draw(canvas);
-            }
+            }*/
             
-            //draw lap times
+            
+            
             if(mMode!=STATE_READY)
             {
             	canvas.drawText(mHoursPart+":"+mMinsPart+":"+mSecsPart+"."+mMillisPart,120+mAppOffsetX+(isWVGA?55:0), mCanvasHeight-25-(isWVGA?16:0), mTextPaint);
+            	
+            	/*
+            	 //Laptimes moved to new activity
+            	 //draw lap times
             	if(isStopwatchMode())
             	{
 	            	canvas.drawText("lap"+(mTopLaptime+1)+" "+ (mLapTimes.size()>mTopLaptime?mLapTimes.get(mTopLaptime):""),13+mAppOffsetX+(isWVGA?8:0),mCanvasHeight-54-(isWVGA?28:0),mSmallTextPaint);
 	            	canvas.drawText("lap"+(mTopLaptime+2) + " " + (mLapTimes.size()>mTopLaptime+1?mLapTimes.get(mTopLaptime+1):""),13+mAppOffsetX+(isWVGA?8:0),mCanvasHeight-34-(isWVGA?19:0),mSmallTextPaint);
 	            	canvas.drawText("lap"+(mTopLaptime+3) + " "+ (mLapTimes.size()>mTopLaptime+2?mLapTimes.get(mTopLaptime+2):""),13+mAppOffsetX+(isWVGA?8:0),mCanvasHeight-14-(isWVGA?10:0),mSmallTextPaint);
-            	}
+            	}*/
             }
             
+            /*
             //see if we should draw down arrow on lap times
             if(mTopLaptime<mLapTimes.size()-3)
             {
                 mDownArrow.setBounds(44+mAppOffsetX, mCanvasHeight-10, 54+mAppOffsetX, mCanvasHeight-4);
                 mDownArrow.draw(canvas);
-            }
+            }*/
             
             // Draw the secs hand with its current rotation
             canvas.save();
@@ -472,6 +485,7 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 		public boolean onTouch(View v, MotionEvent event) {
 			if(event.getAction()==MotionEvent.ACTION_DOWN)
 			{
+				mTouching = true;
 				if(event.getY()<mCanvasHeight-80) //pause at top of screen
 				{
 					goPauseUnpause();
@@ -490,6 +504,9 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
 					}
 
 				}
+			}else if(event.getAction()==MotionEvent.ACTION_UP)
+			{
+				mTouching = false;
 			}
 			return true;
 		}
@@ -588,8 +605,8 @@ class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
                 
                 mCanvasCenterX = width/2;
                 
-                mTextPaint.setTextSize(isWVGA?48:32);
-                mSmallTextPaint.setTextSize(isWVGA?15:10);
+                //mTextPaint.setTextSize(isWVGA?48:32);
+                //mSmallTextPaint.setTextSize(isWVGA?15:10);
             }
         }
     }

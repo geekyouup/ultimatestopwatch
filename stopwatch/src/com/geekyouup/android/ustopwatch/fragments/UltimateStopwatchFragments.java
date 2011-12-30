@@ -98,6 +98,8 @@ public class UltimateStopwatchFragments extends Activity implements
 
 		mLapTimesFragment = (LapTimesFragment) getFragmentManager()
 				.findFragmentById(R.id.laptimes_fragment);
+		
+		//if(mLapTimesFragment==null) mLapTimesFragment=new LapTimesFragment();
 	}
 
 	@Override
@@ -129,44 +131,51 @@ public class UltimateStopwatchFragments extends Activity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == R.id.menu_playpause) {
+		/*if (item.getItemId() == R.id.menu_playpause) {
 			mStopwatchFragment.startStop();
-		} else if (item.getItemId() == R.id.menu_switchmode) {
+		} else*/ 
+			
+		if (item.getItemId() == R.id.menu_switchmode) {
 			final int newMode = (mStopwatchFragment.getMode() == StopwatchFragment.MODE_STOPWATCH) ? StopwatchFragment.MODE_COUNTDOWN
 					: StopwatchFragment.MODE_STOPWATCH;
 			mStopwatchFragment.setMode(newMode);
 
-			ObjectAnimator oa = ObjectAnimator.ofFloat(mLapTimesFragment.getView(), "rotationY", 0,90);
-		    oa.setDuration(250);
-		    oa.addListener(new AnimatorListenerAdapter() {
-		    	@Override
-		    	public void onAnimationEnd(Animator animation) {
-		    		super.onAnimationEnd(animation);
-		    		mLapTimesFragment.setMode(newMode);
-		    		ObjectAnimator oa2 = ObjectAnimator.ofFloat(mLapTimesFragment.getView(), "rotationY", -90,0)
-		    			.setDuration(250);
-		    		
-		    		oa2.addListener(new AnimatorListenerAdapter() {
-		    			@Override
-		    			public void onAnimationEnd(Animator animation) {
-		    				super.onAnimationEnd(animation);
-		    				if (newMode == StopwatchFragment.MODE_COUNTDOWN) {
-		    					requestTimeDialog();
-		    				}
-		    			}
-		    		});
-		    		oa2.start();
-		    	}
-		    });
-			oa.start();
-		} else if (item.getItemId() == R.id.menu_reset) {
+			if(mLapTimesFragment!=null && mLapTimesFragment.getView()!=null)
+			{
+				ObjectAnimator oa = ObjectAnimator.ofFloat(mLapTimesFragment.getView(), "rotationY", 0,90);
+			    oa.setDuration(250);
+			    oa.addListener(new AnimatorListenerAdapter() {
+			    	@Override
+			    	public void onAnimationEnd(Animator animation) {
+			    		super.onAnimationEnd(animation);
+			    		mLapTimesFragment.setMode(newMode);
+			    		ObjectAnimator oa2 = ObjectAnimator.ofFloat(mLapTimesFragment.getView(), "rotationY", -90,0)
+			    			.setDuration(250);
+			    		
+			    		oa2.addListener(new AnimatorListenerAdapter() {
+			    			@Override
+			    			public void onAnimationEnd(Animator animation) {
+			    				super.onAnimationEnd(animation);
+			    				if (newMode == StopwatchFragment.MODE_COUNTDOWN) {
+			    					requestTimeDialog();
+			    				}
+			    			}
+			    		});
+			    		oa2.start();
+			    	}
+			    });
+				oa.start();
+			}
+		} 
+		
+		/*else if (item.getItemId() == R.id.menu_reset) {
 			reset();
-		}
+		}*/
 
 		return true;
 	}
 
-	private void reset() {
+	/*private void reset() {
 		mStopwatchFragment.reset();
 		mLapTimesFragment.reset();
 
@@ -175,7 +184,7 @@ public class UltimateStopwatchFragments extends Activity implements
 
 		if (mStopwatchFragment.getMode() == StopwatchFragment.MODE_COUNTDOWN)
 			requestTimeDialog();
-	}
+	}*/
 
 	private boolean mDialogOnScreen = false;
 

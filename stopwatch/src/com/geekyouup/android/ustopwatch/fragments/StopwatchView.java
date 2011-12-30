@@ -56,11 +56,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private static final String KEY_NOWTIME = "currenttime";
 		private static final String KEY_STOPWATCH_MODE = "stopwatchmode";
 
+		private boolean mTouching=false;
 		/*
 		 * Member (state) fields
 		 */
 		/** The drawable to use as the background of the animation canvas */
 		private Bitmap mBackgroundImage;
+		private Bitmap mBackgroundImageTouched;
 		private int mBackgroundStartY;
 		private int mAppOffsetX = 0;
 		private int mAppOffsetY = 0;
@@ -102,21 +104,36 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			// get handles to some important objects
 			mSurfaceHolder = surfaceHolder;
 			mContext = context;
-			Resources res = context.getResources();
-
-			// load background image as a Bitmap instead of a Drawable b/c
-			// we don't need to transform it and it's faster to draw this way
-			mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.background);
-
-			mSecHand = res.getDrawable(R.drawable.sechand);
-			mMinHand = res.getDrawable(R.drawable.minhand);
-
+			
+			Resources res = mContext.getResources();
+			loadGraphics(res, isStopwatchMode());
+			
 			mMinsHandLength = mMinHand.getIntrinsicHeight();
 			mSecsHandLength = mSecHand.getIntrinsicHeight();
 			mBackgroundStartY = (mCanvasHeight - mBackgroundImage.getHeight()) / 2;
 			mAppOffsetX = (mCanvasWidth - mBackgroundImage.getWidth()) / 2;
 		}
 
+		private void loadGraphics(Resources res, boolean isStopwatch)
+		{
+			if(res==null) res = mContext.getResources();
+
+			//switch background graphic
+			if(isStopwatch)
+			{
+				mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.background);
+				mBackgroundImageTouched = BitmapFactory.decodeResource(res, R.drawable.background_click);
+				mSecHand = res.getDrawable(R.drawable.sechand);
+				mMinHand = res.getDrawable(R.drawable.minhand);
+			}else
+			{
+				mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.background_cd);
+				mBackgroundImageTouched = BitmapFactory.decodeResource(res, R.drawable.background_cd_click);
+				mSecHand = res.getDrawable(R.drawable.sechand_cd);
+				mMinHand = res.getDrawable(R.drawable.minhand_cd);
+			}
+		}
+		
 		public void setApplication(UltimateStopwatchFragments mApp) {
 			this.mApp = mApp;
 		}
@@ -223,7 +240,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			if(mDisplayTimeMillis<0) mDisplayTimeMillis=0;
 			
 			// send the time back to the Activity to update the other views
-			broadcastClockTime(mDisplayTimeMillis);
+			broadcastClockTime(isStopwatchMode()?mDisplayTimeMillis:-mDisplayTimeMillis);
 			mLastTime = now;
 
 			// stop timer at end
@@ -244,7 +261,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			// Draw the background image. Operations on the Canvas accumulate
 			// so this is like clearing the screen.
 			canvas.drawColor(Color.WHITE);
-			canvas.drawBitmap(mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
+			canvas.drawBitmap(mTouching?mBackgroundImageTouched:mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
 
 			// Draw the secs hand with its current rotation
 			canvas.save();
@@ -301,7 +318,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 					mLastTime = savedState.getLong(KEY_LASTTIME, System.currentTimeMillis());
 					mDisplayTimeMillis = savedState.getLong(KEY_NOWTIME, 0);
 					mStopwatchMode = savedState.getBoolean(KEY_STOPWATCH_MODE, true);
-					
+					loadGraphics(null, mStopwatchMode);
 					updatePhysics();
 				}
 				
@@ -389,14 +406,19 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		}
 
 		public void setIsStopwatchMode(boolean isStopwatchMode) {
+			loadGraphics(null, isStopwatchMode);
 			this.mStopwatchMode = isStopwatchMode;
 			resetVars();
 		}
 
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
+				mTouching = true;
 				startStop();
+			}else if (event.getAction() == MotionEvent.ACTION_UP) {
+				mTouching = false;
 			}
+			
 			return true;
 		}
 		

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.geekyouup.android.ustopwatch.R;
 import com.geekyouup.android.ustopwatch.TimeUtils;
@@ -36,6 +37,7 @@ public class TimeFragment extends Fragment implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		if(mLapTimer!=null) mLapTimer.recordTime();
+		Toast.makeText(getActivity(), "Laptime Recorded", Toast.LENGTH_SHORT).show();
 	}
 	
 	public void setLapTimeRecorder(LapTimeRecorder ltr)

@@ -21,6 +21,10 @@
 			android:label="@string/app_name" android:theme="@android:style/Theme.Holo.Light"
 			android:windowSoftInputMode="adjustNothing" />
 
+		<activity android:name=".fragments.LapTimesActivity"
+			android:label="@string/app_name" android:theme="@android:style/Theme.Holo.Light"
+			android:windowSoftInputMode="adjustNothing" />
+		
 		<service android:name=".AlarmUpdater$UpdateService" />
 
 	</application>

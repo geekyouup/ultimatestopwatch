@@ -5,10 +5,12 @@ import java.util.HashMap;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
@@ -27,13 +29,11 @@ import android.widget.NumberPicker;
 
 import com.geekyouup.android.ustopwatch.AlarmUpdater;
 import com.geekyouup.android.ustopwatch.R;
-import com.geekyouup.android.ustopwatch.fragments.LapTimeRecorder;
 import com.geekyouup.android.ustopwatch.fragments.LapTimesFragment;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchFragment;
 import com.geekyouup.android.ustopwatch.fragments.TimeFragment;
 
-public class UltimateStopwatchFragments extends Activity implements
-		LapTimeRecorder {
+public class UltimateStopwatchFragments extends Activity {
 
 	private PowerManager mPowerMan;
 	private PowerManager.WakeLock mWakeLock;
@@ -58,6 +58,9 @@ public class UltimateStopwatchFragments extends Activity implements
 
 		setContentView(R.layout.main);
 
+		ActionBar actionBar = getActionBar();
+	    actionBar.setDisplayShowTitleEnabled(false);
+		
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -75,7 +78,6 @@ public class UltimateStopwatchFragments extends Activity implements
 		// not in all views
 		mCounterView = (TimeFragment) getFragmentManager().findFragmentById(
 				R.id.fragment_time);
-		mCounterView.setLapTimeRecorder(this);
 
 		mStopwatchFragment = (StopwatchFragment) getFragmentManager()
 				.findFragmentById(R.id.stopwatch_fragment);
@@ -99,6 +101,7 @@ public class UltimateStopwatchFragments extends Activity implements
 		mLapTimesFragment = (LapTimesFragment) getFragmentManager()
 				.findFragmentById(R.id.laptimes_fragment);
 		
+		//for phone case the LapTimesFragment isn't on screen all the time
 		//if(mLapTimesFragment==null) mLapTimesFragment=new LapTimesFragment();
 	}
 
@@ -106,12 +109,16 @@ public class UltimateStopwatchFragments extends Activity implements
 	protected void onPause() {
 		super.onPause();
 		mWakeLock.release();
+		
+		LapTimeRecorder.getInstance().saveTimes(this);
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 
+		LapTimeRecorder.getInstance().loadTimes(this);
+		
 		// cancel next alarm if there is one, and clear notification bar
 		AlarmUpdater.cancelCountdownAlarm(this);
 
@@ -125,21 +132,26 @@ public class UltimateStopwatchFragments extends Activity implements
 		super.onCreateOptionsMenu(menu);
 
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
+		if(mStopwatchFragment.getMode() == StopwatchFragment.MODE_STOPWATCH)
+		{
+			inflater.inflate(R.menu.menu, menu);
+		}else
+		{
+			inflater.inflate(R.menu.countdown_menu, menu);
+		}
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		/*if (item.getItemId() == R.id.menu_playpause) {
-			mStopwatchFragment.startStop();
-		} else*/ 
-			
 		if (item.getItemId() == R.id.menu_switchmode) {
 			final int newMode = (mStopwatchFragment.getMode() == StopwatchFragment.MODE_STOPWATCH) ? StopwatchFragment.MODE_COUNTDOWN
 					: StopwatchFragment.MODE_STOPWATCH;
 			mStopwatchFragment.setMode(newMode);
+			mCounterView.setMode(newMode);
 
+			invalidateOptionsMenu();
+			
 			if(mLapTimesFragment!=null && mLapTimesFragment.getView()!=null)
 			{
 				ObjectAnimator oa = ObjectAnimator.ofFloat(mLapTimesFragment.getView(), "rotationY", 0,90);
@@ -166,7 +178,11 @@ public class UltimateStopwatchFragments extends Activity implements
 			    });
 				oa.start();
 			}
-		} 
+		} else if (item.getItemId() == R.id.menu_laptimes) {
+			//this menu item is only available on non-xlarge
+			Intent startLaptimes = new Intent(this, LapTimesActivity.class);
+			startActivity(startLaptimes);
+		}
 		
 		/*else if (item.getItemId() == R.id.menu_reset) {
 			reset();
@@ -252,10 +268,5 @@ public class UltimateStopwatchFragments extends Activity implements
 
 		Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 		vibrator.vibrate(1000);
-	}
-
-	@Override
-	public void recordTime() {
-		mLapTimesFragment.recordLapTime(mCurrentTimeMillis);
 	}
 }

@@ -86,7 +86,12 @@ public class StopwatchFragment extends Fragment {
 
 	public int getMode()
 	{
-		return mWatchThread.isStopwatchMode()?MODE_STOPWATCH:MODE_COUNTDOWN;
+		int mode = MODE_STOPWATCH;
+		if(mWatchThread != null)
+		{
+			mode = mWatchThread.isStopwatchMode()?MODE_STOPWATCH:MODE_COUNTDOWN;
+		}
+		return mode;
 	}
 	
 	public void setMode(int mode)

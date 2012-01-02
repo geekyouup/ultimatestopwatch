@@ -16,16 +16,26 @@ public class TimeFragment extends Fragment implements OnClickListener{
 
 	private TextView mCounter;
 	private LapTimeRecorder mLapTimer;
+	private TextView mSaveText;
+	private double mCurrentTimeMillis=0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View timeView = inflater.inflate(R.layout.time_fragment, container, false);
 		mCounter = (TextView) timeView.findViewById(R.id.counter_digits);
 		if(mCounter!=null)mCounter.setOnClickListener(this);
+		
+		mSaveText = (TextView) timeView.findViewById(R.id.timefrag_savetext);
+		
+		mLapTimer = LapTimeRecorder.getInstance();
+		
+		timeView.setOnClickListener(this);
+		
 		return timeView;
 	}
 
 	public void setTime(double time) {
+		mCurrentTimeMillis = time;
 		if(mCounter!=null) mCounter.setText(TimeUtils.createTimeString(time));
 	}
 	
@@ -36,12 +46,12 @@ public class TimeFragment extends Fragment implements OnClickListener{
 
 	@Override
 	public void onClick(View v) {
-		if(mLapTimer!=null) mLapTimer.recordTime();
-		Toast.makeText(getActivity(), "Laptime Recorded", Toast.LENGTH_SHORT).show();
+		if(mLapTimer!=null) mLapTimer.recordLapTime(mCurrentTimeMillis);
+		Toast.makeText(getActivity(), getString(R.string.lap_time_recorded), Toast.LENGTH_SHORT).show();
 	}
 	
-	public void setLapTimeRecorder(LapTimeRecorder ltr)
+	public void setMode(int mode)
 	{
-		mLapTimer=ltr;
+		mSaveText.setVisibility((mode == StopwatchFragment.MODE_STOPWATCH)?View.VISIBLE:View.INVISIBLE);
 	}
 }

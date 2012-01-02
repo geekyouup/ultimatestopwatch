@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,15 +19,18 @@ import com.geekyouup.android.ustopwatch.R;
 public class LapTimesFragment extends ListFragment{
 
 	private LapTimesBaseAdapter mAdapter;
-	private final ArrayList<Double> mLapTimes = new ArrayList<Double>();
-	private static final String PREFS_NAME_LAPTIMES = "usw_prefs_laptimes";
-	private static final String KEY_LAPTIME_X = "LAPTIME_";
+	private ArrayList<Double> mLapTimes = new ArrayList<Double>();
+	private static final String PREFS_NAME_LAPTIMESFRAG = "usw_prefs_laptimesfrag";
 	private static final String KEY_CURRENT_VIEW = "current_view";
 	private ViewFlipper mViewFlipper;
+	private LapTimeRecorder mLapTimeRecorder;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mLapTimeRecorder = LapTimeRecorder.getInstance();
+		
+		Log.d("USW","LaptimesFragment.onCreate()");
 	}
 	
 	@Override
@@ -34,6 +38,9 @@ public class LapTimesFragment extends ListFragment{
 		View v = inflater.inflate(R.layout.laptimes_fragment, container, false);
 		try{mViewFlipper = (ViewFlipper) v.findViewById(R.id.laptimes_viewflipper);}
 		catch(Exception e){}
+		
+		Log.d("USW","LaptimesFragment.onCreateView()");
+		
 		return v;
 	}
 	
@@ -43,42 +50,37 @@ public class LapTimesFragment extends ListFragment{
 		getListView().setCacheColorHint(Color.WHITE);
 		mAdapter=new LapTimesBaseAdapter(getActivity(), mLapTimes);
 		setListAdapter(mAdapter);
+		
+		Log.d("USW","LaptimesFragment.onStart()");
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
 		
-		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME_LAPTIMES, Context.MODE_PRIVATE);
+		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME_LAPTIMESFRAG, Context.MODE_PRIVATE);
 		if (settings != null) {
 			SharedPreferences.Editor editor = settings.edit();
 			if (editor != null) {
-				editor.clear();
-                if(mLapTimes!= null && mLapTimes.size()>0)
-                {
-                	for(int i=0;i<mLapTimes.size();i++) editor.putLong(KEY_LAPTIME_X+i,mLapTimes.get(i).longValue());
-                }
 				if(mViewFlipper!=null) editor.putInt(KEY_CURRENT_VIEW, mViewFlipper.getDisplayedChild());
 				editor.commit();
 			}
 		}
+		
+		Log.d("USW","LaptimesFragment.onPause()");
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
 		
+		Log.d("USW","LaptimesFragment.onResume()");
+		
 		// if vars stored then use them
-		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME_LAPTIMES, Context.MODE_PRIVATE);
+		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME_LAPTIMESFRAG, Context.MODE_PRIVATE);
 		if (settings != null) {
-			
-            int lapTimeNum=0;
             mLapTimes.clear();
-            while(settings.getLong(KEY_LAPTIME_X+lapTimeNum,-1L) != -1L)
-            {
-            	mLapTimes.add((double) settings.getLong(KEY_LAPTIME_X+lapTimeNum,0L));
-            	lapTimeNum++;
-            }
+            mLapTimes.addAll(mLapTimeRecorder.getTimes());
             mAdapter.notifyDataSetChanged();
             
             setMode(settings.getInt(KEY_CURRENT_VIEW, 0));
@@ -90,10 +92,9 @@ public class LapTimesFragment extends ListFragment{
 		mLapTimes.clear();
 		mAdapter.notifyDataSetChanged();
 	}
-	
-	public void recordLapTime(double time)
+
+	public void notifyDataSetChanged()
 	{
-		mLapTimes.add(0,time);
 		mAdapter.notifyDataSetChanged();
 	}
 	

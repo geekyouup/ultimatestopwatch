@@ -76,11 +76,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private int mCanvasHeight = 480;
 		private int mSecsCenterX = 156;
 		private int mSecsCenterY = 230;
-		private int mSecsHandLength = 0;
-
 		private int mMinsCenterX = 156;
 		private int mMinsCenterY = 185;
-		private int mMinsHandLength = 0;
+
+		private int mSecsHalfWidth = 0;
+		private int mSecsHalfHeight = 0;
+		private int mMinsHalfWidth = 0;
+		private int mMinsHalfHeight = 0;
 
 		/** Used to figure out elapsed time between frames */
 		private long mLastTime;
@@ -107,9 +109,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			
 			Resources res = mContext.getResources();
 			loadGraphics(res, isStopwatchMode());
+
+			mSecsHalfWidth = mSecHand.getIntrinsicWidth()/2;
+			mSecsHalfHeight = mSecHand.getIntrinsicHeight()/2;
 			
-			mMinsHandLength = mMinHand.getIntrinsicHeight();
-			mSecsHandLength = mSecHand.getIntrinsicHeight();
+			mMinsHalfWidth = mMinHand.getIntrinsicWidth()/2;
+			mMinsHalfHeight = mMinHand.getIntrinsicHeight()/2;
+			
 			mBackgroundStartY = (mCanvasHeight - mBackgroundImage.getHeight()) / 2;
 			mAppOffsetX = (mCanvasWidth - mBackgroundImage.getWidth()) / 2;
 		}
@@ -266,16 +272,16 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			// Draw the secs hand with its current rotation
 			canvas.save();
 			canvas.rotate((float) Math.toDegrees(mSecsAngle), mSecsCenterX, mSecsCenterY + mAppOffsetY);
-			mSecHand.setBounds(mSecsCenterX - 10, mSecsCenterY - mSecsHandLength + 26 + mAppOffsetY,
-					mSecsCenterX + 10, mSecsCenterY + mAppOffsetY + 26);
+			mSecHand.setBounds(mSecsCenterX - mSecsHalfWidth, mSecsCenterY - mSecsHalfHeight + mAppOffsetY,
+					mSecsCenterX + mSecsHalfWidth, mSecsCenterY + mAppOffsetY + mSecsHalfHeight);
 			mSecHand.draw(canvas);
 			canvas.restore();
 
 			// draw the mins hand with its current rotatiom
 			canvas.save();
 			canvas.rotate((float) Math.toDegrees(mMinsAngle), mMinsCenterX, mMinsCenterY + mAppOffsetY);
-			mMinHand.setBounds(mMinsCenterX - 3, mMinsCenterY - mMinsHandLength + 10 + mAppOffsetY,
-					mMinsCenterX + 4, mMinsCenterY + mAppOffsetY + 10);
+			mMinHand.setBounds(mMinsCenterX - mMinsHalfWidth, mMinsCenterY - mMinsHalfHeight + mAppOffsetY,
+					mMinsCenterX + mMinsHalfWidth, mMinsCenterY + mAppOffsetY + mMinsHalfHeight);
 			mMinHand.draw(canvas);
 			canvas.restore();
 		}
@@ -457,19 +463,23 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 									.getHeight() * ((double) mCanvasWidth / (double) mBackgroundImage.getWidth())),
 									false);
 				}
+				
+				bgImageWidth = mBackgroundImage.getWidth();
+				int bgImageHeight = mBackgroundImage.getHeight();
 
-				mSecsCenterY = height / 2;
-				mMinsCenterY = mSecsCenterY - 44;
 				mBackgroundStartY = (height - mBackgroundImage.getHeight()) / 2;
 				if (mBackgroundStartY < 0)
 					mAppOffsetY = -mBackgroundStartY;
 
+				mSecsCenterY = mBackgroundStartY + (bgImageHeight * 6 / 10); //new graphics have height at 60% down image
+				mMinsCenterY = mBackgroundStartY + (bgImageHeight * 23 / 50);//mSecsCenterY - 44;
+				
 				mAppOffsetX = (width - mBackgroundImage.getWidth()) / 2;
 
 				mSecsCenterX = width/2;
 				mMinsCenterX = width/2;
 				
-				Log.d("StopWatch", "AppXOffset: " + mAppOffsetX + ", bgImageWidht: " + mBackgroundImage.getWidth());
+				Log.d("USW", "AppXOffset: " + mAppOffsetX + ", bgImageWidht: " + mBackgroundImage.getWidth());
 			}
 		}
 	}

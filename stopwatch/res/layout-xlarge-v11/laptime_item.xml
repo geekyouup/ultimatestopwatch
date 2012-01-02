@@ -8,7 +8,7 @@ android:orientation="vertical">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical|right"
-    android:textSize="28dp"
+    android:textSize="20dp"
     android:padding="2dp"
     android:textColor="@color/text_grey"
 />
@@ -17,7 +17,7 @@ android:orientation="vertical">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical|right"
-    android:textSize="20dp"
+    android:textSize="14dp"
     android:padding="2dp"
     android:textColor="@color/text_light_grey"
 />

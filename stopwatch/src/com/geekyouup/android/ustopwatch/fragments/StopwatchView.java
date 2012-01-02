@@ -55,7 +55,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private static final String KEY_LASTTIME = "lasttime";
 		private static final String KEY_NOWTIME = "currenttime";
 		private static final String KEY_STOPWATCH_MODE = "stopwatchmode";
-
+		private double mScaleFactor = 1; //how much to scale the images up or down by
+		
 		private boolean mTouching=false;
 		/*
 		 * Member (state) fields
@@ -95,6 +96,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 		/** Indicate whether the surface has been created & is ready to draw */
 		private boolean mRun = false;
+		private boolean mSkipDraw = false;
 
 		/** Handle to the surface manager object we interact with */
 		private SurfaceHolder mSurfaceHolder;
@@ -109,21 +111,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			
 			Resources res = mContext.getResources();
 			loadGraphics(res, isStopwatchMode());
-
-			mSecsHalfWidth = mSecHand.getIntrinsicWidth()/2;
-			mSecsHalfHeight = mSecHand.getIntrinsicHeight()/2;
-			
-			mMinsHalfWidth = mMinHand.getIntrinsicWidth()/2;
-			mMinsHalfHeight = mMinHand.getIntrinsicHeight()/2;
-			
-			mBackgroundStartY = (mCanvasHeight - mBackgroundImage.getHeight()) / 2;
-			mAppOffsetX = (mCanvasWidth - mBackgroundImage.getWidth()) / 2;
 		}
 
 		private void loadGraphics(Resources res, boolean isStopwatch)
 		{
 			if(res==null) res = mContext.getResources();
 
+			mSkipDraw=true;
 			//switch background graphic
 			if(isStopwatch)
 			{
@@ -138,6 +132,18 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				mSecHand = res.getDrawable(R.drawable.sechand_cd);
 				mMinHand = res.getDrawable(R.drawable.minhand_cd);
 			}
+			
+			mSecsHalfWidth = mSecHand.getIntrinsicWidth()/2;
+			mSecsHalfHeight = mSecHand.getIntrinsicHeight()/2;
+			
+			mMinsHalfWidth = mMinHand.getIntrinsicWidth()/2;
+			mMinsHalfHeight = mMinHand.getIntrinsicHeight()/2;
+			
+			mBackgroundStartY = (mCanvasHeight - mBackgroundImage.getHeight()) / 2;
+			mAppOffsetX = (mCanvasWidth - mBackgroundImage.getWidth()) / 2;
+			
+			scaleImages();
+			mSkipDraw=false;
 		}
 		
 		public void setApplication(UltimateStopwatchFragments mApp) {
@@ -181,6 +187,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				mMinsAngle = 0;
 				mSecsAngle = 0;
 				mDisplayTimeMillis = 0;
+				
+				broadcastClockTime(0);
 			}
 		}
 
@@ -191,7 +199,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				mMinsAngle = (Math.PI * 2 * ((double) minute / 30.0));
 				mSecsAngle = (Math.PI * 2 * ((double) seconds / 60.0));
 				mDisplayTimeMillis = hour * 3600000 + minute * 60000 + seconds * 1000;
-
+				
 				doStart();
 			}
 		}
@@ -207,7 +215,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 					{
 						synchronized (mSurfaceHolder) {
 							if (mMode == STATE_RUNNING) updatePhysics();
-							doDraw(c);
+							if(!mSkipDraw) doDraw(c);
 						}
 					}
 				} finally {
@@ -412,9 +420,9 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		}
 
 		public void setIsStopwatchMode(boolean isStopwatchMode) {
-			loadGraphics(null, isStopwatchMode);
 			this.mStopwatchMode = isStopwatchMode;
 			resetVars();
+			loadGraphics(null, isStopwatchMode);
 		}
 
 		public boolean onTouch(View v, MotionEvent event) {
@@ -453,37 +461,61 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				mCanvasWidth = width;
 				mCanvasHeight = height;
 
-				// need to check 2 things. If image is narrower than canvas
-				// scale it down, then if image is taller than canvas shift it
-				// down
-				int bgImageWidth = mBackgroundImage.getWidth();
-				if (bgImageWidth > mCanvasWidth) {
-					mBackgroundImage = Bitmap
-							.createScaledBitmap(mBackgroundImage, mCanvasWidth, (int) ((double) mBackgroundImage
-									.getHeight() * ((double) mCanvasWidth / (double) mBackgroundImage.getWidth())),
-									false);
-				}
+				loadGraphics(null,isStopwatchMode());
+				
+				Log.d("USW", "AppXOffset: " + mAppOffsetX + ", bgImageWidth: " + mBackgroundImage.getWidth());
+			}
+		}
+		
+		private void scaleImages()
+		{
+			// need to check 2 things. If image is narrower than canvas
+			// scale it down, then if image is taller than canvas shift it down
+			int bgImageWidth = mBackgroundImage.getWidth();
+			int bgImageHeight = mBackgroundImage.getHeight();
+			mScaleFactor=1;
+			
+			if(bgImageWidth > mCanvasWidth) mScaleFactor = ((double) mCanvasWidth / (double) bgImageWidth);
+			if(bgImageHeight > mCanvasHeight) mScaleFactor = ((double)mCanvasHeight / (double) bgImageHeight);
+			
+			Log.d("USW","ScaleFactor " + mScaleFactor);
+			
+			if(mScaleFactor != 1)
+			{
+				mBackgroundImage = Bitmap
+				.createScaledBitmap(mBackgroundImage, (int) ((double) bgImageWidth * mScaleFactor),
+						(int) ((double) bgImageHeight * mScaleFactor),
+						false);
+				
+				mBackgroundImageTouched = Bitmap
+				.createScaledBitmap(mBackgroundImageTouched, (int) ((double) bgImageWidth * mScaleFactor),
+						((int) ((double) bgImageHeight * mScaleFactor)),
+						false);
+				
+				mMinsHalfHeight = (int) ((double) mMinsHalfHeight * mScaleFactor);
+				mMinsHalfWidth = (int) ((double) mMinsHalfWidth * mScaleFactor);
+				mSecsHalfHeight= (int) ((double) mSecsHalfHeight * mScaleFactor);
+				mSecsHalfWidth= (int) ((double) mSecsHalfWidth * mScaleFactor);
 				
 				bgImageWidth = mBackgroundImage.getWidth();
-				int bgImageHeight = mBackgroundImage.getHeight();
-
-				mBackgroundStartY = (height - mBackgroundImage.getHeight()) / 2;
-				if (mBackgroundStartY < 0)
-					mAppOffsetY = -mBackgroundStartY;
-
-				mSecsCenterY = mBackgroundStartY + (bgImageHeight * 6 / 10); //new graphics have height at 60% down image
-				mMinsCenterY = mBackgroundStartY + (bgImageHeight * 23 / 50);//mSecsCenterY - 44;
-				
-				mAppOffsetX = (width - mBackgroundImage.getWidth()) / 2;
-
-				mSecsCenterX = width/2;
-				mMinsCenterX = width/2;
-				
-				Log.d("USW", "AppXOffset: " + mAppOffsetX + ", bgImageWidht: " + mBackgroundImage.getWidth());
+				bgImageHeight = mBackgroundImage.getHeight();
 			}
+			
+			mBackgroundStartY = (mCanvasHeight - mBackgroundImage.getHeight()) / 2;
+			if (mBackgroundStartY < 0)
+				mAppOffsetY = -mBackgroundStartY;
+
+			mSecsCenterY = mBackgroundStartY + (bgImageHeight * 6 / 10); //new graphics have height at 60% down image
+			mMinsCenterY = mBackgroundStartY + (bgImageHeight * 23 / 50);//mSecsCenterY - 44;
+			
+			mAppOffsetX = (mCanvasWidth - mBackgroundImage.getWidth()) / 2;
+
+			mSecsCenterX = mCanvasWidth/2;
+			mMinsCenterX = mCanvasWidth/2;
 		}
 	}
 
+	
 	/** Handle to the application context, used to e.g. fetch Drawables. */
 	private StopwatchThead thread;
 	private SurfaceHolder sHolder;

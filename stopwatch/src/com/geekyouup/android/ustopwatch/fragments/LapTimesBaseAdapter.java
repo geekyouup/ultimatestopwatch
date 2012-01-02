@@ -50,17 +50,17 @@ public class LapTimesBaseAdapter extends BaseAdapter {
 		}
 		
 		TextView t = (TextView) v.findViewById(R.id.laptime_text);
+		t.setText(TimeUtils.createTimeString(mDataSet.get(position)));
+		
+		TextView t2 = (TextView) v.findViewById(R.id.laptime_text2);
 		if(position<mDataSet.size()-1 && mDataSet.size()>1)
 		{
 			double laptime= mDataSet.get(position)-mDataSet.get(position+1);
 			if(laptime<0) laptime = mDataSet.get(position);
-			t.setText(TimeUtils.createTimeString(laptime));
+			t2.setText(TimeUtils.createTimeString(laptime));
 		}else{
-			t.setText(TimeUtils.createTimeString(mDataSet.get(position)));
+			t2.setText(TimeUtils.createTimeString(mDataSet.get(position)));
 		}
-
-		TextView t2 = (TextView) v.findViewById(R.id.laptime_text2);
-		t2.setText(TimeUtils.createTimeString(mDataSet.get(position)));
 		
 		return v;
 	}

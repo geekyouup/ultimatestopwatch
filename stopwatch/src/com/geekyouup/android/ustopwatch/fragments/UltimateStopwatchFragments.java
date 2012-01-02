@@ -5,8 +5,7 @@ import java.util.HashMap;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.ActionBar;
-import android.app.Activity;
+//import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,20 +19,24 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
+import android.support.v4.app.FragmentActivity;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 
 import com.geekyouup.android.ustopwatch.AlarmUpdater;
 import com.geekyouup.android.ustopwatch.R;
+import com.geekyouup.android.ustopwatch.TimeUtils;
 import com.geekyouup.android.ustopwatch.fragments.LapTimesFragment;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchFragment;
 import com.geekyouup.android.ustopwatch.fragments.TimeFragment;
 
-public class UltimateStopwatchFragments extends Activity {
+public class UltimateStopwatchFragments extends FragmentActivity {
 
 	private PowerManager mPowerMan;
 	private PowerManager.WakeLock mWakeLock;
@@ -58,8 +61,9 @@ public class UltimateStopwatchFragments extends Activity {
 
 		setContentView(R.layout.main);
 
-		ActionBar actionBar = getActionBar();
-	    actionBar.setDisplayShowTitleEnabled(false);
+		//TODO: Fix with ActionBarCompat
+		//ActionBar actionBar = getActionBar();
+	   //actionBar.setDisplayShowTitleEnabled(false);
 		
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -76,11 +80,12 @@ public class UltimateStopwatchFragments extends Activity {
 		}
 
 		// not in all views
-		mCounterView = (TimeFragment) getFragmentManager().findFragmentById(
+		mCounterView = (TimeFragment) getSupportFragmentManager().findFragmentById(
 				R.id.fragment_time);
 
-		mStopwatchFragment = (StopwatchFragment) getFragmentManager()
+		mStopwatchFragment = (StopwatchFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.stopwatch_fragment);
+		
 		mStopwatchFragment.setApplication(this);
 		mStopwatchFragment.setHandler(new Handler() {
 			@Override
@@ -98,7 +103,7 @@ public class UltimateStopwatchFragments extends Activity {
 			}
 		});
 
-		mLapTimesFragment = (LapTimesFragment) getFragmentManager()
+		mLapTimesFragment = (LapTimesFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.laptimes_fragment);
 		
 		//for phone case the LapTimesFragment isn't on screen all the time
@@ -150,7 +155,8 @@ public class UltimateStopwatchFragments extends Activity {
 			mStopwatchFragment.setMode(newMode);
 			mCounterView.setMode(newMode);
 
-			invalidateOptionsMenu();
+			//TODO: Fix with ActionBarCompat
+			//invalidateOptionsMenu();
 			
 			if(mLapTimesFragment!=null && mLapTimesFragment.getView()!=null)
 			{
@@ -207,7 +213,19 @@ public class UltimateStopwatchFragments extends Activity {
 	private static int mHoursValue = 0;
 	private static int mMinsValue = 0;
 	private static int mSecsValue = 0;
-	public void requestTimeDialog() {
+	
+	public void requestTimeDialog()
+	{
+		if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
+		{
+			requestAPI11TimeDialog();
+		}else
+		{
+			requestPreAPI11TimeDialog();
+		}
+	}
+	
+	private void requestAPI11TimeDialog() {
 		// stop stacking of dialogs
 		if (mDialogOnScreen)
 			return;
@@ -250,6 +268,43 @@ public class UltimateStopwatchFragments extends Activity {
 		mSelectTime.show();
 
 		mDialogOnScreen = true;
+	}
+	
+	private void requestPreAPI11TimeDialog()
+	{
+		//stop stacking of dialogs
+		if(mDialogOnScreen) return;
+		
+		//try{removeSplashText();}catch(Exception e){}
+		
+        LayoutInflater inflator = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	    View countdownView = TimeUtils.createTimeSelectDialogLayout(this, inflator);
+	    
+	    LinearLayout ll = new LinearLayout(this);
+	    ll.setOrientation(LinearLayout.HORIZONTAL);
+	    ll.addView(countdownView);
+	    ll.setGravity(Gravity.CENTER);
+
+	    AlertDialog mSelectTime = new AlertDialog.Builder(this).create();
+	    mSelectTime.setView(ll);
+	    mSelectTime.setTitle(getString(R.string.timer_title));
+	    mSelectTime.setButton(getString(R.string.timer_start), new DialogInterface.OnClickListener(){
+			public void onClick(DialogInterface dialog, int which) {
+				//removeSplashText();
+				mDialogOnScreen=false;
+				mHoursValue = TimeUtils.getDlgHours();
+				mMinsValue = TimeUtils.getDlgMins();
+				mSecsValue = TimeUtils.getDlgSecs();
+				mStopwatchFragment.setTime(mHoursValue,
+						mMinsValue, mSecsValue);
+			}});
+	    mSelectTime.setButton2(getString(R.string.timer_cancel), new DialogInterface.OnClickListener(){
+			public void onClick(DialogInterface dialog, int which) {
+				mDialogOnScreen=false;
+			}});
+	    mSelectTime.show();
+	    
+	    mDialogOnScreen=true;
 	}
 
 	public void playAlarm() {

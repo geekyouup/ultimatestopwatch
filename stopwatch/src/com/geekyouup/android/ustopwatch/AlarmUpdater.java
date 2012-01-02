@@ -1,5 +1,7 @@
 package com.geekyouup.android.ustopwatch;
 
+import com.geekyouup.android.ustopwatch.fragments.UltimateStopwatchFragments;
+
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -66,7 +68,7 @@ public class AlarmUpdater {
             notification.defaults |= (Notification.DEFAULT_ALL);
             
             // The PendingIntent to launch our activity if the user selects this notification
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,new Intent(this,UltimateStopwatchLauncher.class),0);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,new Intent(this,UltimateStopwatchFragments.class),0);
 
             // Set the info for the views that show in the notification panel.
             notification.setLatestEventInfo(this, getString(R.string.app_name), getString(R.string.countdown_complete), contentIntent);

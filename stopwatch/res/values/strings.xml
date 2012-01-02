@@ -17,7 +17,9 @@
 	<string name="laptimes">Lap Times</string>
 
 	<string name="laptime">Lap Time</string>
+	<string name="lap_time_recorded">Lap Time Recorded</string>
 	<string name="reset">Reset</string>
+	<string name="clear">Clear</string>
 	<string name="startstop">Start/Pause</string>
 	<string name="mode">Mode</string>
 	<string name="stopwatch">Stopwatch Mode</string>

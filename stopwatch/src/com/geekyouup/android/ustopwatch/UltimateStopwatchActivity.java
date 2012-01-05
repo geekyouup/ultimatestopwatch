@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
@@ -115,12 +116,20 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 				.findFragmentById(R.id.laptimes_fragment);
 	}
 	
+	private static final String PREFS_NAME="usw_main_prefs";
+	private static final String KEY_MODE="usw_mode";	
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
 		mWakeLock.release();
 		
 		LapTimeRecorder.getInstance().saveTimes(this);
+		
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putInt(KEY_MODE, mStopwatchFragment.getMode());
+		editor.commit();
 	}
 
 	@Override
@@ -135,8 +144,15 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 		mWakeLock = mPowerMan.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
 				WAKE_LOCK_KEY);
 		mWakeLock.acquire();
+		
+		SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		if(settings!=null)
+		{
+			int mode = settings.getInt(KEY_MODE, StopwatchFragment.MODE_STOPWATCH);
+			if(mCounterView!=null) mCounterView.setMode(mode);
+		}
 	}
-
+		
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -160,6 +176,8 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 			mStopwatchFragment.setMode(newMode);
 			mCounterView.setMode(newMode);
 
+			if (mStopwatchFragment.getMode() == StopwatchFragment.MODE_COUNTDOWN) requestTimeDialog();
+			
 			if(IS_HONEYCOMB_OR_ABOVE)
 			{
 				invalidateOptionsMenu();
@@ -197,10 +215,6 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 			Intent startLaptimes = new Intent(this, LapTimesActivity.class);
 			startActivity(startLaptimes);
 		}
-		
-		/*else if (item.getItemId() == R.id.menu_reset) {
-			reset();
-		}*/
 
 		return true;
 	}

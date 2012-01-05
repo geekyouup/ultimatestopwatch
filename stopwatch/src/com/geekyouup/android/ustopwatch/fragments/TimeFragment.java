@@ -18,6 +18,7 @@ public class TimeFragment extends Fragment implements OnClickListener{
 	private LapTimeRecorder mLapTimer;
 	private TextView mSaveText;
 	private double mCurrentTimeMillis=0;
+	private int mMode = StopwatchFragment.MODE_STOPWATCH;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,12 +47,16 @@ public class TimeFragment extends Fragment implements OnClickListener{
 
 	@Override
 	public void onClick(View v) {
-		if(mLapTimer!=null) mLapTimer.recordLapTime(mCurrentTimeMillis);
-		Toast.makeText(getActivity(), getString(R.string.lap_time_recorded), Toast.LENGTH_SHORT).show();
+		if(mMode == StopwatchFragment.MODE_STOPWATCH && mLapTimer!=null)
+		{
+			mLapTimer.recordLapTime(mCurrentTimeMillis);
+			Toast.makeText(getActivity(), getString(R.string.lap_time_recorded), Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	public void setMode(int mode)
 	{
+		mMode = mode;
 		mSaveText.setVisibility((mode == StopwatchFragment.MODE_STOPWATCH)?View.VISIBLE:View.INVISIBLE);
 	}
 }

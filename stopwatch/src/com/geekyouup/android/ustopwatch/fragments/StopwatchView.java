@@ -177,6 +177,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 		public void reset() {
 			resetVars();
+			if (!isStopwatchMode() && mDisplayTimeMillis <= 0) requestCountdownDialog();
 			broadcastClockTime(0);
 		}
 
@@ -548,7 +549,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 	}
 
 	public StopwatchThead createNewThread() {
-		thread = new StopwatchThead(sHolder, mContext);
+		if(thread==null) thread = new StopwatchThead(sHolder, mContext);
 		setOnTouchListener(thread);
 		return thread;
 	}
@@ -583,7 +584,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		try {
 			thread.setRunning(true);
 			thread.start();
-
+		
 			if (mRestoreState != null) {
 				thread.restoreState(mRestoreState);
 			}
@@ -611,6 +612,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			} catch (InterruptedException e) {
 			}
 		}
+		thread=null;
 	}
 
 	public void restoreState(SharedPreferences savedState) {

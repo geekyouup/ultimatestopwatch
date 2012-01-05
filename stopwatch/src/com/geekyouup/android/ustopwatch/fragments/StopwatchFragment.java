@@ -50,10 +50,17 @@ public class StopwatchFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
+		Log.d("USW","onPause StopwatchFragment");
 		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
 		mWatchThread.saveState(editor);
 		editor.commit();
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		Log.d("USW","onStop StopwatchFragment");
 	}
 	
 	@Override

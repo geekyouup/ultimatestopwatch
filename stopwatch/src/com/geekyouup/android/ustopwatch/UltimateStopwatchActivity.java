@@ -114,6 +114,8 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 
 		mLapTimesFragment = (LapTimesFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.laptimes_fragment);
+		
+		if(mLapTimesFragment!=null) LapTimeRecorder.getInstance().setLaptimeListener(mLapTimesFragment);
 	}
 	
 	private static final String PREFS_NAME="usw_main_prefs";

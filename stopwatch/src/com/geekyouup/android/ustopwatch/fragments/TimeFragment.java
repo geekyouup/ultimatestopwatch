@@ -49,8 +49,7 @@ public class TimeFragment extends Fragment implements OnClickListener{
 	public void onClick(View v) {
 		if(mMode == StopwatchFragment.MODE_STOPWATCH && mLapTimer!=null)
 		{
-			mLapTimer.recordLapTime(mCurrentTimeMillis);
-			Toast.makeText(getActivity(), getString(R.string.lap_time_recorded), Toast.LENGTH_SHORT).show();
+			mLapTimer.recordLapTime(mCurrentTimeMillis, getActivity());
 		}
 	}
 	

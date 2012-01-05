@@ -16,7 +16,7 @@ import android.widget.ViewFlipper;
 import com.geekyouup.android.ustopwatch.R;
 
 
-public class LapTimesFragment extends ListFragment{
+public class LapTimesFragment extends ListFragment implements LapTimeListener{
 
 	private LapTimesBaseAdapter mAdapter;
 	private ArrayList<Double> mLapTimes = new ArrayList<Double>();
@@ -100,12 +100,17 @@ public class LapTimesFragment extends ListFragment{
 	
 	public void setMode(int mode)
 	{
-		//if(mode==mCurrentMode) return;
-		
 		if(mViewFlipper!= null)
 		{
 			mViewFlipper.setDisplayedChild(mode);
 		}
+	}
+
+	@Override
+	public void lapTimesUpdated() {
+        mLapTimes.clear();
+        mLapTimes.addAll(mLapTimeRecorder.getTimes());
+		notifyDataSetChanged();
 	}
 	
 }

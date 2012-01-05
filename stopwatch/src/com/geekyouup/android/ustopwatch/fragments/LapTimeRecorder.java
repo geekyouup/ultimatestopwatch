@@ -2,8 +2,11 @@ package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.ArrayList;
 
+import com.geekyouup.android.ustopwatch.R;
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 public class LapTimeRecorder {
 	
@@ -11,6 +14,7 @@ public class LapTimeRecorder {
 	private static final String PREFS_NAME_LAPTIMES = "usw_prefs_laptimes";
 	private static final String KEY_LAPTIME_X = "LAPTIME_";
 	private static LapTimeRecorder mSelf;
+	private LapTimeListener mLTL;
 	
 	public static LapTimeRecorder getInstance()
 	{
@@ -48,9 +52,12 @@ public class LapTimeRecorder {
 		}
 	}
 	
-	public void recordLapTime(double time)
+	public void recordLapTime(double time, Context cxt)
 	{
 		mLapTimes.add(0,time);
+		if(mLTL!=null)mLTL.lapTimesUpdated();
+		
+		if(cxt != null && mLTL==null) Toast.makeText(cxt, cxt.getString(R.string.lap_time_recorded), Toast.LENGTH_SHORT).show();
 	}
 	
 	public ArrayList<Double> getTimes()
@@ -65,5 +72,10 @@ public class LapTimeRecorder {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.clear();
 		editor.commit();
+	}
+	
+	public void setLaptimeListener(LapTimeListener ltl)
+	{
+		mLTL = ltl;
 	}
 }

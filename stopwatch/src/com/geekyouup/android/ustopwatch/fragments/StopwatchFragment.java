@@ -1,6 +1,8 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
 import com.geekyouup.android.ustopwatch.R;
+import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +16,6 @@ import android.widget.ImageView;
 
 import com.geekyouup.android.ustopwatch.fragments.StopwatchView;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchView.StopwatchThead;
-import com.geekyouup.android.ustopwatch.fragments.UltimateStopwatchFragments;
 
 public class StopwatchFragment extends Fragment {
 
@@ -22,7 +23,7 @@ public class StopwatchFragment extends Fragment {
 	private StopwatchThead mWatchThread;
 	public static final int MODE_STOPWATCH=0;
 	public static final int MODE_COUNTDOWN=1;
-	private UltimateStopwatchFragments mApp;
+	private UltimateStopwatchActivity mApp;
 	private ImageView mResetButton;
 	private Handler mHandler;
 	
@@ -104,7 +105,7 @@ public class StopwatchFragment extends Fragment {
 		mWatchThread.setTime(hour, minute, seconds);
 	}
 	
-	public void setApplication(UltimateStopwatchFragments app)
+	public void setApplication(UltimateStopwatchActivity app)
 	{
 		mApp = app;
 		if(mWatchThread!= null) mWatchThread.setApplication(app);

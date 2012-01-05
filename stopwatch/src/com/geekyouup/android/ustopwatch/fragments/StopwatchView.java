@@ -18,7 +18,7 @@ package com.geekyouup.android.ustopwatch.fragments;
 
 import com.geekyouup.android.ustopwatch.AlarmUpdater;
 import com.geekyouup.android.ustopwatch.R;
-import com.geekyouup.android.ustopwatch.fragments.UltimateStopwatchFragments;
+import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -100,7 +100,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 		/** Handle to the surface manager object we interact with */
 		private SurfaceHolder mSurfaceHolder;
-		private UltimateStopwatchFragments mApp;
+		private UltimateStopwatchActivity mApp;
 		private Handler mHandler;
 		private Context mContext;
 
@@ -146,7 +146,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			mSkipDraw=false;
 		}
 		
-		public void setApplication(UltimateStopwatchFragments mApp) {
+		public void setApplication(UltimateStopwatchActivity mApp) {
 			this.mApp = mApp;
 		}
 
@@ -387,8 +387,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			if (mHandler != null) {
 				Message msg = mHandler.obtainMessage();
 				Bundle b = new Bundle();
-				b.putBoolean(UltimateStopwatchFragments.MSG_UPDATE_COUNTER_TIME, true);
-				b.putDouble(UltimateStopwatchFragments.MSG_NEW_TIME_DOUBLE, mTime);
+				b.putBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME, true);
+				b.putDouble(UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE, mTime);
 				msg.setData(b);
 				mHandler.sendMessage(msg);
 			}
@@ -399,7 +399,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			if (mHandler != null) {
 				Message msg = mHandler.obtainMessage();
 				Bundle b = new Bundle();
-				b.putBoolean(UltimateStopwatchFragments.MSG_REQUEST_COUNTDOWN_DLG, true);
+				b.putBoolean(UltimateStopwatchActivity.MSG_REQUEST_COUNTDOWN_DLG, true);
 				msg.setData(b);
 				mHandler.sendMessage(msg);
 			}

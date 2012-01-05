@@ -1,11 +1,10 @@
-package com.geekyouup.android.ustopwatch.fragments;
+package com.geekyouup.android.ustopwatch;
 
 import java.util.HashMap;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-//import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,7 +18,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.Vibrator;
-import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,14 +27,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 
-import com.geekyouup.android.ustopwatch.AlarmUpdater;
-import com.geekyouup.android.ustopwatch.R;
-import com.geekyouup.android.ustopwatch.TimeUtils;
+import com.example.android.actionbarcompat.ActionBarFragmentActivity;
+import com.geekyouup.android.ustopwatch.fragments.LapTimeRecorder;
+import com.geekyouup.android.ustopwatch.fragments.LapTimesActivity;
 import com.geekyouup.android.ustopwatch.fragments.LapTimesFragment;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchFragment;
 import com.geekyouup.android.ustopwatch.fragments.TimeFragment;
 
-public class UltimateStopwatchFragments extends FragmentActivity {
+public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 
 	private PowerManager mPowerMan;
 	private PowerManager.WakeLock mWakeLock;
@@ -49,6 +47,9 @@ public class UltimateStopwatchFragments extends FragmentActivity {
 	public static final String MSG_NEW_TIME_DOUBLE = "msg_new_time_double";
 	private static final String WAKE_LOCK_KEY = "ustopwatch";
 
+	public static final boolean IS_HONEYCOMB_OR_ABOVE=android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
+	public boolean isXLarge = false;
+	
 	private TimeFragment mCounterView;
 	private StopwatchFragment mStopwatchFragment;
 	private LapTimesFragment mLapTimesFragment;
@@ -58,13 +59,20 @@ public class UltimateStopwatchFragments extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setContentView(R.layout.main);
-
-		//TODO: Fix with ActionBarCompat
-		//ActionBar actionBar = getActionBar();
-	   //actionBar.setDisplayShowTitleEnabled(false);
 		
+		isXLarge = ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);
+		if(!isXLarge)
+		{
+			if(IS_HONEYCOMB_OR_ABOVE)
+			{
+				getActionBar().setDisplayShowTitleEnabled(false);
+			}else
+			{	
+				setTitle("");
+			}
+		}
+
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -105,11 +113,8 @@ public class UltimateStopwatchFragments extends FragmentActivity {
 
 		mLapTimesFragment = (LapTimesFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.laptimes_fragment);
-		
-		//for phone case the LapTimesFragment isn't on screen all the time
-		//if(mLapTimesFragment==null) mLapTimesFragment=new LapTimesFragment();
 	}
-
+	
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -155,10 +160,13 @@ public class UltimateStopwatchFragments extends FragmentActivity {
 			mStopwatchFragment.setMode(newMode);
 			mCounterView.setMode(newMode);
 
-			//TODO: Fix with ActionBarCompat
-			//invalidateOptionsMenu();
+			if(IS_HONEYCOMB_OR_ABOVE)
+			{
+				invalidateOptionsMenu();
+			} 
 			
-			if(mLapTimesFragment!=null && mLapTimesFragment.getView()!=null)
+			
+			if(IS_HONEYCOMB_OR_ABOVE && mLapTimesFragment!=null && mLapTimesFragment.getView()!=null)
 			{
 				ObjectAnimator oa = ObjectAnimator.ofFloat(mLapTimesFragment.getView(), "rotationY", 0,90);
 			    oa.setDuration(250);

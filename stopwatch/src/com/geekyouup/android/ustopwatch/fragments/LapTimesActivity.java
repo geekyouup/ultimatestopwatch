@@ -1,25 +1,30 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
-import com.geekyouup.android.ustopwatch.R;
-
-//import android.app.ActionBar;
+import android.app.ActionBar;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-public class LapTimesActivity extends FragmentActivity {
+import com.example.android.actionbarcompat.ActionBarFragmentActivity;
+import com.geekyouup.android.ustopwatch.R;
+import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
+
+public class LapTimesActivity extends ActionBarFragmentActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.laptimes_layout);
-		
-		//TODO: Fix with ActionBarCompat
-		//ActionBar actionBar = getActionBar();
-	    //actionBar.setDisplayShowTitleEnabled(false);
-	    //actionBar.setDisplayHomeAsUpEnabled(true);
+		if(UltimateStopwatchActivity.IS_HONEYCOMB_OR_ABOVE)
+		{
+			ActionBar actionBar = getActionBar();
+	    	actionBar.setDisplayShowTitleEnabled(false);
+	    	actionBar.setDisplayHomeAsUpEnabled(true);
+		}else
+		{
+			setTitle("");
+		}
 	}
 	
 	@Override

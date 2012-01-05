@@ -31,4 +31,10 @@
 	
 	<string name="countdown_complete">Countdown Complete!</string>
 	
+	<string name="default_time">00:00:00.000</string>
+	
+	<string name="_0">0</string>
+	
+	<string name="times">Times</string>
+	
 </resources>

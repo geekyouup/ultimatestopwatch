@@ -3,5 +3,5 @@
 	<dimen name="frame_padding">1dip</dimen>
 	<dimen name="small_font">16dp</dimen>
 	<dimen name="large_font">36dp</dimen>
-	<dimen name="counter_font">48pt</dimen>
+	<dimen name="counter_font">80sp</dimen>
 </resources>

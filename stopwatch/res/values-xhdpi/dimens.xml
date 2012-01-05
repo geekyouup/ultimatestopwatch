@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<dimen name="frame_padding">1dip</dimen>
+    <dimen name="frame_padding">2dip</dimen>
 	<dimen name="small_font">14sp</dimen>
-	<dimen name="med_font">22sp</dimen>
 	<dimen name="large_font">36dp</dimen>
 	<dimen name="counter_font">40sp</dimen>
 	<dimen name="launchtext_size">30sp</dimen>

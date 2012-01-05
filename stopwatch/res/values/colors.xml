@@ -19,4 +19,5 @@
     <color name="text_grey">#ff666666</color>
     <color name="text_light_grey">#ff888888</color>
     <color name="background">#ffffffff</color>
+    <color name="actionbar_title_color">#000000</color>
 </resources>

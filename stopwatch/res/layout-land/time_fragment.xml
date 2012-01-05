@@ -5,7 +5,7 @@
 	android:gravity="center">
 	<TextView android:id="@+id/counter_digits" android:textSize="@dimen/counter_font"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:text="00:00:00.000" android:textColor="@color/text_grey"/>
+		android:text="@string/default_time" android:textColor="@color/text_grey"/>
 	<TextView android:id="@+id/timefrag_savetext" android:layout_width="wrap_content"
 		android:layout_height="wrap_content" android:textColor="@color/text_grey"
 		android:textSize="@dimen/small_font" android:layout_alignParentLeft="true"

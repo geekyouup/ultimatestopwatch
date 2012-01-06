@@ -9,7 +9,7 @@ android:padding="2dp">
     android:id="@+id/laptime_text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textSize="28dp"
+    android:textSize="@dimen/med_font"
     android:paddingRight="30dp"
     android:textColor="@color/text_grey"
 />
@@ -17,7 +17,7 @@ android:padding="2dp">
     android:id="@+id/laptime_text2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:textSize="28dp"
+    android:textSize="@dimen/med_font"
     android:textColor="@color/text_light_grey"
 />
 </LinearLayout>

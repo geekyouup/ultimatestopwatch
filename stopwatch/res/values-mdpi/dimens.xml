@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<dimen name="counter_font">30sp</dimen>
+	<dimen name="launchtext_size">30sp</dimen>
+	<dimen name="reset_btn_size">48dp</dimen>
+</resources>

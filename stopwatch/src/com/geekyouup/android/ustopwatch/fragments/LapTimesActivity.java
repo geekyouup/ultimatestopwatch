@@ -1,6 +1,5 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
-import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,13 +17,11 @@ public class LapTimesActivity extends ActionBarFragmentActivity {
 		setContentView(R.layout.laptimes_layout);
 		if(UltimateStopwatchActivity.IS_HONEYCOMB_OR_ABOVE)
 		{
-			ActionBar actionBar = getActionBar();
-	    	actionBar.setDisplayShowTitleEnabled(false);
-	    	actionBar.setDisplayHomeAsUpEnabled(true);
-		}else
-		{
-			setTitle("");
+			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
+		
+		setTitle(getString(R.string.laptimes));
+
 	}
 	
 	@Override

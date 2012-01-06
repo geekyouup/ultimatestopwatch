@@ -61,18 +61,6 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
-		isXLarge = ((getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE);
-		if(!isXLarge)
-		{
-			if(IS_HONEYCOMB_OR_ABOVE)
-			{
-				getActionBar().setDisplayShowTitleEnabled(false);
-			}else
-			{	
-				setTitle("");
-			}
-		}
 
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -151,6 +139,7 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 		if(settings!=null)
 		{
 			int mode = settings.getInt(KEY_MODE, StopwatchFragment.MODE_STOPWATCH);
+			setTitle(mode==StopwatchFragment.MODE_STOPWATCH?R.string.stopwatch:R.string.countdown);
 			if(mCounterView!=null) mCounterView.setMode(mode);
 		}
 	}
@@ -177,6 +166,7 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 					: StopwatchFragment.MODE_STOPWATCH;
 			mStopwatchFragment.setMode(newMode);
 			mCounterView.setMode(newMode);
+			setTitle(newMode==StopwatchFragment.MODE_STOPWATCH?R.string.stopwatch:R.string.countdown);
 
 			if (mStopwatchFragment.getMode() == StopwatchFragment.MODE_COUNTDOWN) requestTimeDialog();
 			
@@ -216,6 +206,8 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 			//this menu item is only available on non-xlarge
 			Intent startLaptimes = new Intent(this, LapTimesActivity.class);
 			startActivity(startLaptimes);
+		}else if (item.getItemId() == R.id.menu_clearlaps) {
+			LapTimeRecorder.getInstance().reset(this);
 		}
 
 		return true;

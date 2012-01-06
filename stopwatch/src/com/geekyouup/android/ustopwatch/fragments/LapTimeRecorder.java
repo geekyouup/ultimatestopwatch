@@ -72,6 +72,7 @@ public class LapTimeRecorder {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.clear();
 		editor.commit();
+		if(mLTL!=null)mLTL.lapTimesUpdated();
 	}
 	
 	public void setLaptimeListener(LapTimeListener ltl)

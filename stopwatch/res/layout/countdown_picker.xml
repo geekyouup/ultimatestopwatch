@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:gravity="center_horizontal">
+
+<LinearLayout
+  android:orientation="vertical"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:gravity="center">
+    
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/hours" />
+    <NumberPicker android:id="@+id/numberPickerHours" android:layout_height="wrap_content"
+        android:layout_width="80dip"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+    />
+</LinearLayout>
+    
+<LinearLayout
+  android:orientation="vertical"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:gravity="center">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/mins" />
+    <NumberPicker android:id="@+id/numberPickerMins" android:layout_width="80dp" android:layout_height="wrap_content"/>
+</LinearLayout>
+<LinearLayout
+  android:orientation="vertical"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:gravity="center">
+    
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/secs" />
+    <NumberPicker android:id="@+id/numberPickerSecs" android:layout_width="80dp" android:layout_height="wrap_content"/>
+</LinearLayout>
+</LinearLayout>

@@ -3,4 +3,7 @@
     <item android:id="@+id/menu_switchmode"
           android:title="@string/mode"
           android:showAsAction="ifRoom"/>
+    <item android:id="@+id/menu_clearlaps"
+          android:title="@string/clear_laps"
+          android:showAsAction="ifRoom"/>    
 </menu>

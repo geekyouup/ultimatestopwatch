@@ -12,15 +12,18 @@ import android.media.AudioManager;
 import android.os.IBinder;
 
 public class AlarmUpdater {
-
+	
 	public static void cancelCountdownAlarm(Context context)
 	{
 		try
 		{
 			AlarmManager alarmMan = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+			
 			Intent defineIntent = new Intent(context,UpdateService.class);
-			PendingIntent piWakeUp = PendingIntent.getService(context,0, defineIntent, 0);
-	        alarmMan.cancel(piWakeUp);
+			defineIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			PendingIntent piWakeUp = PendingIntent.getService(context,0, defineIntent, PendingIntent.FLAG_NO_CREATE);
+	        
+			if(piWakeUp != null) alarmMan.cancel(piWakeUp);
 		}catch(Exception e){}
         
 		try
@@ -34,8 +37,9 @@ public class AlarmUpdater {
 		AlarmManager alarmMan = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		
 		Intent defineIntent = new Intent(context,UpdateService.class);
-		PendingIntent piWakeUp = PendingIntent.getService(context,0, defineIntent, 0);
-        alarmMan.cancel(piWakeUp);
+		defineIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		PendingIntent piWakeUp = PendingIntent.getService(context,0, defineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //alarmMan.cancel(piWakeUp);
         
 		if(inMillis != -1) alarmMan.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+inMillis, piWakeUp);
 	}
@@ -67,7 +71,9 @@ public class AlarmUpdater {
             notification.defaults |= (Notification.DEFAULT_ALL);
             
             // The PendingIntent to launch our activity if the user selects this notification
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,new Intent(this,UltimateStopwatchActivity.class),0);
+            Intent launcher = new Intent(this,UltimateStopwatchActivity.class);
+            launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
 
             // Set the info for the views that show in the notification panel.
             notification.setLatestEventInfo(this, getString(R.string.app_name), getString(R.string.countdown_complete), contentIntent);

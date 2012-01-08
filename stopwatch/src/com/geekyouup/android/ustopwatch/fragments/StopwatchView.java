@@ -582,6 +582,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		// waiting for the surface to be created
 		Log.d("USW", "Surface Created");
 		try {
+			if(thread==null) createNewThread();
 			thread.setRunning(true);
 			thread.start();
 		

@@ -50,7 +50,9 @@ public class AlarmUpdater {
         public void onStart(Intent intent, int startId) {
             // Build the widget update for today
 			//no need for a screen, this just has to refresh all content in the background
-			notifyStatusBar();
+        	//cancelCountdownAlarm(this);
+        	notifyStatusBar();
+			stopSelf();
         }
 
         private void notifyStatusBar() {

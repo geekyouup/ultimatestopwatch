@@ -13,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
-import com.geekyouup.android.ustopwatch.fragments.StopwatchView;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchView.StopwatchThead;
 
 public class StopwatchFragment extends Fragment {
@@ -123,5 +121,10 @@ public class StopwatchFragment extends Fragment {
 		mHandler = h;
 		if(mWatchThread!=null) mWatchThread.setHandler(h);
 	}
+
+    public boolean isRunning()
+    {
+        return mWatchThread!=null && (mWatchThread.isRunning() && !mWatchThread.isPaused());
+    }
 	
 }

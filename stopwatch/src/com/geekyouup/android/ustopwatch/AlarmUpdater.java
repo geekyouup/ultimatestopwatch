@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 
 public class AlarmUpdater {
 	
@@ -47,18 +48,30 @@ public class AlarmUpdater {
     public static class UpdateService extends Service {
     	
         @Override
-        public void onStart(Intent intent, int startId) {
+        public int onStartCommand(Intent intent, int flags, int startId) {
             // Build the widget update for today
 			//no need for a screen, this just has to refresh all content in the background
         	//cancelCountdownAlarm(this);
         	notifyStatusBar();
 			stopSelf();
+            return START_NOT_STICKY;
         }
 
         private void notifyStatusBar() {
+            // The PendingIntent to launch our activity if the user selects this notification
+            Intent launcher = new Intent(this,UltimateStopwatchActivity.class);
+            launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
+
             // Set the icon, scrolling text and timestamp
-            Notification notification = new Notification(R.drawable.icon,getString(R.string.countdown_complete),System.currentTimeMillis());
-            
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setContentTitle("Ultimate Stopwatch")
+                    .setSubText(getString(R.string.countdown_complete))
+                    .setSmallIcon(R.drawable.notification)
+                    .setContentIntent(contentIntent)
+                    .build();
+
+            //Notification notification = new Notification(R.drawable.icon,getString(R.string.countdown_complete),System.currentTimeMillis());
             try
             {
 	            notification.ledARGB=0xFF808080;
@@ -71,14 +84,7 @@ public class AlarmUpdater {
             {}
             
             notification.defaults |= (Notification.DEFAULT_ALL);
-            
-            // The PendingIntent to launch our activity if the user selects this notification
-            Intent launcher = new Intent(this,UltimateStopwatchActivity.class);
-            launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
 
-            // Set the info for the views that show in the notification panel.
-            notification.setLatestEventInfo(this, getString(R.string.app_name), getString(R.string.countdown_complete), contentIntent);
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             // We use a layout id because it is a unique number.  We use it later to cancel.
             notificationManager.notify(R.layout.main, notification);
@@ -86,5 +92,33 @@ public class AlarmUpdater {
         
 		@Override
 		public IBinder onBind(Intent arg0) {return null;}
+    }
+
+    public static void showChronometerNotification(Context context, long startTime)
+    {
+        // The PendingIntent to launch our activity if the user selects this notification
+        Intent launcher = new Intent(context,UltimateStopwatchActivity.class);
+        launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
+
+        Notification notification = new NotificationCompat.Builder(context)
+                .setContentTitle("Ultimate Stopwatch")
+                .setUsesChronometer(true)
+                .setWhen(System.currentTimeMillis()-startTime)
+                .setSmallIcon(R.drawable.notification)
+                .setContentIntent(contentIntent)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // We use a layout id because it is a unique number.  We use it later to cancel.
+        notificationManager.notify(R.layout.countdown, notification);
+    }
+
+    public static void cancelChronometerNotification(Context context)
+    {
+        try
+        {
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.countdown);
+        }catch(Exception e){}
     }
 }

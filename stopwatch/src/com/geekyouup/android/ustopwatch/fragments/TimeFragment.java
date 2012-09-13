@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.geekyouup.android.ustopwatch.R;
 import com.geekyouup.android.ustopwatch.TimeUtils;
 
@@ -27,9 +25,8 @@ public class TimeFragment extends Fragment implements OnClickListener{
 		if(mCounter!=null)mCounter.setOnClickListener(this);
 		
 		mSaveText = (TextView) timeView.findViewById(R.id.timefrag_savetext);
-		
 		mLapTimer = LapTimeRecorder.getInstance();
-		
+
 		timeView.setOnClickListener(this);
 		
 		return timeView;

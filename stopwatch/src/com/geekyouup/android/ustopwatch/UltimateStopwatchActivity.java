@@ -49,8 +49,6 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 	private static final String WAKE_LOCK_KEY = "ustopwatch";
 
 	public static final boolean IS_HONEYCOMB_OR_ABOVE=android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
-	public boolean isXLarge = false;
-	
 	private TimeFragment mCounterView;
 	private StopwatchFragment mStopwatchFragment;
 	private LapTimesFragment mLapTimesFragment;
@@ -120,9 +118,17 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putInt(KEY_MODE, mStopwatchFragment.getMode());
 		editor.commit();
+
+        try
+        {
+            if(mStopwatchFragment.isRunning()
+                    && mStopwatchFragment.getMode()==StopwatchFragment.MODE_STOPWATCH
+                    && mCurrentTimeMillis>0)
+                AlarmUpdater.showChronometerNotification(this,(long) mCurrentTimeMillis);
+        }catch (Exception e){}
 	}
 
-	@Override
+    @Override
 	protected void onResume() {
 		super.onResume();
 
@@ -130,6 +136,7 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 		
 		// cancel next alarm if there is one, and clear notification bar
 		AlarmUpdater.cancelCountdownAlarm(this);
+        AlarmUpdater.cancelChronometerNotification(this);
 
 		mWakeLock = mPowerMan.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
 				WAKE_LOCK_KEY);
@@ -264,7 +271,7 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 		AlertDialog mSelectTime = new AlertDialog.Builder(this).create();
 		mSelectTime.setView(ll);
 		mSelectTime.setTitle(getString(R.string.timer_title));
-		mSelectTime.setButton(getString(R.string.timer_start),
+		mSelectTime.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.timer_start),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						mDialogOnScreen = false;
@@ -275,7 +282,7 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 								mMinsValue, mSecsValue);
 					}
 				});
-		mSelectTime.setButton2(getString(R.string.timer_cancel),
+		mSelectTime.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.timer_cancel),
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						mDialogOnScreen = false;
@@ -304,7 +311,7 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 	    AlertDialog mSelectTime = new AlertDialog.Builder(this).create();
 	    mSelectTime.setView(ll);
 	    mSelectTime.setTitle(getString(R.string.timer_title));
-	    mSelectTime.setButton(getString(R.string.timer_start), new DialogInterface.OnClickListener(){
+	    mSelectTime.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.timer_start), new DialogInterface.OnClickListener(){
 			public void onClick(DialogInterface dialog, int which) {
 				//removeSplashText();
 				mDialogOnScreen=false;
@@ -314,7 +321,7 @@ public class UltimateStopwatchActivity extends ActionBarFragmentActivity {
 				mStopwatchFragment.setTime(mHoursValue,
 						mMinsValue, mSecsValue);
 			}});
-	    mSelectTime.setButton2(getString(R.string.timer_cancel), new DialogInterface.OnClickListener(){
+	    mSelectTime.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.timer_cancel), new DialogInterface.OnClickListener(){
 			public void onClick(DialogInterface dialog, int which) {
 				mDialogOnScreen=false;
 			}});

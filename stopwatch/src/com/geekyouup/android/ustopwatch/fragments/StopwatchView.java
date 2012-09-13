@@ -296,10 +296,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		}
 
 		/**
-		 * Dump game state to the provided Bundle. Typically called when the
+		 * Dump state to the provided Bundle. Typically called when the
 		 * Activity is being suspended.
-		 * 
-		 * @return Bundle with this view's state
 		 */
 		public void saveState(SharedPreferences.Editor map) {
 			synchronized (mSurfaceHolder) {
@@ -354,6 +352,11 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		public boolean isRunning() {
 			return mRun;
 		}
+
+        public boolean isPaused()
+        {
+            return (mMode != STATE_RUNNING);
+        }
 
 		/**
 		 * Sets the  mode. That is, whether we are running, paused, in the

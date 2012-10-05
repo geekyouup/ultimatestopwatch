@@ -73,7 +73,7 @@ public class CountdownFragment extends SherlockFragment {
         mSaveLapTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LapTimeRecorder.getInstance().recordLapTime(mCountdownView.getWatchTime(), getActivity());
+                LapTimeRecorder.getInstance().recordLapTime(mCountdownView.getWatchTime());
             }
         });
 
@@ -150,7 +150,6 @@ public class CountdownFragment extends SherlockFragment {
 	public void startStop()
 	{
 		mWatchThread.startStop();
-        mWatchThread.setIsStopwatchMode(false);
 	}
 	
 	public void reset()

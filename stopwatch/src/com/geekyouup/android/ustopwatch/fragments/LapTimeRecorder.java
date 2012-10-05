@@ -52,12 +52,10 @@ public class LapTimeRecorder {
 		}
 	}
 	
-	public void recordLapTime(double time, Context cxt)
+	public void recordLapTime(double time)
 	{
 		mLapTimes.add(0,time);
 		if(mLTL!=null)mLTL.lapTimesUpdated();
-		
-		if(cxt != null && mLTL==null) Toast.makeText(cxt, cxt.getString(R.string.lap_time_recorded), Toast.LENGTH_SHORT).show();
 	}
 	
 	public ArrayList<Double> getTimes()

@@ -24,7 +24,7 @@
                android:layout_alignParentBottom="true"
                android:divider="@drawable/divider_vertical"
                android:showDividers="middle"
-               android:background="#82171D">
+               android:background="@color/highlight_color">
 
     <Button android:id="@+id/startButton"
                   android:layout_width="150dp"

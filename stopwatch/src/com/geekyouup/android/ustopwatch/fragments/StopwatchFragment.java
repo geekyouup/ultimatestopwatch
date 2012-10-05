@@ -59,7 +59,7 @@ public class StopwatchFragment extends SherlockFragment {
         mSaveLapTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime(), getActivity());
+                LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime());
             }
         });
 

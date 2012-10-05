@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import android.support.v4.app.Fragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  * Time: 3:33 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TabsAdapter extends FragmentStatePagerAdapter
+public class TabsAdapter extends FragmentPagerAdapter
         implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
     private final Context mContext;
     private final ActionBar mActionBar;

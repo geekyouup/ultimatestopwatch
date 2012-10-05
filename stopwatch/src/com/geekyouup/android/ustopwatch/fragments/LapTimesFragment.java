@@ -16,7 +16,7 @@ import com.actionbarsherlock.app.SherlockListFragment;
 import com.geekyouup.android.ustopwatch.R;
 
 
-public class LapTimesFragment extends SherlockListFragment implements LapTimeListener{
+public class LapTimesFragment extends SherlockListFragment implements LapTimeListener {
 
 	private LapTimesBaseAdapter mAdapter;
 	private ArrayList<Double> mLapTimes = new ArrayList<Double>();
@@ -38,9 +38,6 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 		View v = inflater.inflate(R.layout.laptimes_fragment, container, false);
 		try{mViewFlipper = (ViewFlipper) v.findViewById(R.id.laptimes_viewflipper);}
 		catch(Exception e){}
-		
-		Log.d("USW","LaptimesFragment.onCreateView()");
-		
 		return v;
 	}
 	
@@ -112,5 +109,4 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
         mLapTimes.addAll(mLapTimeRecorder.getTimes());
 		notifyDataSetChanged();
 	}
-	
 }

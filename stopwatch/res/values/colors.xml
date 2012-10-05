@@ -21,4 +21,6 @@
     <color name="text_light_grey">#ff888888</color>
     <color name="background">#ffffffff</color>
     <color name="actionbar_title_color">#000000</color>
+    <color name="highlight_color">#82171D</color>
+	<color name="pressed_uswred">#CC82171c</color>
 </resources>

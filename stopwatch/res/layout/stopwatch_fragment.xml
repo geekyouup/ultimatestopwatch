@@ -24,7 +24,7 @@
                android:layout_alignParentBottom="true"
                android:divider="@drawable/divider_vertical"
                android:showDividers="middle"
-               android:background="#82171D">
+               android:background="@color/highlight_color">
 
     <Button android:id="@+id/startButton"
                   android:layout_width="150dp"
@@ -47,9 +47,9 @@
             />
     <Button android:id="@+id/saveButton"
             android:layout_width="60dp"
-            android:layout_height="0dp"
+            android:layout_height="50dp"
             android:background="#82171D"
-            android:text="*"
+            android:text="LAP"
             android:textSize="20dp"
             android:textColor="#ffffff"
             android:fontFamily="sans-serif-light"

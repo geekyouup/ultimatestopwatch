@@ -10,7 +10,7 @@ Stopwatch now a custom view????
 Entire app switched over to fragments, not just tablet version
 ActionBar compat for actionbar on all versions
 Support Library for fragments on all versions
-
+          -
 
 NOTE: New LapTimeRecorder model means that LapTimesFragment isn't being updated
 Future: Add ViewPager to phone version of stopwatch

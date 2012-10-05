@@ -1,5 +1,8 @@
 package com.geekyouup.android.ustopwatch;
 
+import android.text.SpannableString;
+import android.text.style.TextAppearanceSpan;
+import android.util.Log;
 import com.geekyouup.android.ustopwatch.R;
 
 import android.content.Context;
@@ -21,7 +24,7 @@ public class TimeUtils {
 	private static int mHoursValue = 0;
 
 	public static String createTimeString(double time) {
-		if (time == 0) return START_TIME;
+		if (time == 0) return new String(START_TIME);
 		boolean isNeg = false;
 		if(time<0)
 		{
@@ -38,6 +41,12 @@ public class TimeUtils {
 				+ ((numSecs < 10 ? "0" : "") + numSecs) + "." + (numMillis < 10 ? "00" : (numMillis < 100 ? "0" : ""))
 				+ numMillis;
 	}
+
+    public static SpannableString createStyledSpannableString(Context context, double time, boolean lightTheme)
+    {
+        String text  = createTimeString(time);
+        return createSpannableString(context, text, lightTheme);
+    }
 
 	public static View createTimeSelectDialogLayout(Context cxt, LayoutInflater layoutInflater) {
 		View countdownView = layoutInflater.inflate(R.layout.countdown, null);
@@ -189,4 +198,40 @@ public class TimeUtils {
 	{
 		return mHoursValue;
 	}
+
+    private static SpannableString createSpannableString(Context context, String timeText, boolean lightTheme) {
+        SpannableString sString = null;
+        try
+        {
+            if(timeText!=null && context!=null)
+            {
+                int textLength = timeText.length();
+                //calculate the span for the text colouring
+                int lastLightChar = 0;
+                for(int i=0;i<textLength;i++)
+                {
+                    if(timeText.charAt(i)=='0' || timeText.charAt(i)==':' || timeText.charAt(i)=='.' || timeText.charAt(i)=='-')
+                    {
+                        lastLightChar=i+1;
+                    }else
+                    {
+                        break;
+                    }
+                }
+
+                if(lastLightChar>0)
+                {
+                    sString = new SpannableString(timeText);
+
+                    if(lastLightChar>0) sString.setSpan(new TextAppearanceSpan(context, lightTheme?R.style.TimeTextLight:R.style.TimeTextDarkThemeDark),0,lastLightChar, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    if(lastLightChar<textLength) sString.setSpan(new TextAppearanceSpan(context, lightTheme?R.style.TimeTextDark:R.style.TimeTextDarkThemeLight), lastLightChar, textLength, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            }
+        }catch(Exception e)
+        {
+            Log.e("USW","Switched Fragment Error",e);
+        }
+
+        return sString;
+    }
 }

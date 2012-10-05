@@ -16,6 +16,6 @@
 
 <resources>
 
-    <style name="BaseTheme" parent="android:style/Theme.Holo.Light" />
+    <!--style name="BaseTheme" parent="android:style/Theme.Holo.Light" /-->
 
 </resources>

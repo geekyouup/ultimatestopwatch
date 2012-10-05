@@ -67,7 +67,7 @@ public class AlarmUpdater {
             Notification notification = new NotificationCompat.Builder(this)
                     .setContentTitle("Ultimate Stopwatch")
                     .setSubText(getString(R.string.countdown_complete))
-                    .setSmallIcon(R.drawable.notification)
+                    //.setSmallIcon(R.drawable.notification)
                     .setContentIntent(contentIntent)
                     .build();
 
@@ -105,7 +105,7 @@ public class AlarmUpdater {
                 .setContentTitle("Ultimate Stopwatch")
                 .setUsesChronometer(true)
                 .setWhen(System.currentTimeMillis()-startTime)
-                .setSmallIcon(R.drawable.notification)
+                //.setSmallIcon(R.drawable.notification)
                 .setContentIntent(contentIntent)
                 .build();
 

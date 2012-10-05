@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:layout_width="match_parent" android:layout_height="wrap_content"
 	android:orientation="vertical"
-	android:gravity="center">
+	android:gravity="center"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
 	<TextView android:id="@+id/counter_digits" android:textSize="@dimen/counter_font"
 		android:layout_width="wrap_content" android:layout_height="wrap_content"
-		android:text="@string/default_time" android:textColor="@color/text_grey"/>
-	<TextView android:id="@+id/timefrag_savetext" android:layout_width="wrap_content"
-		android:layout_height="wrap_content" android:textColor="@color/text_grey"
-		android:textSize="@dimen/small_font"
-		android:text="@string/save_time"/>
+		android:text="@string/default_time" android:textColor="@color/text_grey"
+        android:fontFamily="sans-serif-light"/>
 </LinearLayout>

@@ -16,6 +16,7 @@
 -->
 <resources>
 	<color name="white">#ffffffff</color>
+    <color name="black">#ff000000</color>
     <color name="text_grey">#ff666666</color>
     <color name="text_light_grey">#ff888888</color>
     <color name="background">#ffffffff</color>

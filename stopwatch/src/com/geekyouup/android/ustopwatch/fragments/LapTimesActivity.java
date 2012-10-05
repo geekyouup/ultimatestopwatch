@@ -5,11 +5,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.example.android.actionbarcompat.ActionBarFragmentActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.geekyouup.android.ustopwatch.R;
 import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
-public class LapTimesActivity extends ActionBarFragmentActivity {
+public class LapTimesActivity extends SherlockFragmentActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class LapTimesActivity extends ActionBarFragmentActivity {
 		setTitle(getString(R.string.laptimes));
 
 	}
-	
+	/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
@@ -46,6 +46,6 @@ public class LapTimesActivity extends ActionBarFragmentActivity {
 	    }
 			
 		return true;
-	}
+	}                    */
 	
 }

@@ -20,7 +20,21 @@
     <color name="text_grey">#ff666666</color>
     <color name="text_light_grey">#ff888888</color>
     <color name="background">#ffffffff</color>
+    <color name="countdown_background">#ff111111</color>
     <color name="actionbar_title_color">#000000</color>
     <color name="highlight_color">#82171D</color>
+
+    <color name="red_button_bg">#82171D</color>
+    <color name="red_button_bg_selected">#803033</color>
+    <color name="red_button_text">#ffffff</color>
+    <color name="red_button_text_disabled">#963D37</color>
+
+    <color name="blue_button_bg">#3098D6</color>
+    <color name="blue_button_bg_selected">#6EADDF</color>
+    <color name="blue_button_text">#ffffff</color>
+    <color name="blue_button_text_disabled">#6EADDF</color>
+
+    <color name="button_text_grey">#999999</color>
 	<color name="pressed_uswred">#CC82171c</color>
+    <color name="pressed_theme_usw">#CC3f3f3e</color>
 </resources>

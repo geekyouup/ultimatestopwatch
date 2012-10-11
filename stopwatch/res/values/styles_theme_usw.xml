@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- File created by the Android Action Bar Style Generator
+
+     Copyright (C) 2012 readyState Software Ltd
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+
+    <style name="Theme.theme_usw" parent="@style/Theme.Sherlock.Light">
+        <item name="actionBarItemBackground">@drawable/selectable_background_theme_usw</item>
+        <item name="popupMenuStyle">@style/theme_usw_PopupMenu</item>
+        <item name="dropDownListViewStyle">@style/theme_usw_DropDownListView</item>
+        <item name="actionBarTabStyle">@style/theme_usw_ActionBarTabStyle</item>
+        <item name="actionBarTabTextStyle">@style/theme_usw_ActionBarTabTextStyle</item>
+        <item name="actionDropDownStyle">@style/theme_usw_DropDownNav</item>
+        <item name="actionBarStyle">@style/theme_usw_solid_ActionBar</item>
+
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_theme_usw</item>
+        <item name="android:popupMenuStyle">@style/theme_usw_PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/theme_usw_DropDownListView</item>
+        <item name="android:actionBarTabStyle">@style/theme_usw_ActionBarTabStyle</item>
+        <item name="android:actionBarTabTextStyle">@style/theme_usw_ActionBarTabTextStyle</item>
+        <item name="android:actionDropDownStyle">@style/theme_usw_DropDownNav</item>
+        <item name="android:actionBarStyle">@style/theme_usw_solid_ActionBar</item>
+        <item name="android:panelBackground">@drawable/menu_hardkey_panel_theme_usw</item>
+        
+        
+    </style>
+
+    <style name="theme_usw_solid_ActionBar" parent="@style/Widget.Sherlock.ActionBar.Solid">
+        <item name="background">@drawable/ab_solid_theme_usw</item>
+        <item name="backgroundStacked">@drawable/ab_stacked_solid_theme_usw</item>
+        <item name="backgroundSplit">@drawable/ab_bottom_solid_theme_usw</item>
+        <item name="progressBarStyle">@style/theme_usw_ProgressBar</item>
+
+        <item name="android:background">@drawable/ab_solid_theme_usw</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_theme_usw</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_theme_usw</item>
+        <item name="android:progressBarStyle">@style/theme_usw_ProgressBar</item>
+
+        <item name="titleTextStyle">@style/CustomTitleColorBar</item>
+        <item name="android:titleTextStyle">@style/CustomTitleColorBar</item>
+    </style>
+
+    <style name="CustomTitleColorBar" parent="@style/TextAppearance.Sherlock.Widget.ActionBar.Title">
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="theme_usw_transparent_ActionBar" parent="@style/Widget.Sherlock.ActionBar">
+        <item name="background">@drawable/ab_transparent_theme_usw</item>
+        <item name="progressBarStyle">@style/theme_usw_ProgressBar</item>
+        
+        <item name="android:background">@drawable/ab_transparent_theme_usw</item>
+        <item name="android:progressBarStyle">@style/theme_usw_ProgressBar</item>
+    </style>
+	
+    <style name="theme_usw_PopupMenu" parent="@style/Widget.Sherlock.ListPopupWindow">	
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_theme_usw</item>	
+    </style>
+	
+    <style name="theme_usw_DropDownListView" parent="@style/Widget.Sherlock.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_theme_usw</item>
+    </style>
+
+    <style name="theme_usw_ActionBarTabStyle" parent="@style/Widget.Sherlock.ActionBar.TabView">
+        <item name="background">@drawable/tab_indicator_ab_theme_usw</item>
+
+        <item name="android:background">@drawable/tab_indicator_ab_theme_usw</item>
+    </style>
+
+    <style name="theme_usw_ActionBarTabTextStyle" parent="@style/Widget.Sherlock.ActionBar.TabText">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="theme_usw_DropDownNav" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
+        <item name="background">@drawable/spinner_background_ab_theme_usw</item>
+
+        <item name="android:background">@drawable/spinner_background_ab_theme_usw</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_theme_usw</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_theme_usw</item>
+    </style>
+    
+    <style name="theme_usw_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_theme_usw</item>
+    </style>
+    
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.theme_usw.widget" parent="@style/Theme.Sherlock">
+        <item name="popupMenuStyle">@style/theme_usw_PopupMenu</item>
+        <item name="dropDownListViewStyle">@style/theme_usw_DropDownListView</item>
+        
+        <item name="android:popupMenuStyle">@style/theme_usw_PopupMenu</item>
+        <item name="android:dropDownListViewStyle">@style/theme_usw_DropDownListView</item>
+    </style>    
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="theme_usw_DropDownItem" parent="@style/Widget.Sherlock.Light.DropDownItem.Spinner">
+        <item name="android:textAppearance">?android:attr/textAppearanceInverse</item>
+    </style>
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="theme_usw_SpinnerItem" parent="@style/Widget.Sherlock.TextView.SpinnerItem">
+        <item name="android:textAppearance">?android:attr/textAppearanceInverse</item>
+    </style>
+
+</resources>

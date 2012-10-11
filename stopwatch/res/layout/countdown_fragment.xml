@@ -2,14 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#ff000000">
+    android:background="@color/countdown_background">
 
     <TextView android:id="@+id/time_counter" android:textSize="@dimen/counter_font"
               android:layout_width="match_parent" android:layout_height="wrap_content"
-              android:text="@string/default_time" android:textColor="@color/text_grey"
+              android:text="@string/default_time" android:textColor="@color/white"
               android:fontFamily="sans-serif-light"
               android:layout_alignParentTop="true"
-              android:gravity="center_horizontal"/>
+              android:gravity="center_horizontal"
+            android:background="@color/countdown_background"/>
 
     <com.geekyouup.android.ustopwatch.fragments.StopwatchView
       android:id="@+id/cdview"
@@ -17,41 +18,41 @@
       android:layout_height="fill_parent"
       android:layout_marginBottom="50dp"
       android:layout_below="@id/time_counter"
-      android:background="@color/black"/>
+      android:background="@color/countdown_background"/>
 
 <LinearLayout android:layout_width="match_parent"
                android:layout_height="50dp"
                android:layout_alignParentBottom="true"
-               android:divider="@drawable/divider_vertical"
+               android:divider="@drawable/divider_vertical_blue"
                android:showDividers="middle"
-               android:background="@color/highlight_color">
+               android:background="@color/blue_button_bg">
 
     <Button android:id="@+id/startButton"
                   android:layout_width="150dp"
                   android:layout_height="50dp"
-                  android:background="#82171D"
+                  android:background="@drawable/blue_button_bg_color"
                   android:text="START"
                   android:textSize="20dp"
-                  android:textColor="#ffffff"
+                  android:textColor="@drawable/blue_button_text_color"
                   android:fontFamily="sans-serif-light"
         />
 
     <Button android:id="@+id/resetButton"
             android:layout_width="150dp"
             android:layout_height="50dp"
-            android:background="#82171D"
+            android:background="@drawable/blue_button_bg_color"
             android:text="RESET"
             android:textSize="20dp"
-            android:textColor="#ffffff"
+            android:textColor="@drawable/blue_button_text_color"
             android:fontFamily="sans-serif-light"
             />
     <Button android:id="@+id/saveButton"
             android:layout_width="60dp"
-            android:layout_height="0dp"
-            android:background="#82171D"
-            android:text="*"
+            android:layout_height="50dp"
+            android:background="@drawable/blue_button_bg_color"
+            android:text="LAP"
             android:textSize="20dp"
-            android:textColor="#ffffff"
+            android:textColor="@drawable/blue_button_text_color"
             android:fontFamily="sans-serif-light"
             />
 

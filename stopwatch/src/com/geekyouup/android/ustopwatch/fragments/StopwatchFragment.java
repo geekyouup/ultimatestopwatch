@@ -1,6 +1,8 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
+import android.content.Intent;
 import android.os.Message;
+import android.provider.Settings;
 import android.widget.Button;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -39,19 +41,19 @@ public class StopwatchFragment extends SherlockFragment {
         mTimerText = (TextView) swView.findViewById(R.id.counter_text);
         mStopwatchView = (StopwatchView) swView.findViewById(R.id.swview);//new StopwatchView(getActivity(), null);
 
-        mResetButton = (Button) swView.findViewById(R.id.resetButton);
-		mResetButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				reset();
-			}
-		});
-
         mStartButton = (Button) swView.findViewById(R.id.startButton);
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startStop();
+            }
+        });
+
+        mResetButton = (Button) swView.findViewById(R.id.resetButton);
+        mResetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reset();
             }
         });
 
@@ -113,7 +115,8 @@ public class StopwatchFragment extends SherlockFragment {
 		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		Log.d("USW","Resume settings has state set to: " + settings.getInt("state", -1));
 		mStopwatchView.restoreState(settings);
-	}
+        mResetButton.setEnabled(true);
+    }
 
 	@Override
 	public void onDestroyView() {
@@ -125,11 +128,16 @@ public class StopwatchFragment extends SherlockFragment {
 	public void startStop()
 	{
 		mWatchThread.startStop();
+        boolean isRunning = isRunning();
+        mResetButton.setEnabled(true);
+        mStartButton.setText(isRunning?"PAUSE":"START");
 	}
 	
 	public void reset()
 	{
 		mWatchThread.reset();
+        mResetButton.setEnabled(false);
+        mStartButton.setText("START");
 	}
 	
 	public void setTime(int hour, int minute, int seconds)

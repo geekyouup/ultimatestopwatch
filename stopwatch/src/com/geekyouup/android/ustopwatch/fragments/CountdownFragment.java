@@ -11,10 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -47,11 +44,18 @@ public class CountdownFragment extends SherlockFragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Log.d("USW","CountdownFragment: onCreateView");
 
 		View cdView = inflater.inflate(R.layout.countdown_fragment, null);
         mCountdownView = (StopwatchView) cdView.findViewById(R.id.cdview);
         mTimerText = (TextView) cdView.findViewById(R.id.time_counter);
+        mTimerText.setOnTouchListener(new View.OnTouchListener(){
+            @Override
+            public boolean onTouch(View v, MotionEvent m)
+            {
+               if(mCurrentTimeMillis == 0) requestTimeDialog();
+               return true;
+            }
+        });
 
         mResetButton = (Button) cdView.findViewById(R.id.resetButton);
         mResetButton.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +141,7 @@ public class CountdownFragment extends SherlockFragment {
         mCountdownView.restoreState(settings);
         mCurrentTimeMillis = mCountdownView.getWatchTime();
 
-        //if(mCurrentTimeMillis==0 && !isRunning()) requestTimeDialog();
+        mResetButton.setEnabled(true);
 	}
 
 	@Override
@@ -150,11 +154,16 @@ public class CountdownFragment extends SherlockFragment {
 	public void startStop()
 	{
 		mWatchThread.startStop();
+        boolean isRunning = isRunning();
+        mResetButton.setEnabled(true);
+        mStartButton.setText(isRunning?"PAUSE":"START");
 	}
 	
 	public void reset()
 	{
 		mWatchThread.reset();
+        mResetButton.setEnabled(false);
+        mStartButton.setText("START");
 	}
 	
 	public void setTime(int hour, int minute, int seconds)
@@ -165,7 +174,12 @@ public class CountdownFragment extends SherlockFragment {
     private void setTime(double millis)
     {
         if(mTimerText!=null)
-            mTimerText.setText(TimeUtils.createStyledSpannableString(getSherlockActivity(), millis,false));
+        {
+            if(millis == 0)
+                mTimerText.setText("set countdown");
+            else
+                mTimerText.setText(TimeUtils.createStyledSpannableString(getSherlockActivity(), millis,false));
+        }
     }
 
     public boolean isRunning()

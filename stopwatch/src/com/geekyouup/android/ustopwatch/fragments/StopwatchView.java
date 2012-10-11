@@ -27,7 +27,7 @@ import android.view.View;
  * Animated view that draws the stopwatch, takes keystrokes, etc.
  */
 public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback {
-	public class StopwatchThead extends Thread {
+	public class StopwatchThead extends Thread implements OnTouchListener {
 		/*
 		 * State-tracking constants
 		 */
@@ -77,11 +77,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		/** Indicate whether the surface has been created & is ready to draw */
 		private boolean mRun = false;
 		private boolean mSkipDraw = false;
+        private long mTouching = 0L;
 
 		/** Handle to the surface manager object we interact with */
 		private SurfaceHolder mSurfaceHolder;
 		private Handler mHandler;
 		private Context mContext;
+        int mCountDownBGColor = 0xff000000;
 
 		public StopwatchThead(SurfaceHolder surfaceHolder, Context context, boolean isStopwatchMode) {
 			// get handles to some important objects
@@ -92,10 +94,11 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			Resources res = mContext.getResources();
 			loadGraphics(res, isStopwatchMode());
 
+            mCountDownBGColor = getResources().getColor(R.color.countdown_background);
+
             //fix the background colour shearing when swiping by setting the surface on top of the window
             //and fixing the window bg color
             setZOrderOnTop(true);
-            //setBackgroundColor(isStopwatchMode?0xffffffff:0xff000000);
 		}
 
 		private void loadGraphics(Resources res, boolean isStopwatch)
@@ -254,7 +257,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		 */
 		private void doDraw(Canvas canvas) {
 			// Draw the background image. Operations on the Canvas accumulate
-            canvas.drawColor(isStopwatchMode()?Color.WHITE:Color.BLACK);
+            canvas.drawColor(isStopwatchMode()?Color.WHITE:mCountDownBGColor);
 			canvas.drawBitmap(mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
 
             // draw the mins hand with its current rotatiom
@@ -418,16 +421,23 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			loadGraphics(null, isStopwatchMode);
 		}
 
-		/*public boolean onTouch(View v, MotionEvent event) {
+		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				mTouching = true;
-				startStop();
-			}else if (event.getAction() == MotionEvent.ACTION_UP) {
-				mTouching = false;
-			}
-			
+				mTouching = System.currentTimeMillis();
+			}else if(event.getAction() == MotionEvent.ACTION_MOVE)
+            {
+                if(mTouching>0 && System.currentTimeMillis()-mTouching > 1000)
+                    mTouching=0L;   //reset touch if user is swiping
+            }
+            else if(event.getAction() == MotionEvent.ACTION_UP)
+            {
+                if(mTouching>0)// && System.currentTimeMillis()-mTouching < 500)
+                    startStop();
+
+                mTouching=0L;
+            }
 			return true;
-		} */
+		}
 		
 		// none trackball devices
 		public boolean doKeypress(int keyCode) {
@@ -541,7 +551,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 	public StopwatchThead createNewThread(boolean isStopwatchMode) {
 		this.mStopwatchMode=isStopwatchMode;
         if(thread==null) thread = new StopwatchThead(sHolder, mContext, isStopwatchMode);
-		//setOnTouchListener(thread); //touching the stopwatch no longer starts and stops it.
+		setOnTouchListener(thread); //touching the stopwatch no longer starts and stops it.
 		return thread;
 	}
 

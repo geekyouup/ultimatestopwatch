@@ -8,8 +8,8 @@
 	<supports-screens android:smallScreens="true"
 		android:normalScreens="true" android:largeScreens="true"
 		android:xlargeScreens="true" />	
-	<application android:icon="@drawable/icon" android:label="@string/app_name"
-		android:debuggable="false" android:hardwareAccelerated="true" android:theme="@style/Theme.uswred">
+	<application android:icon="@drawable/icon" android:label="@string/app_name_caps"
+		android:debuggable="false" android:hardwareAccelerated="true" android:theme="@style/Theme.theme_usw">
 
 		<activity android:name=".UltimateStopwatchActivity"
 			android:label="@string/app_name" android:windowSoftInputMode="adjustNothing">

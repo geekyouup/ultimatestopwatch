@@ -11,6 +11,8 @@ import android.util.Log;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.Menu;
 import com.geekyouup.android.ustopwatch.fragments.*;
 
 public class UltimateStopwatchActivity extends SherlockFragmentActivity {
@@ -23,7 +25,6 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 	private static final String WAKE_LOCK_KEY = "ustopwatch";
 
 	public static final boolean IS_HONEYCOMB_OR_ABOVE=android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
-	//private TimeFragment mCounterView;
 	private LapTimesFragment mLapTimesFragment;
 	private double mCurrentTimeMillis = 0;
     private ViewPager mViewPager;
@@ -36,7 +37,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 		setContentView(R.layout.main);
 
         getSupportActionBar().setIcon(R.drawable.actionbaricon);
-        setTitle(getString(R.string.app_name));
+        setTitle(getString(R.string.app_name_caps));
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
         ActionBar.Tab tab1 = getSupportActionBar().newTab().setText("STOPWATCH");
@@ -47,6 +48,8 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
         mTabsAdapter.addTab(tab1,StopwatchFragment.class,null);
         mTabsAdapter.addTab(tab2,LapTimesFragment.class,null);
         mTabsAdapter.addTab(tab3, CountdownFragment.class,null);
+
+
 
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -93,20 +96,20 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 		mWakeLock.acquire();
 	}
 
-	/*public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
-		MenuInflater inflater = getMenuInflater();
-		if(mStopwatchFragment.getMode() == StopwatchFragment.MODE_STOPWATCH)
-		{
+		MenuInflater inflater = getSupportMenuInflater();
+		//if(mStopwatchFragment.getMode() == StopwatchFragment.MODE_STOPWATCH)
+		//{
 			inflater.inflate(R.menu.menu, menu);
-		}else
-		{
-			inflater.inflate(R.menu.countdown_menu, menu);
-		}
+		//}else
+		//{/
+		//	inflater.inflate(R.menu.countdown_menu, menu);
+		//}
 		return true;
 	}
-
+     /*
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.menu_switchmode) {

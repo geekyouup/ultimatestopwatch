@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="horizontal"
+              android:layout_alignParentTop="true"
+              android:background="@color/background">
+
+    <com.geekyouup.android.ustopwatch.fragments.StopwatchView
+            android:id="@+id/swview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/white"
+            android:layout_weight="1"/>
+
+    <RelativeLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="1"
+                android:gravity="center">
+
+    <TextView android:id="@+id/counter_text" android:textSize="@dimen/counter_font"
+              android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:text="@string/default_time" android:textColor="@color/text_grey"
+              android:fontFamily="sans-serif-light"
+              android:gravity="center"
+              />
+
+        <LinearLayout
+                android:id="@+id/buttonbar"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/counter_text"
+                android:divider="@drawable/divider_vertical_grey"
+                android:showDividers="middle"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:layout_marginTop="5dp">
+
+            <Button android:id="@+id/startButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:textColor="@drawable/red_button_landscape_text_color"
+                    android:text="START"
+                    android:textSize="18dp"
+                    android:fontFamily="sans-serif-light"
+                    />
+
+            <Button android:id="@+id/resetButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="RESET"
+                    android:textSize="18dp"
+                    android:background="@color/white"
+                    android:textColor="@drawable/red_button_landscape_text_color"
+                    android:fontFamily="sans-serif-light"
+                    />
+            <Button android:id="@+id/saveButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="LAP"
+                    android:textSize="18dp"
+                    android:background="@color/white"
+                    android:textColor="@drawable/red_button_landscape_text_color"
+                    android:fontFamily="sans-serif-light"
+                    />
+        </LinearLayout>
+        </RelativeLayout>
+</LinearLayout>

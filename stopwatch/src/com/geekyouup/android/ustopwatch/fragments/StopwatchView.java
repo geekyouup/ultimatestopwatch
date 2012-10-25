@@ -38,6 +38,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private static final String KEY_STATE = "state";
 		private static final String KEY_LASTTIME = "lasttime";
 		private static final String KEY_NOWTIME = "currenttime";
+        private static final String KEY_COUNTDOWN_SUFFIX = "_cd";
 		private double mScaleFactor = 1; //how much to scale the images up or down by
 		/*
 		 * Member (state) fields
@@ -291,9 +292,9 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 						AlarmUpdater.cancelCountdownAlarm(mContext); //just to be sure
 					}
 
-					map.putInt(KEY_STATE, mMode);
-					map.putLong(KEY_LASTTIME, mLastTime);
-					map.putLong(KEY_NOWTIME, (long) mDisplayTimeMillis);
+					map.putInt(KEY_STATE+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), mMode);
+					map.putLong(KEY_LASTTIME+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), mLastTime);
+					map.putLong(KEY_NOWTIME+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), (long) mDisplayTimeMillis);
 				} else {
 					map.clear();
 				}
@@ -308,13 +309,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private synchronized void restoreState(SharedPreferences savedState) {
 			synchronized (mSurfaceHolder) {
 				if (savedState != null) {
-					setState(savedState.getInt(KEY_STATE, STATE_PAUSE));
-					mLastTime = savedState.getLong(KEY_LASTTIME, System.currentTimeMillis());
-					mDisplayTimeMillis = savedState.getLong(KEY_NOWTIME, 0);
+					setState(savedState.getInt(KEY_STATE+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), STATE_PAUSE));
+					mLastTime = savedState.getLong(KEY_LASTTIME+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), System.currentTimeMillis());
+					mDisplayTimeMillis = savedState.getLong(KEY_NOWTIME+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), 0);
 					loadGraphics(null, mStopwatchMode);
 					updatePhysics();
 				}
-				
+				notifyStateChanged();
 				AlarmUpdater.cancelCountdownAlarm(mContext); //just to be sure
 			}
 		}
@@ -400,6 +401,17 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
             }
         }
 
+        private void notifyStateChanged()
+        {
+            if (mHandler != null) {
+                Message msg = mHandler.obtainMessage();
+                Bundle b = new Bundle();
+                b.putBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE, true);
+                msg.setData(b);
+                mHandler.sendMessage(msg);
+            }
+        }
+
 
 		public void startStop() {
 			if (mMode == STATE_PAUSE) {
@@ -409,6 +421,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			} else {
 				doStart();
 			}
+
+            notifyStateChanged();
 		}
 
 		public boolean isStopwatchMode() {
@@ -477,14 +491,23 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			int bgImageWidth = mBackgroundImage.getWidth();
 			int bgImageHeight = mBackgroundImage.getHeight();
 			mScaleFactor=1;
-			
-			if(bgImageWidth > mCanvasWidth) mScaleFactor = ((double) mCanvasWidth / (double) bgImageWidth);
+
+         	if(bgImageWidth > mCanvasWidth) mScaleFactor = ((double) mCanvasWidth / (double) bgImageWidth);
 			if(bgImageHeight > mCanvasHeight)
             {   double mScaleFactor2 = ((double)mCanvasHeight / (double) bgImageHeight);
                 if(mScaleFactor2<mScaleFactor) mScaleFactor = mScaleFactor2;
             }
-			
-			Log.d("USW","ScaleFactor " + mScaleFactor);
+
+            /*mScaleFactor = ((double) mCanvasWidth / (double) bgImageWidth);
+            if( ((double)bgImageHeight*mScaleFactor) > mCanvasHeight)
+            {
+                //double mScaleFactor2 = ((double)mCanvasHeight / (double) bgImageHeight);
+                //if(mScaleFactor2<mScaleFactor) mScaleFactor = mScaleFactor2;
+                mScaleFactor = ((double) mCanvasHeight / (double) bgImageHeight);
+            } */
+
+
+            Log.d("USW","ScaleFactor " + mScaleFactor);
 			if(mScaleFactor != 1)
 			{
 				mBackgroundImage = Bitmap
@@ -601,7 +624,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 	 * never be touched again!
 	 */
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		Log.d("USW", "Surface DESTORYED");
+		Log.d("USW", "Surface DESTROYED");
 
 		// we have to tell thread to shut down & wait for it to finish, or else
 		// it might touch the Surface after we return and explode

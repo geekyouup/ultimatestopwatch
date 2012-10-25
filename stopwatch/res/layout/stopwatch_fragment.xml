@@ -15,44 +15,48 @@
       android:id="@+id/swview"
       android:layout_width="fill_parent"
       android:layout_height="fill_parent"
-      android:layout_marginBottom="50dp"
+      android:layout_marginBottom="45dp"
       android:layout_below="@id/counter_text"
       android:background="@color/white"/>
 
 <LinearLayout android:layout_width="match_parent"
-               android:layout_height="50dp"
+               android:layout_height="wrap_content"
                android:layout_alignParentBottom="true"
                android:divider="@drawable/divider_vertical"
                android:showDividers="middle"
-               android:background="@color/highlight_color">
+               android:background="@color/highlight_color"
+               android:orientation="horizontal">
 
     <Button android:id="@+id/startButton"
-                  android:layout_width="150dp"
-                  android:layout_height="50dp"
+                  android:layout_width="match_parent"
+                  android:layout_height="45dp"
                   android:background="@drawable/red_button_bg_color"
-                  android:text="START"
+                  android:text="@string/start"
                   android:textSize="20dp"
                   android:textColor="@drawable/red_button_text_color"
                   android:fontFamily="sans-serif-light"
-        />
+                  android:layout_weight="3"
+            />
 
     <Button android:id="@+id/resetButton"
-            android:layout_width="150dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
             android:background="@drawable/red_button_bg_color"
-            android:text="RESET"
+            android:text="@string/reset"
             android:textSize="20dp"
             android:textColor="@drawable/red_button_text_color"
             android:fontFamily="sans-serif-light"
+            android:layout_weight="3"
             />
     <Button android:id="@+id/saveButton"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
             android:background="@drawable/red_button_bg_color"
-            android:text="LAP"
+            android:text="@string/lap"
             android:textSize="20dp"
             android:textColor="@drawable/red_button_text_color"
             android:fontFamily="sans-serif-light"
+            android:layout_weight="4"
             />
 
 </LinearLayout>

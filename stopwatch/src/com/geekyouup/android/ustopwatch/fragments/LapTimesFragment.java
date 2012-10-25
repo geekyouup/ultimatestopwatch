@@ -14,6 +14,7 @@ import android.widget.ViewFlipper;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.geekyouup.android.ustopwatch.R;
+import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
 
 public class LapTimesFragment extends SherlockListFragment implements LapTimeListener {
@@ -47,7 +48,9 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 		getListView().setCacheColorHint(Color.WHITE);
 		mAdapter=new LapTimesBaseAdapter(getActivity(), mLapTimes);
 		setListAdapter(mAdapter);
-		
+
+        ((UltimateStopwatchActivity)getActivity()).registerLapTimeFragment(this);
+
 		Log.d("USW","LaptimesFragment.onStart()");
 	}
 	
@@ -105,6 +108,8 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 
 	@Override
 	public void lapTimesUpdated() {
+        if(mLapTimeRecorder==null) mLapTimeRecorder = LapTimeRecorder.getInstance();
+
         mLapTimes.clear();
         mLapTimes.addAll(mLapTimeRecorder.getTimes());
 		notifyDataSetChanged();

@@ -2,11 +2,14 @@ package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.ArrayList;
 
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.geekyouup.android.ustopwatch.R;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
+import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
 public class LapTimeRecorder {
 	
@@ -14,7 +17,6 @@ public class LapTimeRecorder {
 	private static final String PREFS_NAME_LAPTIMES = "usw_prefs_laptimes";
 	private static final String KEY_LAPTIME_X = "LAPTIME_";
 	private static LapTimeRecorder mSelf;
-	private LapTimeListener mLTL;
 	
 	public static LapTimeRecorder getInstance()
 	{
@@ -52,29 +54,34 @@ public class LapTimeRecorder {
 		}
 	}
 	
-	public void recordLapTime(double time)
+	public void recordLapTime(double time, UltimateStopwatchActivity activity)
 	{
 		mLapTimes.add(0,time);
-		if(mLTL!=null)mLTL.lapTimesUpdated();
-	}
+
+        if(activity!=null)
+        {
+            LapTimesFragment ltf = activity.getLapTimeFragment();
+            if(ltf != null) ltf.lapTimesUpdated();
+        }
+    }
 	
 	public ArrayList<Double> getTimes()
 	{
 		return mLapTimes;
 	}
 	
-	public void reset(Context cxt)
+	public void reset(UltimateStopwatchActivity activity)
 	{
 		mLapTimes.clear();
-		SharedPreferences settings = cxt.getSharedPreferences(PREFS_NAME_LAPTIMES, Context.MODE_PRIVATE);
+		SharedPreferences settings = activity.getSharedPreferences(PREFS_NAME_LAPTIMES, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.clear();
 		editor.commit();
-		if(mLTL!=null)mLTL.lapTimesUpdated();
-	}
-	
-	public void setLaptimeListener(LapTimeListener ltl)
-	{
-		mLTL = ltl;
+
+        if(activity!=null)
+        {
+            LapTimesFragment ltf = activity.getLapTimeFragment();
+            if(ltf != null) ltf.lapTimesUpdated();
+        }
 	}
 }

@@ -37,8 +37,7 @@ public class CountdownFragment extends SherlockFragment {
     private SoundPool soundPool;
     public static final int SOUND_ALARM = 1;
     private HashMap<Integer, Integer> soundPoolMap;
-	
-	private static final String PREFS_NAME="USW_SWFRAG_PREFS";
+
     public static final String MSG_REQUEST_COUNTDOWN_DLG = "msg_usw_counter";
     public static final String MSG_COUNTDOWN_COMPLETE = "msg_countdown_complete";
 	
@@ -92,7 +91,7 @@ public class CountdownFragment extends SherlockFragment {
 	public void onPause() {
 		super.onPause();
 		Log.d("USW","onPause StopwatchFragment");
-		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		SharedPreferences settings = getActivity().getSharedPreferences(UltimateStopwatchActivity.PREFS_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
 		mWatchThread.saveState(editor);
 		editor.commit();
@@ -139,10 +138,12 @@ public class CountdownFragment extends SherlockFragment {
             });
         }
 
-		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+		SharedPreferences settings = getActivity().getSharedPreferences(UltimateStopwatchActivity.PREFS_NAME, Context.MODE_PRIVATE);
 		Log.d("USW","Resume settings has state set to: " + settings.getInt("state", -1));
         mCountdownView.restoreState(settings);
         mCurrentTimeMillis = mCountdownView.getWatchTime();
+
+        ((UltimateStopwatchActivity) getSherlockActivity()).registerCountdownFragment(this);
 
        //now handled by the StopwatchView callback to stateChanged
        // mResetButton.setEnabled(true);
@@ -168,11 +169,23 @@ public class CountdownFragment extends SherlockFragment {
 		mWatchThread.reset();
         mResetButton.setEnabled(false);
         mStartButton.setText(getString(R.string.start));
+        setTime(mLastHour,mLastMin,mLastSec);
 	}
-	
+
+    int mLastHour = 0;
+    int mLastMin = 0;
+    int mLastSec = 0;
+    public void setTime(int hour, int minute, int seconds)
+    {
+        mLastHour=hour;
+        mLastMin=minute;
+        mLastSec=seconds;
+        mWatchThread.setTime(hour, minute, seconds,false);
+    }
+
 	public void setTimeAndStart(int hour, int minute, int seconds)
 	{
-		mWatchThread.setTime(hour, minute, seconds);
+		mWatchThread.setTime(hour, minute, seconds,true);
         mResetButton.setEnabled(true);
         mStartButton.setText(getString(R.string.pause));
 	}
@@ -181,10 +194,7 @@ public class CountdownFragment extends SherlockFragment {
     {
         if(mTimerText!=null)
         {
-            if(millis == 0)
-                mTimerText.setText("set countdown");
-            else
-                mTimerText.setText(TimeUtils.createStyledSpannableString(getSherlockActivity(), millis,false));
+             mTimerText.setText(TimeUtils.createStyledSpannableString(getSherlockActivity(), millis,false));
         }
     }
 
@@ -257,7 +267,7 @@ public class CountdownFragment extends SherlockFragment {
                         mHoursValue = npHours.getValue();
                         mMinsValue = npMins.getValue();
                         mSecsValue = npSecs.getValue();
-                        setTimeAndStart(mHoursValue,
+                        setTime(mHoursValue,
                                 mMinsValue, mSecsValue);
                     }
                 });
@@ -298,7 +308,7 @@ public class CountdownFragment extends SherlockFragment {
                 mHoursValue = TimeUtils.getDlgHours();
                 mMinsValue = TimeUtils.getDlgMins();
                 mSecsValue = TimeUtils.getDlgSecs();
-                setTimeAndStart(mHoursValue,
+                setTime(mHoursValue,
                         mMinsValue, mSecsValue);
             }});
         mSelectTime.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.timer_cancel), new DialogInterface.OnClickListener(){

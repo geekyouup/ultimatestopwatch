@@ -22,10 +22,11 @@ import java.util.ArrayList;
  */
 public class TabsAdapter extends FragmentPagerAdapter
         implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
-    private final Context mContext;
+    private final SherlockFragmentActivity mActivity;
     private final ActionBar mActionBar;
     private final ViewPager mViewPager;
     private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
+    private int mCurrentTab = 0;
 
     static final class TabInfo {
         private final Class<?> clss;
@@ -39,11 +40,13 @@ public class TabsAdapter extends FragmentPagerAdapter
 
     public TabsAdapter(SherlockFragmentActivity activity, ViewPager pager) {
         super(activity.getSupportFragmentManager());
-        mContext = activity;
+        mActivity = activity;
         mActionBar = activity.getSupportActionBar();
         mViewPager = pager;
         mViewPager.setAdapter(this);
         mViewPager.setOnPageChangeListener(this);
+
+
     }
 
     public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {
@@ -63,7 +66,7 @@ public class TabsAdapter extends FragmentPagerAdapter
     @Override
     public Fragment getItem(int position) {
         TabInfo info = mTabs.get(position);
-        return Fragment.instantiate(mContext,
+        return Fragment.instantiate(mActivity,
                 info.clss.getName(), info.args);
     }
 
@@ -87,8 +90,11 @@ public class TabsAdapter extends FragmentPagerAdapter
         for (int i = 0; i < mTabs.size(); i++) {
             if (mTabs.get(i) == tag) {
                 mViewPager.setCurrentItem(i);
+                mCurrentTab = i;
             }
         }
+
+        mActivity.invalidateOptionsMenu();
     }
 
     @Override
@@ -97,5 +103,10 @@ public class TabsAdapter extends FragmentPagerAdapter
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+    }
+
+    public int getCurrentTabNum()
+    {
+        return mCurrentTab;
     }
 }

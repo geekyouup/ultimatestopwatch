@@ -4,7 +4,7 @@
     <string name="app_name_caps">ULTIMATE STOPWATCH</string>
 	<string name="message_stopped">Stopped</string>
 	<string name="timer_title">Set Countdown Timer</string>
-	<string name="timer_start">Start</string>
+	<string name="timer_start">OK</string>
 	<string name="timer_cancel">Cancel</string>
 	
 	<string name="save_time">save time</string>

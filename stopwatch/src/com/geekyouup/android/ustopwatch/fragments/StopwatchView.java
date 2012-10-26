@@ -160,8 +160,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 		public void reset() {
 			resetVars();
-			if (!isStopwatchMode() && mDisplayTimeMillis <= 0) requestCountdownDialog();
-			broadcastClockTime(0);
+			//if (!isStopwatchMode() && mDisplayTimeMillis <= 0) requestCountdownDialog();
+			//broadcastClockTime(0);
 		}
 
 		private void resetVars() {
@@ -176,7 +176,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			}
 		}
 
-		public void setTime(int hour, int minute, int seconds) {
+		public void setTime(int hour, int minute, int seconds, boolean start) {
 			synchronized (mSurfaceHolder) {
 				setState(STATE_READY);
 				mLastTime = System.currentTimeMillis();
@@ -184,7 +184,11 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				mSecsAngle = (Math.PI * 2 * ((double) seconds / 60.0));
 				mDisplayTimeMillis = hour * 3600000 + minute * 60000 + seconds * 1000;
 				
-				doStart();
+				if(start) doStart();
+                else
+                {
+                    updatePhysics();
+                }
 			}
 		}
 
@@ -247,7 +251,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				resetVars(); // applies pause state
 				if (mHandler != null) {
                     notifyCountdownComplete();
-					requestCountdownDialog();
+					//requestCountdownDialog();
 				}
 
 			}
@@ -357,7 +361,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			// stop timer at end
 			if (!isStopwatchMode() && mDisplayTimeMillis <= 0) {
 				resetVars(); // applies pause state
-				requestCountdownDialog();
+				//requestCountdownDialog();
 			} else {
 				// Move the real time clock up to now
 				synchronized (mSurfaceHolder) {

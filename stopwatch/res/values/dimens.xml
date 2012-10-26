@@ -7,4 +7,5 @@
 	<dimen name="counter_font">50sp</dimen>
 	<dimen name="launchtext_size">32sp</dimen>
 	<dimen name="reset_btn_size">72dp</dimen>
+    <dimen name="bottom_bar_portrait_button_font_size">16dp</dimen>
 </resources>

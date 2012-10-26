@@ -29,7 +29,7 @@
                 android:showDividers="middle"
                 android:paddingLeft="30dp"
                 android:paddingRight="30dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 >
 
             <Button android:id="@+id/startButton"

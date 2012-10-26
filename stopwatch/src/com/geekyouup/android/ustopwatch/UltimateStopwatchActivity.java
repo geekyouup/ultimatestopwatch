@@ -2,6 +2,7 @@ package com.geekyouup.android.ustopwatch;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
@@ -26,12 +27,17 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 	public static final String MSG_UPDATE_COUNTER_TIME = "msg_update_counter";
 	public static final String MSG_NEW_TIME_DOUBLE = "msg_new_time_double";
     public static final String MSG_STATE_CHANGE = "msg_state_change";
+    private static final String KEY_AUDIO_STATE = "key_audio_state";
 	private static final String WAKE_LOCK_KEY = "ustopwatch";
+    public static final String PREFS_NAME="USW_SWFRAG_PREFS";
 
 	public static final boolean IS_HONEYCOMB_OR_ABOVE=android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 	private LapTimesFragment mLapTimesFragment;
+    private CountdownFragment mCountdownFragment;
     private ViewPager mViewPager;
     private TabsAdapter mTabsAdapter;
+    boolean mAudioOn = true;
+    private Menu mMenu;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -54,7 +60,6 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
         mTabsAdapter.addTab(tab2,LapTimesFragment.class,null);
         mTabsAdapter.addTab(tab3, CountdownFragment.class,null);
 
-
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
@@ -70,7 +75,12 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 	protected void onPause() {
 		super.onPause();
 		mWakeLock.release();
-		
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(KEY_AUDIO_STATE,mAudioOn);
+        editor.commit();
+
 		LapTimeRecorder.getInstance().saveTimes(this);
 	}
 
@@ -83,15 +93,36 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 		mWakeLock = mPowerMan.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
 				WAKE_LOCK_KEY);
 		mWakeLock.acquire();
-	}
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        mAudioOn = settings.getBoolean(KEY_AUDIO_STATE,true);
+
+        if(mMenu!= null)
+        {
+            MenuItem audioButton = mMenu.findItem(R.id.menu_audiotoggle);
+            if(audioButton!=null) audioButton.setIcon(mAudioOn?R.drawable.audio_on:R.drawable.audio_off);
+        }
+    }
 
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
 		MenuInflater inflater = getSupportMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
 
-		return true;
+        int currentTab = mTabsAdapter.getCurrentTabNum();
+        if(currentTab == 2)
+        {
+            inflater.inflate(R.menu.menu_countdown, menu);
+        }else
+        {
+            inflater.inflate(R.menu.menu, menu);
+        }
+
+        //get audio icon and set correct varient
+        MenuItem audioButton = menu.findItem(R.id.menu_audiotoggle);
+        if(audioButton!=null) audioButton.setIcon(mAudioOn?R.drawable.audio_on:R.drawable.audio_off);
+        mMenu=menu;
+        return true;
 	}
 
     @Override
@@ -104,6 +135,14 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
         }else if(item.getItemId() == R.id.menu_clearlaps)
         {
             LapTimeRecorder.getInstance().reset(this);
+        }else if(item.getItemId() == R.id.menu_resettime)
+        {
+            //get hold of countdown fragment and call reset, call back to here?
+            if(mCountdownFragment!=null) mCountdownFragment.requestTimeDialog();
+        }else if(item.getItemId() == R.id.menu_audiotoggle)
+        {
+            mAudioOn = !mAudioOn;
+            item.setIcon(mAudioOn?R.drawable.audio_on:R.drawable.audio_off);
         }
 
         return true;
@@ -118,70 +157,10 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     {
         return mLapTimesFragment;
     }
-     /*
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == R.id.menu_switchmode) {
-			final int newMode = (mStopwatchFragment.getMode() == StopwatchFragment.MODE_STOPWATCH) ? StopwatchFragment.MODE_COUNTDOWN
-					: StopwatchFragment.MODE_STOPWATCH;
-			mStopwatchFragment.setMode(newMode);
-			mCounterView.setMode(newMode);
 
-			if (mStopwatchFragment.getMode() == StopwatchFragment.MODE_COUNTDOWN) requestTimeDialog();
-			
-			if(IS_HONEYCOMB_OR_ABOVE)
-			{
-				invalidateOptionsMenu();
-			} 
-			
-			
-			if(IS_HONEYCOMB_OR_ABOVE && mLapTimesFragment!=null && mLapTimesFragment.getView()!=null)
-			{
-				ObjectAnimator oa = ObjectAnimator.ofFloat(mLapTimesFragment.getView(), "rotationY", 0,90);
-			    oa.setDuration(250);
-			    oa.addListener(new AnimatorListenerAdapter() {
-			    	@Override
-			    	public void onAnimationEnd(Animator animation) {
-			    		super.onAnimationEnd(animation);
-			    		mLapTimesFragment.setMode(newMode);
-			    		ObjectAnimator oa2 = ObjectAnimator.ofFloat(mLapTimesFragment.getView(), "rotationY", -90,0)
-			    			.setDuration(250);
-			    		
-			    		oa2.addListener(new AnimatorListenerAdapter() {
-			    			@Override
-			    			public void onAnimationEnd(Animator animation) {
-			    				super.onAnimationEnd(animation);
-			    				if (newMode == StopwatchFragment.MODE_COUNTDOWN) {
-			    					requestTimeDialog();
-			    				}
-			    			}
-			    		});
-			    		oa2.start();
-			    	}
-			    });
-				oa.start();
-			}
-		} else if (item.getItemId() == R.id.menu_laptimes) {
-			//this menu item is only available on non-xlarge
-			Intent startLaptimes = new Intent(this, LapTimesActivity.class);
-			startActivity(startLaptimes);
-		}else if (item.getItemId() == R.id.menu_clearlaps) {
-			LapTimeRecorder.getInstance().reset(this);
-		}
-
-		return true;
-	}    */
-
-	/*private void reset() {
-		mStopwatchFragment.reset();
-		mLapTimesFragment.reset();
-
-		if (mCounterView != null)
-			mCounterView.resetTime();
-
-		if (mStopwatchFragment.getMode() == StopwatchFragment.MODE_COUNTDOWN)
-			requestTimeDialog();
-	}*/
-
+    public void registerCountdownFragment(CountdownFragment cdf)
+    {
+        mCountdownFragment = cdf;
+    }
 
 }

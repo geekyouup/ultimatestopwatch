@@ -37,8 +37,6 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.laptimes_fragment, container, false);
-		try{mViewFlipper = (ViewFlipper) v.findViewById(R.id.laptimes_viewflipper);}
-		catch(Exception e){}
 		return v;
 	}
 	

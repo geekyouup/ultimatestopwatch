@@ -1,23 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="fill_parent"
-android:layout_height="wrap_content"
+android:layout_height="100dp"
 android:orientation="horizontal"
-android:gravity="center_horizontal"
-android:padding="2dp">
+android:background="@color/white"
+android:gravity="center_vertical"
+android:paddingTop="20dp"
+android:paddingBottom="20dp" >
 <TextView
     android:id="@+id/laptime_text"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:gravity="left"
     android:textSize="@dimen/med_font"
-    android:paddingRight="30dp"
-    android:textColor="@color/text_grey"
+    android:textColor="@color/button_text_grey"
+    android:fontFamily="sans-serif-light"
+    android:text="00:00:00.000"
 />
+    <ImageView android:id="@+id/laptime_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:background="@drawable/laptime_divider_grey"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"/>
 <TextView
     android:id="@+id/laptime_text2"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:gravity="right"
     android:textSize="@dimen/med_font"
-    android:textColor="@color/text_light_grey"
-/>
+    android:textColor="@color/button_text_grey"
+    android:fontFamily="sans-serif-light"
+    android:text="00:00:00.000"
+        />
 </LinearLayout>

@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Message;
 import android.provider.Settings;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.geekyouup.android.ustopwatch.AlarmUpdater;
-import com.geekyouup.android.ustopwatch.R;
-import com.geekyouup.android.ustopwatch.TimeUtils;
-import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
+import com.geekyouup.android.ustopwatch.*;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -29,15 +27,19 @@ public class StopwatchFragment extends SherlockFragment {
 	private StopwatchThead mWatchThread;
 	private Button mResetButton;
     private Button mStartButton;
-    private Button mSaveLapTimeButton;
+    private View mSaveLapTimeButton;
     private TextView mTimerText;
     private double mCurrentTimeMillis=0;
+    private SoundManager mSoundManager;
 	
 	private static final String PREFS_NAME="USW_SWFRAG_PREFS";
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View swView = inflater.inflate(R.layout.stopwatch_fragment, null);
+
+        mSoundManager = SoundManager.getInstance(getSherlockActivity());
+
+        View swView = inflater.inflate(R.layout.stopwatch_fragment, null);
         mTimerText = (TextView) swView.findViewById(R.id.counter_text);
         mStopwatchView = (StopwatchView) swView.findViewById(R.id.swview);//new StopwatchView(getActivity(), null);
 
@@ -57,11 +59,15 @@ public class StopwatchFragment extends SherlockFragment {
             }
         });
 
-        mSaveLapTimeButton = (Button) swView.findViewById(R.id.saveButton);
+        mSaveLapTimeButton = (View) swView.findViewById(R.id.saveButton);
         mSaveLapTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime(),(UltimateStopwatchActivity)getSherlockActivity());
+                if(isRunning())
+                {
+                    LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime(),(UltimateStopwatchActivity)getSherlockActivity());
+                    mSoundManager.playSound(SoundManager.SOUND_LAPTIME);
+                }
             }
         });
 
@@ -118,10 +124,6 @@ public class StopwatchFragment extends SherlockFragment {
 		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		Log.d("USW","Resume settings has state set to: " + settings.getInt("state", -1));
 		mStopwatchView.restoreState(settings);
-
-        //now handled by the StopwatchView callback to stateChanged
-        //mResetButton.setEnabled(true);
-        //mStartButton.setText(isRunning()?getString(R.string.pause):getString(R.string.start));
     }
 
 	@Override
@@ -142,11 +144,25 @@ public class StopwatchFragment extends SherlockFragment {
         boolean isRunning = isRunning();
         mResetButton.setEnabled(isRunning || (mCurrentTimeMillis!=0));
         mStartButton.setText(isRunning?getString(R.string.pause):getString(R.string.start));
+
+        if(isRunning)
+        {
+            mSoundManager.playSound(SoundManager.SOUND_START);
+            mSoundManager.startStopwatchTicking();
+        }else
+        {
+            mSoundManager.playSound(SoundManager.SOUND_STOP);
+            mSoundManager.stopStopwatchTicking();;
+        }
     }
 
 	public void reset()
 	{
 		mWatchThread.reset();
+
+        mSoundManager.playSound(SoundManager.SOUND_RESET);
+        mSoundManager.stopStopwatchTicking();
+
         mResetButton.setEnabled(false);
         mStartButton.setText(getString(R.string.start));
 	}

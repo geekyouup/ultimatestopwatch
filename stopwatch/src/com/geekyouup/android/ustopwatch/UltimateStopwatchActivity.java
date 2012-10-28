@@ -31,14 +31,14 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     public static final String MSG_STATE_CHANGE = "msg_state_change";
     private static final String KEY_AUDIO_STATE = "key_audio_state";
 	private static final String WAKE_LOCK_KEY = "ustopwatch";
-    public static final String PREFS_NAME="USW_SWFRAG_PREFS";
+    public static final String PREFS_NAME="USW_PREFS";
 
 	public static final boolean IS_HONEYCOMB_OR_ABOVE=android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 	private LapTimesFragment mLapTimesFragment;
     private CountdownFragment mCountdownFragment;
+    private SoundManager mSoundManager;
     private ViewPager mViewPager;
     private TabsAdapter mTabsAdapter;
-    private static boolean mAudioOn = true;
     private Menu mMenu;
 
 	/** Called when the activity is first created. */
@@ -47,8 +47,11 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-        getSupportActionBar().setIcon(R.drawable.icon);
+        getSupportActionBar().setIcon(R.drawable.icon_ab);
         setTitle(getString(R.string.app_name_caps));
+
+        mSoundManager = SoundManager.getInstance(this);
+
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(2);
 
@@ -80,10 +83,11 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean(KEY_AUDIO_STATE,mAudioOn);
+        editor.putBoolean(KEY_AUDIO_STATE,mSoundManager.isAudioOn());
         editor.commit();
 
 		LapTimeRecorder.getInstance().saveTimes(this);
+        mSoundManager.muteTicking();
 	}
 
     @Override
@@ -97,12 +101,12 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 		mWakeLock.acquire();
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        mAudioOn = settings.getBoolean(KEY_AUDIO_STATE,true);
+        mSoundManager.setAudioState(settings.getBoolean(KEY_AUDIO_STATE,true));
 
         if(mMenu!= null)
         {
             MenuItem audioButton = mMenu.findItem(R.id.menu_audiotoggle);
-            if(audioButton!=null) audioButton.setIcon(mAudioOn?R.drawable.audio_on:R.drawable.audio_off);
+            if(audioButton!=null) audioButton.setIcon(mSoundManager.isAudioOn()?R.drawable.audio_on:R.drawable.audio_off);
         }
     }
 
@@ -122,7 +126,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 
         //get audio icon and set correct varient
         MenuItem audioButton = menu.findItem(R.id.menu_audiotoggle);
-        if(audioButton!=null) audioButton.setIcon(mAudioOn?R.drawable.audio_on:R.drawable.audio_off);
+        if(audioButton!=null) audioButton.setIcon(mSoundManager.isAudioOn()?R.drawable.audio_on:R.drawable.audio_off);
         mMenu=menu;
         return true;
 	}
@@ -143,8 +147,8 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
             if(mCountdownFragment!=null) mCountdownFragment.requestTimeDialog();
         }else if(item.getItemId() == R.id.menu_audiotoggle)
         {
-            mAudioOn = !mAudioOn;
-            item.setIcon(mAudioOn?R.drawable.audio_on:R.drawable.audio_off);
+            mSoundManager.setAudioState(!(mSoundManager.isAudioOn()));
+            item.setIcon(mSoundManager.isAudioOn()?R.drawable.audio_on:R.drawable.audio_off);
         }
 
         return true;
@@ -164,10 +168,4 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     {
         mCountdownFragment = cdf;
     }
-
-    public static boolean isAudioOn()
-    {
-        return mAudioOn;
-    }
-
 }

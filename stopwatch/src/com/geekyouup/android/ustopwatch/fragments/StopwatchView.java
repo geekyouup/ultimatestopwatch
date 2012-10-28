@@ -400,7 +400,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
         }
 
 
-		public void startStop() {
+		public boolean startStop() {
 			if (mMode == STATE_PAUSE) {
 				unpause();
 			} else if (mMode == STATE_RUNNING) {
@@ -410,6 +410,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			}
 
             notifyStateChanged();
+            return (mMode == STATE_RUNNING);
 		}
 
 		public boolean isStopwatchMode() {

@@ -39,6 +39,7 @@
     <string name="start">START</string>
     <string name="pause">PAUSE</string>
     <string name="reset">RESET</string>
+    <string name="set">SET</string>
     <string name="lap">LAP</string>
 
 </resources>

@@ -40,7 +40,7 @@
                     android:textColor="@drawable/blue_button_landscape_text_color"
                     android:text="START"
                     android:textSize="18dp"
-                    android:fontFamily="sans-serif-light"
+                    android:fontFamily="sans-serif"
                     />
 
             <Button android:id="@+id/resetButton"
@@ -51,7 +51,7 @@
                     android:textSize="18dp"
                     android:background="@color/countdown_background"
                     android:textColor="@drawable/blue_button_landscape_text_color"
-                    android:fontFamily="sans-serif-light"
+                    android:fontFamily="sans-serif"
                     />
             <Button android:id="@+id/saveButton"
                     android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                     android:textSize="18dp"
                     android:background="@color/countdown_background"
                     android:textColor="@drawable/blue_button_landscape_text_color"
-                    android:fontFamily="sans-serif-light"
+                    android:fontFamily="sans-serif"
                     />
         </LinearLayout>
         </RelativeLayout>

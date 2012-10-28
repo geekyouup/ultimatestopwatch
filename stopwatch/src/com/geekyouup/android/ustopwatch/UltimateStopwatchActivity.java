@@ -1,5 +1,7 @@
 package com.geekyouup.android.ustopwatch;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -36,7 +38,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     private CountdownFragment mCountdownFragment;
     private ViewPager mViewPager;
     private TabsAdapter mTabsAdapter;
-    boolean mAudioOn = true;
+    private static boolean mAudioOn = true;
     private Menu mMenu;
 
 	/** Called when the activity is first created. */
@@ -45,7 +47,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-        getSupportActionBar().setIcon(R.drawable.actionbaricon);
+        getSupportActionBar().setIcon(R.drawable.icon);
         setTitle(getString(R.string.app_name_caps));
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(2);
@@ -161,6 +163,11 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     public void registerCountdownFragment(CountdownFragment cdf)
     {
         mCountdownFragment = cdf;
+    }
+
+    public static boolean isAudioOn()
+    {
+        return mAudioOn;
     }
 
 }

@@ -160,8 +160,6 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 		public void reset() {
 			resetVars();
-			//if (!isStopwatchMode() && mDisplayTimeMillis <= 0) requestCountdownDialog();
-			//broadcastClockTime(0);
 		}
 
 		private void resetVars() {
@@ -249,11 +247,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			if (mMode == STATE_RUNNING && !isStopwatchMode() && mDisplayTimeMillis <= 0) {
                 Log.d("USW","updatePhysics resetting timer mDisplayTime="+mDisplayTimeMillis);
 				resetVars(); // applies pause state
-				if (mHandler != null) {
-                    notifyCountdownComplete();
-					//requestCountdownDialog();
-				}
-
+                notifyCountdownComplete();
 			}
 		}		
 		
@@ -382,24 +376,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				mHandler.sendMessage(msg);
 			}
 		}
-		
-		private void requestCountdownDialog()
-		{
-			if (mHandler != null) {
-				Message msg = mHandler.obtainMessage();
-				Bundle b = new Bundle();
-				b.putBoolean(CountdownFragment.MSG_REQUEST_COUNTDOWN_DLG, true);
-				msg.setData(b);
-				mHandler.sendMessage(msg);
-			}
-		}
 
         private void notifyCountdownComplete()
         {
             if (mHandler != null) {
                 Message msg = mHandler.obtainMessage();
                 Bundle b = new Bundle();
-                b.putBoolean(CountdownFragment.MSG_REQUEST_COUNTDOWN_DLG, true);
+                b.putBoolean(CountdownFragment.MSG_COUNTDOWN_COMPLETE, true);
                 msg.setData(b);
                 mHandler.sendMessage(msg);
             }

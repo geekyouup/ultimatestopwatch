@@ -9,8 +9,9 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
+import android.text.AndroidCharacter;
 
 public class AlarmUpdater {
 	
@@ -64,10 +65,10 @@ public class AlarmUpdater {
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
 
             // Set the icon, scrolling text and timestamp
-            Notification notification = new NotificationCompat.Builder(this)
+            Notification notification = new Notification.Builder(this)
                     .setContentTitle("Ultimate Stopwatch")
                     .setSubText(getString(R.string.countdown_complete))
-                    //.setSmallIcon(R.drawable.notification)
+                    .setSmallIcon(R.drawable.notification_icon)
                     .setContentIntent(contentIntent)
                     .build();
 
@@ -96,29 +97,56 @@ public class AlarmUpdater {
 
     public static void showChronometerNotification(Context context, long startTime)
     {
-        // The PendingIntent to launch our activity if the user selects this notification
-        Intent launcher = new Intent(context,UltimateStopwatchActivity.class);
-        launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+        {
+            // The PendingIntent to launch our activity if the user selects this notification
+            Intent launcher = new Intent(context,UltimateStopwatchActivity.class);
+            launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
 
-        Notification notification = new NotificationCompat.Builder(context)
-                .setContentTitle("Ultimate Stopwatch")
-                .setUsesChronometer(true)
-                .setWhen(System.currentTimeMillis()-startTime)
-                //.setSmallIcon(R.drawable.notification)
-                .setContentIntent(contentIntent)
-                .build();
+            Notification notification = new Notification.Builder(context)
+                    .setContentTitle("Ultimate Stopwatch")
+                    .setUsesChronometer(true)
+                    .setWhen(System.currentTimeMillis() - startTime)
+                    .setSmallIcon(R.drawable.notification_icon)
+                    .setContentIntent(contentIntent)
+                    .build();
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // We use a layout id because it is a unique number.  We use it later to cancel.
-        notificationManager.notify(R.layout.countdown, notification);
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            // We use a layout id because it is a unique number.  We use it later to cancel.
+            notificationManager.notify(R.layout.stopwatch_fragment, notification);
+        }
     }
+
+    /*public static void showCountdownChronometerNotification(Context context, long endTime)
+    {
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+        {
+            // The PendingIntent to launch our activity if the user selects this notification
+            Intent launcher = new Intent(context,UltimateStopwatchActivity.class);
+            launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
+
+            Notification notification = new Notification.Builder(context)
+                    .setContentTitle("Ultimate Stopwatch")
+                    .setUsesChronometer(true)
+                    .setWhen(System.currentTimeMillis() + endTime)
+                    .setSmallIcon(R.drawable.notification_icon)
+                    .setContentIntent(contentIntent)
+                    .build();
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            // We use a layout id because it is a unique number.  We use it later to cancel.
+            notificationManager.notify(R.layout.countdown_fragment, notification);
+        }
+    }  */
 
     public static void cancelChronometerNotification(Context context)
     {
         try
         {
-            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.countdown);
+            ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.stopwatch_fragment);
+            //((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.countdown_fragment);
         }catch(Exception e){}
     }
 }

@@ -201,11 +201,15 @@ public class TimeUtils {
 
     private static SpannableString createSpannableString(Context context, String timeText, boolean lightTheme) {
         SpannableString sString = null;
+
         try
         {
             if(timeText!=null && context!=null)
             {
                 int textLength = timeText.length();
+
+                Log.d("USW", "span timeText:" + timeText + ", context:" + context);
+
                 //calculate the span for the text colouring
                 int lastLightChar = 0;
                 for(int i=0;i<textLength;i++)
@@ -219,10 +223,10 @@ public class TimeUtils {
                     }
                 }
 
+                sString = new SpannableString(timeText);
+
                 if(lastLightChar>0)
                 {
-                    sString = new SpannableString(timeText);
-
                     if(lastLightChar>0) sString.setSpan(new TextAppearanceSpan(context, lightTheme?R.style.TimeTextLight:R.style.TimeTextDarkThemeDark),0,lastLightChar, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
                     if(lastLightChar<textLength) sString.setSpan(new TextAppearanceSpan(context, lightTheme?R.style.TimeTextDark:R.style.TimeTextDarkThemeLight), lastLightChar, textLength, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
@@ -231,7 +235,6 @@ public class TimeUtils {
         {
             Log.e("USW","Switched Fragment Error",e);
         }
-
         return sString;
     }
 }

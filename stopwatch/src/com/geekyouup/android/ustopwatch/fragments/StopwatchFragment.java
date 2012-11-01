@@ -41,7 +41,7 @@ public class StopwatchFragment extends SherlockFragment {
 
         View swView = inflater.inflate(R.layout.stopwatch_fragment, null);
         mTimerText = (TextView) swView.findViewById(R.id.counter_text);
-        mStopwatchView = (StopwatchView) swView.findViewById(R.id.swview);//new StopwatchView(getActivity(), null);
+        mStopwatchView = (StopwatchView) swView.findViewById(R.id.swview);
 
         mStartButton = (Button) swView.findViewById(R.id.startButton);
         mStartButton.setOnClickListener(new View.OnClickListener() {
@@ -101,15 +101,13 @@ public class StopwatchFragment extends SherlockFragment {
 		super.onResume();
 
 		mWatchThread = mStopwatchView.createNewThread(true);
-
         if(mWatchThread!=null)
         {
             mWatchThread.setHandler(new Handler() {
                 @Override
                 public void handleMessage(Message m) {
                     if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME,false)) {
-                        mCurrentTimeMillis = m.getData().getDouble(
-                                UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
+                        mCurrentTimeMillis = m.getData().getDouble(UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
                         setTime(mCurrentTimeMillis);
                     }else if(m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE,false))
                     {

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent" android:layout_height="fill_parent"
+              android:orientation="vertical"
+              android:background="@color/white"
+              android:paddingLeft="20dp"
+              android:paddingRight="20dp">
+
+
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="SETTINGS"
+              android:textColor="#999999"
+              android:textSize="15dp"
+              android:fontFamily="sans-serif"
+              android:textStyle="bold"
+              android:paddingLeft="5dp"
+              android:paddingTop="20dp"/>
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="3dp"
+            android:background="#B2B2B2"
+            android:layout_marginTop="2dp"/>
+
+    <CheckBox android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sound for Seconds"
+            android:textColor="#222222"
+            android:textSize="16dp"
+            android:fontFamily="sans-serif"
+            android:paddingLeft="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:id="@+id/settings_seconds_sound"
+            />
+
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#EBEBEB"/>
+
+    <CheckBox android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Endless alert"
+            android:textColor="#222222"
+            android:textSize="16dp"
+            android:fontFamily="sans-serif"
+            android:paddingLeft="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:id="@+id/settings_endless_alert"/>
+
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="ABOUT"
+              android:textColor="#999999"
+              android:textSize="15dp"
+              android:fontFamily="sans-serif"
+              android:textStyle="bold"
+              android:paddingLeft="5dp"
+              android:layout_marginTop="20dp"/>
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="3dp"
+            android:background="#B2B2B2"
+            android:layout_marginTop="2dp"/>
+
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="The Ultimate Stopwatch, developed by Rich 'GeekYouUp' Hyndman and designed by marie-schweiz.de"
+              android:textColor="#222222"
+              android:textSize="14dp"
+              android:fontFamily="sans-serif"
+              android:paddingLeft="5dp"
+              android:layout_marginTop="10dp"/>
+
+</LinearLayout>

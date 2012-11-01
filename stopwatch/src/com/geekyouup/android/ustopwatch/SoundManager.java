@@ -6,13 +6,6 @@ import android.media.SoundPool;
 
 import java.util.HashMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: rhyndman
- * Date: 10/28/12
- * Time: 5:59 PM
- * To change this template use File | Settings | File Templates.
- */
 public class SoundManager {
 
     private Context mContext;
@@ -94,7 +87,7 @@ public class SoundManager {
 
     private void startTicking()
     {
-        if(mAudioOn && mTickStreamId==0)
+        if(mAudioOn && mTickStreamId==0 && SettingsActivity.isTicking())
         {
             AudioManager mgr = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
             float streamVolume = mgr
@@ -121,6 +114,11 @@ public class SoundManager {
             try{soundPool.stop(mTickStreamId);}catch(Exception e){}
             mTickStreamId=0;
         }
+    }
+
+    public void unmuteTicking()
+    {
+        if(mAudioOn && (isCountdownTicking || isStopwatchTicking)) startTicking();
     }
 
     public void setAudioState(boolean on)

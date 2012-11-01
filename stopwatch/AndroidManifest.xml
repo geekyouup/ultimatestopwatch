@@ -8,22 +8,22 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false"/>
 	<supports-screens android:smallScreens="true"
 		android:normalScreens="true" android:largeScreens="true"
-		android:xlargeScreens="true" />	
+		android:xlargeScreens="true" />
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:debuggable="false" android:hardwareAccelerated="true" android:theme="@style/Theme.theme_usw">
 
 		<activity android:name=".UltimateStopwatchActivity"
-			android:label="@string/app_name" android:windowSoftInputMode="adjustNothing">
+			android:label="@string/app_name" android:windowSoftInputMode="adjustNothing" >
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".fragments.LapTimesActivity"
-			android:label="@string/app_name"
-			android:windowSoftInputMode="adjustNothing" />
-		
+		<activity android:name=".SettingsActivity"
+			android:label="@string/app_name_caps"
+            android:icon="@drawable/icon_ab"/>
+
 		<service android:name=".AlarmUpdater$UpdateService" />
 
 	</application>

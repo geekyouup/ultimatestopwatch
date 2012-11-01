@@ -137,20 +137,25 @@ public class StopwatchFragment extends SherlockFragment {
         setUIState();
 	}
 
+    private boolean mRunningState = false;
     private void setUIState()
     {
-        boolean isRunning = isRunning();
-        mResetButton.setEnabled(isRunning || (mCurrentTimeMillis!=0));
-        mStartButton.setText(isRunning?getString(R.string.pause):getString(R.string.start));
+        boolean stateChanged = (mRunningState != isRunning());
+        mRunningState = isRunning();
+        mResetButton.setEnabled(mRunningState || (mCurrentTimeMillis!=0));
+        mStartButton.setText(mRunningState?getString(R.string.pause):getString(R.string.start));
 
-        if(isRunning)
+        if(stateChanged)
         {
-            mSoundManager.playSound(SoundManager.SOUND_START);
-            mSoundManager.startStopwatchTicking();
-        }else
-        {
-            mSoundManager.playSound(SoundManager.SOUND_STOP);
-            mSoundManager.stopStopwatchTicking();;
+            if(mRunningState)
+            {
+                mSoundManager.playSound(SoundManager.SOUND_START);
+                mSoundManager.startStopwatchTicking();
+            }else
+            {
+                mSoundManager.playSound(SoundManager.SOUND_STOP);
+                mSoundManager.stopStopwatchTicking();;
+            }
         }
     }
 

@@ -30,6 +30,8 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 	public static final String MSG_NEW_TIME_DOUBLE = "msg_new_time_double";
     public static final String MSG_STATE_CHANGE = "msg_state_change";
     private static final String KEY_AUDIO_STATE = "key_audio_state";
+    protected static final String KEY_TICKING = "key_ticking_on";
+    protected static final String KEY_ENDLESS_ALARM = "key_endless_alarm_on";
 	private static final String WAKE_LOCK_KEY = "ustopwatch";
     public static final String PREFS_NAME="USW_PREFS";
 
@@ -102,6 +104,9 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         mSoundManager.setAudioState(settings.getBoolean(KEY_AUDIO_STATE,true));
+        SettingsActivity.setTicking(settings.getBoolean(KEY_TICKING,false));
+        SettingsActivity.setEndlessAlarm(settings.getBoolean(KEY_ENDLESS_ALARM,false));
+
 
         if(mMenu!= null)
         {
@@ -149,6 +154,11 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
         {
             mSoundManager.setAudioState(!(mSoundManager.isAudioOn()));
             item.setIcon(mSoundManager.isAudioOn()?R.drawable.audio_on:R.drawable.audio_off);
+        }else if (item.getItemId() == R.id.menu_settings)
+        {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            intent.setData(Uri.parse(getString(R.string.play_store_uri)));
+            startActivity(intent);
         }
 
         return true;

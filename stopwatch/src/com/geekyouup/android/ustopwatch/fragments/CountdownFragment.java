@@ -253,8 +253,9 @@ public class CountdownFragment extends SherlockFragment {
         if (mDialogOnScreen)
             return;
 
-        LayoutInflater inflator = (LayoutInflater) getSherlockActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View ll = inflator.inflate(R.layout.countdown_picker,null);
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(getSherlockActivity(), android.R.style.Theme_Holo);
+        final LayoutInflater inflater = (LayoutInflater) wrapper.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View ll = inflater.inflate(R.layout.countdown_picker,null);
 
         final NumberPicker npHours = (NumberPicker) ll.findViewById(R.id.numberPickerHours);
         npHours.setMaxValue(99);
@@ -268,7 +269,7 @@ public class CountdownFragment extends SherlockFragment {
         npSecs.setMaxValue(59);
         npSecs.setValue(mSecsValue);
 
-        AlertDialog mSelectTime = new AlertDialog.Builder(getSherlockActivity()).create();
+        AlertDialog mSelectTime = new AlertDialog.Builder(wrapper).create();
         mSelectTime.setView(ll);
         mSelectTime.setTitle(getString(R.string.timer_title));
         mSelectTime.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.timer_start),
@@ -301,14 +302,15 @@ public class CountdownFragment extends SherlockFragment {
         if(mDialogOnScreen) return;
 
         LayoutInflater inflator = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View countdownView = TimeUtils.createTimeSelectDialogLayout(activity, inflator);
+        View ll = TimeUtils.createTimeSelectDialogLayout(activity, inflator);
 
-        LinearLayout ll = new LinearLayout(activity);
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        ll.addView(countdownView);
-        ll.setGravity(Gravity.CENTER);
+        //LinearLayout ll = new LinearLayout(activity);
+        //ll.setOrientation(LinearLayout.HORIZONTAL);
+        //ll.addView(countdownView);
+        //ll.setGravity(Gravity.CENTER);
 
         AlertDialog mSelectTime = new AlertDialog.Builder(activity).create();
+
         mSelectTime.setView(ll);
         mSelectTime.setTitle(getString(R.string.timer_title));
         mSelectTime.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.timer_start), new DialogInterface.OnClickListener(){

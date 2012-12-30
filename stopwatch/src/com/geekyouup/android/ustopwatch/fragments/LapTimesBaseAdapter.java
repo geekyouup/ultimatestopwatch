@@ -3,6 +3,7 @@ package com.geekyouup.android.ustopwatch.fragments;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,13 +49,14 @@ public class LapTimesBaseAdapter extends BaseAdapter {
 		if(v == null) v = mLayoutInflator.inflate(R.layout.laptimes_holder_list_item,null);
 
         LinearLayout listItemHolder = (LinearLayout) v.findViewById(R.id.laptimes_list_item_holder);
+        listItemHolder.removeAllViews();
+
         LapTimeBlock ltb = mDataSet.get(position);
         ArrayList<Double> lapTimes  = ltb.getLapTimes();
-
+        Log.d("USW", "Laptime Adapter returning pos " +position + " with " + lapTimes.size()+ " laptimes");
         for(int i=0;i<lapTimes.size();i++)
         {
             View lapItemView =  mLayoutInflator.inflate(R.layout.laptime_item,null);
-
             if(i==0)
             {
                 TextView t = (TextView) lapItemView.findViewById(R.id.laptime_text);

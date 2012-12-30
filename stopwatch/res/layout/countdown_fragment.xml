@@ -36,7 +36,7 @@
                   android:textSize="@dimen/bottom_bar_portrait_button_font_size"
                   android:textColor="@drawable/blue_button_text_color"
                   android:fontFamily="sans-serif"
-                  android:layout_weight="3"
+                  android:layout_weight="1"
             />
 
     <Button android:id="@+id/resetButton"
@@ -47,9 +47,9 @@
             android:textSize="@dimen/bottom_bar_portrait_button_font_size"
             android:textColor="@drawable/blue_button_text_color"
             android:fontFamily="sans-serif"
-            android:layout_weight="3"
+            android:layout_weight="1"
             />
-    <ImageButton android:id="@+id/saveButton"
+    <!--ImageButton android:id="@+id/saveButton"
                  android:layout_width="match_parent"
                  android:layout_height="45dp"
                  android:background="@drawable/blue_button_bg_color"
@@ -57,7 +57,7 @@
                  android:layout_weight="4"
                  android:padding="11dp"
                  android:scaleType="fitCenter"
-            />
+            /-->
 
 </LinearLayout>
 

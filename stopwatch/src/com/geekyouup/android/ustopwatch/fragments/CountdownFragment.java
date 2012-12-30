@@ -74,7 +74,7 @@ public class CountdownFragment extends SherlockFragment {
             }
         });
 
-        mSaveLapTimeButton = (View) cdView.findViewById(R.id.saveButton);
+        /*mSaveLapTimeButton = (View) cdView.findViewById(R.id.saveButton);
         mSaveLapTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +83,7 @@ public class CountdownFragment extends SherlockFragment {
                     mSoundManager.playSound(SoundManager.SOUND_LAPTIME);
                 }
             }
-        });
+        });*/
 
 		return cdView;
 	}

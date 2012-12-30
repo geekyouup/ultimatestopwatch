@@ -29,9 +29,26 @@
             android:textSize="16dp"
             android:fontFamily="sans-serif"
             android:paddingLeft="5dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:id="@+id/settings_seconds_sound"
+            />
+
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#EBEBEB"/>
+
+    <CheckBox android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="Vibrate on Alert"
+              android:textColor="#222222"
+              android:textSize="16dp"
+              android:fontFamily="sans-serif"
+              android:paddingLeft="5dp"
+              android:layout_marginTop="8dp"
+              android:layout_marginBottom="8dp"
+              android:id="@+id/settings_vibrate"
             />
 
     <View
@@ -46,8 +63,8 @@
             android:textSize="16dp"
             android:fontFamily="sans-serif"
             android:paddingLeft="5dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:id="@+id/settings_endless_alert"/>
 
     <TextView android:layout_width="match_parent"

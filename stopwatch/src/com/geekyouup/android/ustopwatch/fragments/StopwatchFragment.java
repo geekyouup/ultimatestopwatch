@@ -55,6 +55,7 @@ public class StopwatchFragment extends SherlockFragment {
         mResetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                LapTimeRecorder.getInstance().stopwatchReset();
                 reset();
             }
         });

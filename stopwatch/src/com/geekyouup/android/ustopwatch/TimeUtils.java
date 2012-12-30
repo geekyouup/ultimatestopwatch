@@ -207,9 +207,6 @@ public class TimeUtils {
             if(timeText!=null && context!=null)
             {
                 int textLength = timeText.length();
-
-                Log.d("USW", "span timeText:" + timeText + ", context:" + context);
-
                 //calculate the span for the text colouring
                 int lastLightChar = 0;
                 for(int i=0;i<textLength;i++)

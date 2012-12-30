@@ -20,7 +20,7 @@ import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 public class LapTimesFragment extends SherlockListFragment implements LapTimeListener {
 
 	private LapTimesBaseAdapter mAdapter;
-	private ArrayList<Double> mLapTimes = new ArrayList<Double>();
+	private ArrayList<LapTimeBlock> mLapTimes = new ArrayList<LapTimeBlock>();
 	private static final String PREFS_NAME_LAPTIMESFRAG = "usw_prefs_laptimesfrag";
 	private static final String KEY_CURRENT_VIEW = "current_view";
 	private ViewFlipper mViewFlipper;
@@ -107,6 +107,7 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 	@Override
 	public void lapTimesUpdated() {
         if(mLapTimeRecorder==null) mLapTimeRecorder = LapTimeRecorder.getInstance();
+        if(mLapTimes==null) mLapTimes=new ArrayList<LapTimeBlock>() ;
 
         mLapTimes.clear();
         mLapTimes.addAll(mLapTimeRecorder.getTimes());

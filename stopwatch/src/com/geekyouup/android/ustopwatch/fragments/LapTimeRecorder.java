@@ -17,6 +17,10 @@ public class LapTimeRecorder {
 	private static final String PREFS_NAME_LAPTIMES = "usw_prefs_laptimes";
 	private static final String KEY_LAPTIME_X = "LAPTIME_";
 	private static LapTimeRecorder mSelf;
+
+    private int mCurrentLapTimeIndex = 0;
+
+    //if a 0 laptime is stored then it is a reset signal and start of new block
 	
 	public static LapTimeRecorder getInstance()
 	{
@@ -30,9 +34,11 @@ public class LapTimeRecorder {
 		if (settings != null) {
             int lapTimeNum=0;
             mLapTimes.clear();
-            while(settings.getLong(KEY_LAPTIME_X+lapTimeNum,-1L) != -1L)
+            double lt=0;
+            while((lt = settings.getLong(KEY_LAPTIME_X+lapTimeNum,-1L)) != -1L)
             {
-            	mLapTimes.add((double) settings.getLong(KEY_LAPTIME_X+lapTimeNum,0L));
+            	mLapTimes.add(lt);
+                if(lt==0) mCurrentLapTimeIndex++;
             	lapTimeNum++;
             }
 		}
@@ -57,6 +63,7 @@ public class LapTimeRecorder {
 	public void recordLapTime(double time, UltimateStopwatchActivity activity)
 	{
 		mLapTimes.add(0,time);
+        if(time == 0) mCurrentLapTimeIndex++;
 
         if(activity!=null)
         {
@@ -64,15 +71,37 @@ public class LapTimeRecorder {
             if(ltf != null) ltf.lapTimesUpdated();
         }
     }
-	
-	public ArrayList<Double> getTimes()
+
+    public void stopwatchReset()
+    {
+        mLapTimes.add(0,0d);
+    }
+
+	public ArrayList<LapTimeBlock> getTimes()
 	{
-		return mLapTimes;
+        int numTimes = mLapTimes.size();
+        ArrayList<LapTimeBlock> lapTimeBlocks = new ArrayList<LapTimeBlock>();
+        LapTimeBlock ltb = new LapTimeBlock();
+        for(int i=0;i<numTimes;i++)
+        {
+            double laptime = mLapTimes.get(i);
+            if(laptime == 0)
+            {
+                lapTimeBlocks.add(ltb);
+                ltb = new LapTimeBlock();
+            }else
+            {
+                ltb.addLapTime(laptime);
+            }
+        }
+
+		return lapTimeBlocks;
 	}
 	
 	public void reset(UltimateStopwatchActivity activity)
 	{
 		mLapTimes.clear();
+        mCurrentLapTimeIndex=0;
 		SharedPreferences settings = activity.getSharedPreferences(PREFS_NAME_LAPTIMES, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.clear();

@@ -15,11 +15,11 @@ import com.geekyouup.android.ustopwatch.TimeUtils;
 
 public class LapTimesBaseAdapter extends BaseAdapter {
 
-	private ArrayList<Double> mDataSet;
+	private ArrayList<LapTimeBlock> mDataSet;
 	private LayoutInflater mLayoutInflator;
 	private Context mContext;
 	
-	public LapTimesBaseAdapter(Context cxt, ArrayList<Double> dataSet)
+	public LapTimesBaseAdapter(Context cxt, ArrayList<LapTimeBlock> dataSet)
 	{
 		mContext = cxt;
 		mDataSet=dataSet;
@@ -48,33 +48,32 @@ public class LapTimesBaseAdapter extends BaseAdapter {
 		if(v == null) v = mLayoutInflator.inflate(R.layout.laptimes_holder_list_item,null);
 
         LinearLayout listItemHolder = (LinearLayout) v.findViewById(R.id.laptimes_list_item_holder);
+        LapTimeBlock ltb = mDataSet.get(position);
+        ArrayList<Double> lapTimes  = ltb.getLapTimes();
 
-        for(int i=0;i<3;i++)
+        for(int i=0;i<lapTimes.size();i++)
         {
             View lapItemView =  mLayoutInflator.inflate(R.layout.laptime_item,null);
 
             if(i==0)
             {
                 TextView t = (TextView) lapItemView.findViewById(R.id.laptime_text);
-                t.setText(TimeUtils.createStyledSpannableString(mContext,mDataSet.get(position),true));
+                t.setText(TimeUtils.createStyledSpannableString(mContext,lapTimes.get(i),true));
             }
 
             TextView t2 = (TextView) lapItemView.findViewById(R.id.laptime_text2);
-            if(position<mDataSet.size()-1 && mDataSet.size()>1)
+            if(i<lapTimes.size()-1 && lapTimes.size()>1)
             {
-                double laptime= mDataSet.get(position)-mDataSet.get(position+1);
-                if(laptime<0) laptime = mDataSet.get(position);
+                double laptime= lapTimes.get(i)-lapTimes.get(i+1);
+                if(laptime<0) laptime = lapTimes.get(i);
                 t2.setText(TimeUtils.createStyledSpannableString(mContext,laptime,true));
             }else{
-                t2.setText(TimeUtils.createStyledSpannableString(mContext,mDataSet.get(position),true));
+                t2.setText(TimeUtils.createStyledSpannableString(mContext,lapTimes.get(i),true));
             }
 
             listItemHolder.addView(lapItemView);
 
         }
-
-
-
 		return v;
 	}
 	

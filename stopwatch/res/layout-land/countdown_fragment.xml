@@ -53,7 +53,7 @@
                     android:textColor="@drawable/blue_button_landscape_text_color"
                     android:fontFamily="sans-serif"
                     />
-            <Button android:id="@+id/saveButton"
+            <!--Button android:id="@+id/saveButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -62,7 +62,7 @@
                     android:background="@color/countdown_background"
                     android:textColor="@drawable/blue_button_landscape_text_color"
                     android:fontFamily="sans-serif"
-                    />
+                    / -->
         </LinearLayout>
         </RelativeLayout>
 

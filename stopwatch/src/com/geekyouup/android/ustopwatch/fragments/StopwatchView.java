@@ -2,6 +2,7 @@ package com.geekyouup.android.ustopwatch.fragments;
 
 import com.geekyouup.android.ustopwatch.AlarmUpdater;
 import com.geekyouup.android.ustopwatch.R;
+import com.geekyouup.android.ustopwatch.SoundManager;
 import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
 import android.content.Context;
@@ -426,6 +427,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
 				mTouching = System.currentTimeMillis();
+                //make sure endless alarm is stopped
+                (SoundManager.getInstance(mContext)).stopEndlessAlarm();
 			}else if(event.getAction() == MotionEvent.ACTION_MOVE)
             {
                 if(mTouching>0 && System.currentTimeMillis()-mTouching > 1000)

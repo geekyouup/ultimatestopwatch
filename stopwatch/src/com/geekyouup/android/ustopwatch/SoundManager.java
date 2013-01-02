@@ -51,14 +51,30 @@ public class SoundManager {
 
     public void playSound(int soundId)
     {
+        playSound(soundId, false);
+    }
+
+    int mLoopingSoundId = -1;
+    public void playSound(int soundId, boolean endlessLoop)
+    {
         if(mAudioOn)
         {
+            if(endlessLoop) stopEndlessAlarm();
             AudioManager mgr = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
             float streamVolume = mgr
                     .getStreamVolume(AudioManager.STREAM_MUSIC);
-            soundPool.play(soundPoolMap.get(soundId), streamVolume,
-                    streamVolume, 1, 0, 1f);
+            int playingSoundId = soundPool.play(soundPoolMap.get(soundId), streamVolume,
+                    streamVolume, 1, endlessLoop?-1:0, 1f);
+
+            if(endlessLoop) mLoopingSoundId = playingSoundId;
+
         }
+    }
+
+    public void stopEndlessAlarm()
+    {
+        if(mLoopingSoundId != -1) soundPool.stop(mLoopingSoundId);
+        mLoopingSoundId=-1;
     }
 
     public void startCountDownTicking()

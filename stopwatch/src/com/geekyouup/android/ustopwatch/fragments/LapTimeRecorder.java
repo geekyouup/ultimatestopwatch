@@ -1,15 +1,8 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.ArrayList;
-
-import android.util.Log;
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.geekyouup.android.ustopwatch.R;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
 public class LapTimeRecorder {
@@ -63,13 +56,11 @@ public class LapTimeRecorder {
 	
 	public void recordLapTime(double time, UltimateStopwatchActivity activity)
 	{
-        Log.d("USW", "Recording lap time " + time);
 		mLapTimes.add(0,time);
         if(time == 0) mCurrentLapTimeIndex++;
 
         if(activity!=null)
         {
-            Log.d("USW", "Notifying LTF of new time");
             LapTimesFragment ltf = activity.getLapTimeFragment();
             if(ltf != null) ltf.lapTimesUpdated();
         }
@@ -83,7 +74,6 @@ public class LapTimeRecorder {
 	public ArrayList<LapTimeBlock> getTimes()
 	{
         int numTimes = mLapTimes.size();
-        Log.d("USW", "LTF updating times total times "+ numTimes);
         ArrayList<LapTimeBlock> lapTimeBlocks = new ArrayList<LapTimeBlock>();
         LapTimeBlock ltb = new LapTimeBlock();
         for(int i=0;i<numTimes;i++)
@@ -92,12 +82,10 @@ public class LapTimeRecorder {
             if(laptime == 0)
             {
                 if(i==0) continue; //skip if the first element is a 0
-                Log.d("USW", "LTB created " + laptime);
                 lapTimeBlocks.add(ltb);
                 ltb = new LapTimeBlock();
             }else
             {
-                Log.d("USW", "LTB added "+ laptime);
                 ltb.addLapTime(laptime);
             }
         }

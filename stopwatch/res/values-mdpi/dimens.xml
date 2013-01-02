@@ -3,4 +3,5 @@
 	<dimen name="counter_font">30sp</dimen>
 	<dimen name="launchtext_size">30sp</dimen>
 	<dimen name="reset_btn_size">48dp</dimen>
+    <dimen name="med_font">18sp</dimen>
 </resources>

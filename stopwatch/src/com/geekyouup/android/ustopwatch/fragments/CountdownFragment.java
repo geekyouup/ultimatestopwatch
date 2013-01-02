@@ -62,6 +62,7 @@ public class CountdownFragment extends SherlockFragment {
             @Override
             public void onClick(View v) {
                 reset();
+                mSoundManager.stopEndlessAlarm();
                 mSoundManager.playSound(SoundManager.SOUND_RESET);
             }
         });
@@ -132,10 +133,12 @@ public class CountdownFragment extends SherlockFragment {
                         requestTimeDialog();
                     } else if(m.getData().getBoolean(MSG_COUNTDOWN_COMPLETE, false))
                     {
-                        mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM);
+                        mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM, SettingsActivity.isEndlessAlarm());
 
-                        Vibrator vibrator = (Vibrator) getSherlockActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                        vibrator.vibrate(1000);
+                        if(SettingsActivity.isVibrate()){
+                            Vibrator vibrator = (Vibrator) getSherlockActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                            vibrator.vibrate(1000);
+                        }
 
                         reset();
                     } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME,false)) {
@@ -211,6 +214,7 @@ public class CountdownFragment extends SherlockFragment {
     private void setUIState()
     {
         boolean isRunning = isRunning();
+       // if(mSoundManager!=null) mSoundManager.stopEndlessAlarm();
         mResetButton.setEnabled(isRunning || (mCurrentTimeMillis!=0));
         if(!isRunning && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0)
         {

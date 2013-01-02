@@ -2,8 +2,8 @@ package com.geekyouup.android.ustopwatch;
 
 
 import android.app.AlarmManager;
-import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.IBinder;
-import android.text.AndroidCharacter;
+import android.support.v4.app.NotificationCompat;
 
 public class AlarmUpdater {
 	
@@ -65,19 +65,20 @@ public class AlarmUpdater {
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
 
             // Set the icon, scrolling text and timestamp
-            Notification notification = new Notification.Builder(this)
-                    .setContentTitle("Ultimate Stopwatch")
-                    .setSubText(getString(R.string.countdown_complete))
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText(getString(R.string.countdown_complete))
+                    //.setSubText(getString(R.string.countdown_complete))
                     .setSmallIcon(R.drawable.notification_icon)
                     .setContentIntent(contentIntent)
                     .build();
 
-            //Notification notification = new Notification(R.drawable.icon,getString(R.string.countdown_complete),System.currentTimeMillis());
             try
             {
 	            notification.ledARGB=0xFF808080;
 	            notification.ledOnMS=500;
 	            notification.ledOffMS=1000;
+                if(SettingsActivity.isVibrate()) notification.vibrate=new long[]{1000};
 	            notification.flags |= Notification.FLAG_SHOW_LIGHTS;
 	            notification.audioStreamType=AudioManager.STREAM_NOTIFICATION;
 	            //notification.sound= Uri.parse("android.resource://com.geekyouup.android.ustopwatch/" + R.raw.alarm);
@@ -105,7 +106,7 @@ public class AlarmUpdater {
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
 
             Notification notification = new Notification.Builder(context)
-                    .setContentTitle("Ultimate Stopwatch")
+                    .setContentTitle(context.getString(R.string.app_name))
                     .setUsesChronometer(true)
                     .setWhen(System.currentTimeMillis() - startTime)
                     .setSmallIcon(R.drawable.notification_icon)

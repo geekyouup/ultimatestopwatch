@@ -32,6 +32,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     private static final String KEY_AUDIO_STATE = "key_audio_state";
     protected static final String KEY_TICKING = "key_ticking_on";
     protected static final String KEY_ENDLESS_ALARM = "key_endless_alarm_on";
+    protected static final String KEY_VIBRATE = "key_vibrate_on";
 	private static final String WAKE_LOCK_KEY = "ustopwatch";
     public static final String PREFS_NAME="USW_PREFS";
 
@@ -106,7 +107,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
         mSoundManager.setAudioState(settings.getBoolean(KEY_AUDIO_STATE,true));
         SettingsActivity.setTicking(settings.getBoolean(KEY_TICKING,false));
         SettingsActivity.setEndlessAlarm(settings.getBoolean(KEY_ENDLESS_ALARM,false));
-
+        SettingsActivity.setVibrate(settings.getBoolean(KEY_VIBRATE,false));
 
         if(mMenu!= null)
         {

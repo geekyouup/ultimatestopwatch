@@ -140,7 +140,7 @@ public class CountdownFragment extends SherlockFragment {
                             vibrator.vibrate(1000);
                         }
 
-                        reset();
+                        reset(SettingsActivity.isEndlessAlarm());
                     } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME,false)) {
                         mCurrentTimeMillis = m.getData().getDouble(
                                 UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
@@ -180,13 +180,19 @@ public class CountdownFragment extends SherlockFragment {
             mStartButton.setText(isRunning()?getString(R.string.pause):getString(R.string.start));
         }
 	}
-	
-	public void reset()
-	{
-		mWatchThread.reset();
-        mResetButton.setEnabled(false);
+
+    public void reset(boolean endlessAlarmSounding)
+    {
+        Log.d("USW","Reset called, EAS: " + endlessAlarmSounding);
+        mWatchThread.reset();
+        mResetButton.setEnabled(endlessAlarmSounding);
         mStartButton.setText(getString(R.string.start));
         setTime(mLastHour, mLastMin, mLastSec);
+    }
+
+	public void reset()
+	{
+		reset(false);
 	}
 
     public void setTime(int hour, int minute, int seconds)
@@ -214,8 +220,7 @@ public class CountdownFragment extends SherlockFragment {
     private void setUIState()
     {
         boolean isRunning = isRunning();
-       // if(mSoundManager!=null) mSoundManager.stopEndlessAlarm();
-        mResetButton.setEnabled(isRunning || (mCurrentTimeMillis!=0));
+        mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || isRunning || (mCurrentTimeMillis!=0));
         if(!isRunning && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0)
         {
             mStartButton.setText(getString(R.string.set));

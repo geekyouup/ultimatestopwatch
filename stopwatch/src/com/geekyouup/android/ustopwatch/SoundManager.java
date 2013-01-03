@@ -150,4 +150,8 @@ public class SoundManager {
         return mAudioOn;
     }
 
+    public boolean isEndlessAlarmSounding()
+    {
+      return (mLoopingSoundId!=-1);
+    }
 }

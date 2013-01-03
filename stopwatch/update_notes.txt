@@ -14,3 +14,5 @@ Support Library for fragments on all versions
 
 NOTE: New LapTimeRecorder model means that LapTimesFragment isn't being updated
 Future: Add ViewPager to phone version of stopwatch
+
+Conutdown select time dialog, now uses an onCancelListener instead of making it non-cancellable.

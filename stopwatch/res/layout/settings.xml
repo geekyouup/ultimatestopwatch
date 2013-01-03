@@ -91,4 +91,27 @@
               android:paddingLeft="5dp"
               android:layout_marginTop="10dp"/>
 
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="LIBRARIES"
+              android:textColor="#999999"
+              android:textSize="15dp"
+              android:fontFamily="sans-serif"
+              android:textStyle="bold"
+              android:paddingLeft="5dp"
+              android:layout_marginTop="20dp"/>
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="3dp"
+            android:background="#B2B2B2"
+            android:layout_marginTop="2dp"/>
+    <TextView android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:text="ActionBarSherlock by Jake Warton,\nhttp://actionbarsherlock.com/"
+              android:textColor="#222222"
+              android:textSize="14dp"
+              android:fontFamily="sans-serif"
+              android:paddingLeft="5dp"
+              android:layout_marginTop="10dp"/>
+
 </LinearLayout>

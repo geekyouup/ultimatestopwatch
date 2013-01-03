@@ -37,6 +37,7 @@
                   android:textColor="@drawable/blue_button_text_color"
                   android:fontFamily="sans-serif"
                   android:layout_weight="1"
+                  android:contentDescription="@string/contentdesc_start_cd"
             />
 
     <Button android:id="@+id/resetButton"
@@ -48,17 +49,8 @@
             android:textColor="@drawable/blue_button_text_color"
             android:fontFamily="sans-serif"
             android:layout_weight="1"
+            android:contentDescription="@string/contentdesc_reset"
             />
-    <!--ImageButton android:id="@+id/saveButton"
-                 android:layout_width="match_parent"
-                 android:layout_height="45dp"
-                 android:background="@drawable/blue_button_bg_color"
-                 android:src="@drawable/icon_laptime"
-                 android:layout_weight="4"
-                 android:padding="11dp"
-                 android:scaleType="fitCenter"
-            /-->
-
 </LinearLayout>
 
 </RelativeLayout>

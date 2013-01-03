@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -24,7 +23,6 @@ public class CountdownFragment extends SherlockFragment {
 
     private Button mResetButton;
     private Button mStartButton;
-    private View mSaveLapTimeButton;
     private TextView mTimerText;
     private SoundManager mSoundManager;
 
@@ -75,24 +73,12 @@ public class CountdownFragment extends SherlockFragment {
             }
         });
 
-        /*mSaveLapTimeButton = (View) cdView.findViewById(R.id.saveButton);
-        mSaveLapTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isRunning()){
-                    LapTimeRecorder.getInstance().recordLapTime(mCountdownView.getWatchTime(),(UltimateStopwatchActivity)getSherlockActivity());
-                    mSoundManager.playSound(SoundManager.SOUND_LAPTIME);
-                }
-            }
-        });*/
-
 		return cdView;
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
-		Log.d("USW","onPause StopwatchFragment");
 		SharedPreferences settings = getActivity().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
 		mWatchThread.saveState(editor);
@@ -100,18 +86,11 @@ public class CountdownFragment extends SherlockFragment {
         editor.putInt(KEY_LAST_MIN,mLastMin);
         editor.putInt(KEY_LAST_SEC,mLastSec);
 		editor.commit();
-
-       /* try
-        {
-            if(isRunning() && mCurrentTimeMillis<0)
-                AlarmUpdater.showCountdownChronometerNotification(getSherlockActivity(), (long) mCurrentTimeMillis);
-        }catch (Exception e){}*/
 	}
 	
 	@Override
 	public void onStop() {
 		super.onStop();
-		Log.d("USW","onStop StopwatchFragment");
 	}
 	
 	@Override
@@ -183,7 +162,6 @@ public class CountdownFragment extends SherlockFragment {
 
     public void reset(boolean endlessAlarmSounding)
     {
-        Log.d("USW","Reset called, EAS: " + endlessAlarmSounding);
         mWatchThread.reset();
         mResetButton.setEnabled(endlessAlarmSounding);
         mStartButton.setText(getString(R.string.start));
@@ -223,7 +201,7 @@ public class CountdownFragment extends SherlockFragment {
         mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || isRunning || (mCurrentTimeMillis!=0));
         if(!isRunning && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0)
         {
-            mStartButton.setText(getString(R.string.set));
+            mStartButton.setText(getString(R.string.start));
             mSoundManager.stopCountdownTicking();
         }else
         {
@@ -298,7 +276,12 @@ public class CountdownFragment extends SherlockFragment {
                         mDialogOnScreen = false;
                     }
                 });
-        mSelectTime.setCancelable(false);
+        mSelectTime.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                mDialogOnScreen = false;
+            }
+        });
         mSelectTime.show();
 
         mDialogOnScreen = true;
@@ -313,13 +296,7 @@ public class CountdownFragment extends SherlockFragment {
         LayoutInflater inflator = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View ll = TimeUtils.createTimeSelectDialogLayout(activity, inflator);
 
-        //LinearLayout ll = new LinearLayout(activity);
-        //ll.setOrientation(LinearLayout.HORIZONTAL);
-        //ll.addView(countdownView);
-        //ll.setGravity(Gravity.CENTER);
-
         AlertDialog mSelectTime = new AlertDialog.Builder(activity).create();
-
         mSelectTime.setView(ll);
         mSelectTime.setTitle(getString(R.string.timer_title));
         mSelectTime.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.timer_start), new DialogInterface.OnClickListener(){
@@ -336,7 +313,13 @@ public class CountdownFragment extends SherlockFragment {
             public void onClick(DialogInterface dialog, int which) {
                 mDialogOnScreen=false;
             }});
-        mSelectTime.setCancelable(false);
+
+        mSelectTime.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                mDialogOnScreen = false;
+            }
+        });
         mSelectTime.show();
 
         mDialogOnScreen=true;

@@ -426,9 +426,14 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 		public boolean onTouch(View v, MotionEvent event) {
 			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				mTouching = System.currentTimeMillis();
-                //make sure endless alarm is stopped
-                (SoundManager.getInstance(mContext)).stopEndlessAlarm();
+                SoundManager sm = SoundManager.getInstance(mContext);
+                if(sm.isEndlessAlarmSounding())
+                {
+                   sm.stopEndlessAlarm();
+                }else
+                {
+    				mTouching = System.currentTimeMillis();
+                }
 			}else if(event.getAction() == MotionEvent.ACTION_MOVE)
             {
                 if(mTouching>0 && System.currentTimeMillis()-mTouching > 1000)

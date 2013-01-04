@@ -1,7 +1,6 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,9 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ViewFlipper;
+import android.widget.*;
 
 import com.actionbarsherlock.app.SherlockListFragment;
+import com.actionbarsherlock.view.ActionMode;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.geekyouup.android.ustopwatch.R;
 import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
@@ -25,13 +28,12 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 	private static final String KEY_CURRENT_VIEW = "current_view";
 	private ViewFlipper mViewFlipper;
 	private LapTimeRecorder mLapTimeRecorder;
+    private ActionMode mActionMode;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mLapTimeRecorder = LapTimeRecorder.getInstance();
-		
-		Log.d("USW","LaptimesFragment.onCreate()");
 	}
 	
 	@Override
@@ -49,10 +51,95 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 
         ((UltimateStopwatchActivity)getActivity()).registerLapTimeFragment(this);
 
-		Log.d("USW","LaptimesFragment.onStart()");
+        /*final ActionMode.Callback actionModeCallback = new ActionMode.Callback(){
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.menu_laptimes_contextual, menu);
+                return true;
+            }
+
+            @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+            @Override public void onDestroyActionMode(ActionMode mode) {}
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_context_delete:
+
+                        mode.finish();
+                        return true;
+                    default:
+                        mode.finish();
+                        return false;
+                }
+            }
+        };
+
+        AdapterView.OnItemLongClickListener listener = new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View view, int position, long id) {
+                final ListView listView = getListView();
+
+
+
+                mActionMode = getSherlockActivity().startActionMode(actionModeCallback);
+                view.setSelected(true);
+                return true;
+            }
+        };
+
+        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        getListView().setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+
+            @Override
+            public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int i, long l, boolean b) {
+                Toast.makeText(getSherlockActivity(),"Item clicked " + i,Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public boolean onCreateActionMode(android.view.ActionMode actionMode, android.view.Menu menu) {
+                android.view.MenuInflater inflater = actionMode.getMenuInflater();
+                inflater.inflate(R.menu.menu_laptimes_contextual, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(android.view.ActionMode actionMode, android.view.Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(android.view.ActionMode actionMode, android.view.MenuItem menuItem) {
+                // Respond to clicks on the actions in the CAB
+                switch (menuItem.getItemId()) {
+                    case R.id.menu_context_delete:
+                        //deleteSelectedItems();
+                        actionMode.finish(); // Action picked, so close the CAB
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(android.view.ActionMode actionMode)
+            {
+                mActionMode = null;
+            }
+        });
+        getListView().setOnItemLongClickListener(listener);
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(mActionMode!=null) view.setSelected(true);
+            }
+        });    */
 	}
-	
-	@Override
+
+
+    @Override
 	public void onPause() {
 		super.onPause();
 		

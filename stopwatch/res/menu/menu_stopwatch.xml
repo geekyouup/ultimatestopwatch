@@ -6,10 +6,6 @@
     <item android:id="@+id/menu_settings"
           android:title="@string/settings"
           android:showAsAction="never" />
-    <item android:id="@+id/menu_resettime"
-          android:title="Reset Time"
-          android:icon="@drawable/reset_time"
-          android:showAsAction="always" />
     <item android:id="@+id/menu_audiotoggle"
           android:title="Audio Toggle"
           android:showAsAction="always"

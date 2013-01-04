@@ -45,8 +45,6 @@ public class TabsAdapter extends FragmentPagerAdapter
         mViewPager = pager;
         mViewPager.setAdapter(this);
         mViewPager.setOnPageChangeListener(this);
-
-
     }
 
     public void addTab(ActionBar.Tab tab, Class<?> clss, Bundle args) {

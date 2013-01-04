@@ -1,7 +1,5 @@
 package com.geekyouup.android.ustopwatch;
 
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +9,6 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -30,15 +27,14 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 	public static final String MSG_NEW_TIME_DOUBLE = "msg_new_time_double";
     public static final String MSG_STATE_CHANGE = "msg_state_change";
     private static final String KEY_AUDIO_STATE = "key_audio_state";
-    protected static final String KEY_TICKING = "key_ticking_on";
-    protected static final String KEY_ENDLESS_ALARM = "key_endless_alarm_on";
-    protected static final String KEY_VIBRATE = "key_vibrate_on";
+    private static final String KEY_JUMP_TO_PAGE = "key_start_page";
 	private static final String WAKE_LOCK_KEY = "ustopwatch";
     public static final String PREFS_NAME="USW_PREFS";
 
-	public static final boolean IS_HONEYCOMB_OR_ABOVE=android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
+	//public static final boolean IS_HONEYCOMB_OR_ABOVE=android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 	private LapTimesFragment mLapTimesFragment;
     private CountdownFragment mCountdownFragment;
+    private StopwatchFragment mStopwatchFragment;
     private SoundManager mSoundManager;
     private ViewPager mViewPager;
     private TabsAdapter mTabsAdapter;
@@ -58,15 +54,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setOffscreenPageLimit(2);
 
-        ActionBar.Tab tab1 = getSupportActionBar().newTab().setText(getString(R.string.stopwatch));
-        ActionBar.Tab tab2 = getSupportActionBar().newTab().setText(getString(R.string.laptimes));
-        ActionBar.Tab tab3 = getSupportActionBar().newTab().setText(getString(R.string.countdown));
-
-        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        mTabsAdapter = new TabsAdapter(this, mViewPager);
-        mTabsAdapter.addTab(tab1,StopwatchFragment.class,null);
-        mTabsAdapter.addTab(tab2,LapTimesFragment.class,null);
-        mTabsAdapter.addTab(tab3, CountdownFragment.class,null);
+        setupActionBar();
 
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
@@ -78,7 +66,21 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
 	}
-	
+
+    private void setupActionBar()
+    {
+        ActionBar ab = getSupportActionBar();
+        ActionBar.Tab tab1 = ab.newTab().setText(getString(R.string.stopwatch));
+        ActionBar.Tab tab2 = ab.newTab().setText(getString(R.string.laptimes));
+        ActionBar.Tab tab3 = ab.newTab().setText(getString(R.string.countdown));
+
+        ab.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        mTabsAdapter = new TabsAdapter(this, mViewPager);
+        mTabsAdapter.addTab(tab1,StopwatchFragment.class,null);
+        mTabsAdapter.addTab(tab2,LapTimesFragment.class,null);
+        mTabsAdapter.addTab(tab3, CountdownFragment.class,null);
+    }
+
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -87,6 +89,17 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(KEY_AUDIO_STATE,mSoundManager.isAudioOn());
+
+        //if we're quitting with the countdown running and not the stopwatch then jump to countdown on relaunch
+        if( (mCountdownFragment!=null && mCountdownFragment.isRunning()) &&
+               (mStopwatchFragment!=null && !mStopwatchFragment.isRunning()) )
+        {
+            editor.putInt(KEY_JUMP_TO_PAGE,2);
+        }else
+        {
+            editor.putInt(KEY_JUMP_TO_PAGE,-1);
+        }
+
         editor.commit();
 
 		LapTimeRecorder.getInstance().saveTimes(this);
@@ -105,15 +118,17 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         mSoundManager.setAudioState(settings.getBoolean(KEY_AUDIO_STATE,true));
-        SettingsActivity.setTicking(settings.getBoolean(KEY_TICKING,false));
-        SettingsActivity.setEndlessAlarm(settings.getBoolean(KEY_ENDLESS_ALARM,false));
-        SettingsActivity.setVibrate(settings.getBoolean(KEY_VIBRATE,false));
+        SettingsActivity.loadSettings(settings);
 
         if(mMenu!= null)
         {
             MenuItem audioButton = mMenu.findItem(R.id.menu_audiotoggle);
             if(audioButton!=null) audioButton.setIcon(mSoundManager.isAudioOn()?R.drawable.audio_on:R.drawable.audio_off);
         }
+
+        //jump straight to countdown if it was only item left running
+        int jumpToPage = settings.getInt(KEY_JUMP_TO_PAGE,-1);
+        if(jumpToPage != -1) mViewPager.setCurrentItem(2,false);
     }
 
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -121,13 +136,19 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 
 		MenuInflater inflater = getSupportMenuInflater();
 
-        int currentTab = mTabsAdapter.getCurrentTabNum();
-        if(currentTab == 2)
+        final int currentTab = mTabsAdapter.getCurrentTabNum();
+        switch(currentTab)
         {
-            inflater.inflate(R.menu.menu_countdown, menu);
-        }else
-        {
-            inflater.inflate(R.menu.menu, menu);
+            case 1:
+                inflater.inflate(R.menu.menu_laptimes, menu);
+                break;
+            case 2:
+                inflater.inflate(R.menu.menu_countdown, menu);
+                break;
+            case 0:
+            default:
+                inflater.inflate(R.menu.menu_stopwatch, menu);
+                break;
         }
 
         //get audio icon and set correct varient
@@ -178,5 +199,10 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     public void registerCountdownFragment(CountdownFragment cdf)
     {
         mCountdownFragment = cdf;
+    }
+
+    public void registerStopwatchFragment(StopwatchFragment swf)
+    {
+        mStopwatchFragment = swf;
     }
 }

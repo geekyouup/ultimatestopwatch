@@ -14,6 +14,9 @@ public class SettingsActivity extends SherlockActivity {
     private static boolean isTicking=false;
     private static boolean isEndlessAlarm = false;
     private static boolean isVibrate = false;
+    private static final String KEY_TICKING = "key_ticking_on";
+    private static final String KEY_ENDLESS_ALARM = "key_endless_alarm_on";
+    private static final String KEY_VIBRATE = "key_vibrate_on";
 
     /** Called when the activity is first created. */
     @Override
@@ -59,11 +62,17 @@ public class SettingsActivity extends SherlockActivity {
         SharedPreferences settings = getSharedPreferences(UltimateStopwatchActivity.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
-        editor.putBoolean(UltimateStopwatchActivity.KEY_TICKING,isTicking);
-        editor.putBoolean(UltimateStopwatchActivity.KEY_ENDLESS_ALARM, isEndlessAlarm);
-        editor.putBoolean(UltimateStopwatchActivity.KEY_VIBRATE,isVibrate);
+        editor.putBoolean(KEY_TICKING,isTicking);
+        editor.putBoolean(KEY_ENDLESS_ALARM, isEndlessAlarm);
+        editor.putBoolean(KEY_VIBRATE,isVibrate);
         editor.commit();
+    }
 
+    public static void loadSettings(SharedPreferences prefs)
+    {
+        isTicking = prefs.getBoolean(KEY_TICKING,false);
+        isEndlessAlarm = prefs.getBoolean(KEY_ENDLESS_ALARM,false);
+        isVibrate = prefs.getBoolean(KEY_VIBRATE,false);
     }
 
     public static boolean isTicking() {
@@ -76,17 +85,5 @@ public class SettingsActivity extends SherlockActivity {
 
     public static boolean isVibrate() {
         return isVibrate;
-    }
-
-    public static void setTicking(boolean ticking) {
-        isTicking = ticking;
-    }
-
-    public static void setEndlessAlarm(boolean endlessAlarm) {
-        isEndlessAlarm = endlessAlarm;
-    }
-
-    public static void setVibrate(boolean vibrate) {
-        isVibrate = vibrate;
     }
 }

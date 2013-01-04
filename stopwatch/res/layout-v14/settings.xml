@@ -9,7 +9,7 @@
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="SETTINGS"
+              android:text="@string/settings_settings"
               android:textColor="#999999"
               android:textSize="15dp"
               android:fontFamily="sans-serif"
@@ -24,15 +24,14 @@
 
     <Switch android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sound for Seconds"
+            android:text="@string/settings_sound_secs"
             android:textColor="#222222"
             android:textSize="16dp"
             android:fontFamily="sans-serif"
             android:paddingLeft="5dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:id="@+id/settings_seconds_sound"
-            />
+            android:id="@+id/settings_seconds_sound"/>
 
     <View
             android:layout_width="fill_parent"
@@ -41,7 +40,7 @@
 
     <Switch android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vibrate on Alert"
+            android:text="@string/settings_vibrate"
             android:textColor="#222222"
             android:textSize="16dp"
             android:fontFamily="sans-serif"
@@ -58,7 +57,7 @@
 
     <Switch android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Endless alert"
+            android:text="@string/settings_endless_alert"
             android:textColor="#222222"
             android:textSize="16dp"
             android:fontFamily="sans-serif"
@@ -69,7 +68,7 @@
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="ABOUT"
+              android:text="@string/settings_about"
               android:textColor="#999999"
               android:textSize="15dp"
               android:fontFamily="sans-serif"
@@ -84,7 +83,7 @@
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="The Ultimate Stopwatch, developed by Rich 'GeekYouUp' Hyndman and designed by marie-schweiz.de"
+              android:text="@string/settings_about_text"
               android:textColor="#222222"
               android:textSize="14dp"
               android:fontFamily="sans-serif"
@@ -93,7 +92,7 @@
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="LIBRARIES"
+              android:text="@string/settings_libraries"
               android:textColor="#999999"
               android:textSize="15dp"
               android:fontFamily="sans-serif"
@@ -107,7 +106,7 @@
             android:layout_marginTop="2dp"/>
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="ActionBarSherlock by Jake Warton\nhttp://actionbarsherlock.com/"
+              android:text="@string/settings_libraries_text"
               android:textColor="#222222"
               android:textSize="14dp"
               android:fontFamily="sans-serif"

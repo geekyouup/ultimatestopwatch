@@ -24,8 +24,6 @@ public class SoundManager {
     private boolean isStopwatchTicking = false;
 
     private int mTickStreamId = 0;
-
-
     private HashMap<Integer, Integer> soundPoolMap;
 
     private SoundManager(Context cxt)

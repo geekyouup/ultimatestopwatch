@@ -90,13 +90,7 @@ public class StopwatchFragment extends SherlockFragment {
                 AlarmUpdater.showChronometerNotification(getSherlockActivity(), (long) mCurrentTimeMillis);
         }catch (Exception e){}
 	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		Log.d("USW","onStop StopwatchFragment");
-	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -121,15 +115,13 @@ public class StopwatchFragment extends SherlockFragment {
         AlarmUpdater.cancelChronometerNotification(getSherlockActivity());
 
 		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		Log.d("USW","Resume settings has state set to: " + settings.getInt("state", -1));
 		mStopwatchView.restoreState(settings);
+        ((UltimateStopwatchActivity) getSherlockActivity()).registerStopwatchFragment(this);
     }
 
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
-		Log.d("USW","StopwatchFragment: onDestroyView");
-
 	}
 	
 	public void startStop()
@@ -155,7 +147,7 @@ public class StopwatchFragment extends SherlockFragment {
             }else
             {
                 mSoundManager.playSound(SoundManager.SOUND_STOP);
-                mSoundManager.stopStopwatchTicking();;
+                mSoundManager.stopStopwatchTicking();
             }
         }
     }

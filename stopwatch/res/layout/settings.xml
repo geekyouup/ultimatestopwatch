@@ -9,7 +9,7 @@
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="SETTINGS"
+              android:text="@string/settings_settings"
               android:textColor="#999999"
               android:textSize="15dp"
               android:fontFamily="sans-serif"
@@ -24,41 +24,37 @@
 
     <CheckBox android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sound for Seconds"
+            android:text="@string/settings_sound_secs"
             android:textColor="#222222"
             android:textSize="16dp"
             android:fontFamily="sans-serif"
             android:paddingLeft="48dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:id="@+id/settings_seconds_sound"
-            />
+            android:id="@+id/settings_seconds_sound"/>
 
-    <View
-            android:layout_width="fill_parent"
+    <View   android:layout_width="fill_parent"
             android:layout_height="2dp"
             android:background="#EBEBEB"/>
 
     <CheckBox android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="Vibrate on Alert"
+              android:text="@string/settings_vibrate"
               android:textColor="#222222"
               android:textSize="16dp"
               android:fontFamily="sans-serif"
               android:paddingLeft="48dp"
               android:layout_marginTop="8dp"
               android:layout_marginBottom="8dp"
-              android:id="@+id/settings_vibrate"
-            />
+              android:id="@+id/settings_vibrate"/>
 
-    <View
-            android:layout_width="fill_parent"
+    <View   android:layout_width="fill_parent"
             android:layout_height="2dp"
             android:background="#EBEBEB"/>
 
     <CheckBox android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Endless alert"
+            android:text="@string/settings_endless_alert"
             android:textColor="#222222"
             android:textSize="16dp"
             android:fontFamily="sans-serif"
@@ -69,22 +65,22 @@
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="ABOUT"
+              android:text="@string/settings_about"
               android:textColor="#999999"
               android:textSize="15dp"
               android:fontFamily="sans-serif"
               android:textStyle="bold"
               android:paddingLeft="5dp"
               android:layout_marginTop="20dp"/>
-    <View
-            android:layout_width="fill_parent"
+
+    <View   android:layout_width="fill_parent"
             android:layout_height="3dp"
             android:background="#B2B2B2"
             android:layout_marginTop="2dp"/>
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="The Ultimate Stopwatch, developed by Rich 'GeekYouUp' Hyndman and designed by marie-schweiz.de"
+              android:text="@string/settings_about_text"
               android:textColor="#222222"
               android:textSize="14dp"
               android:fontFamily="sans-serif"
@@ -93,21 +89,21 @@
 
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="LIBRARIES"
+              android:text="@string/settings_libraries"
               android:textColor="#999999"
               android:textSize="15dp"
               android:fontFamily="sans-serif"
               android:textStyle="bold"
               android:paddingLeft="5dp"
               android:layout_marginTop="20dp"/>
-    <View
-            android:layout_width="fill_parent"
+
+    <View   android:layout_width="fill_parent"
             android:layout_height="3dp"
             android:background="#B2B2B2"
             android:layout_marginTop="2dp"/>
     <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:text="ActionBarSherlock by Jake Warton\nhttp://actionbarsherlock.com/"
+              android:text="@string/settings_libraries_text"
               android:textColor="#222222"
               android:textSize="14dp"
               android:fontFamily="sans-serif"

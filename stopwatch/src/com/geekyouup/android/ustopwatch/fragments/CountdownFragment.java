@@ -4,16 +4,22 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.geekyouup.android.ustopwatch.*;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchView.StopwatchThead;
+import android.graphics.Rect;
 
 public class CountdownFragment extends SherlockFragment {
 
@@ -30,13 +36,17 @@ public class CountdownFragment extends SherlockFragment {
     private int mLastMin = 0;
     private int mLastSec = 0;
 
+    private boolean mRunningState = false;
+
     private static final String COUNTDOWN_PREFS = "USW_CDFRAG_PREFS";
+    private static final String PREF_IS_RUNNING = "key_countdown_is_running";
     private static final String KEY_LAST_HOUR = "key_last_hour";
     private static final String KEY_LAST_MIN = "key_last_min";
     private static final String KEY_LAST_SEC = "key_last_sec";
 
     public static final String MSG_REQUEST_COUNTDOWN_DLG = "msg_usw_counter";
     public static final String MSG_COUNTDOWN_COMPLETE = "msg_countdown_complete";
+    //private RelativeLayout mCountdownLayout;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,12 +54,12 @@ public class CountdownFragment extends SherlockFragment {
         mSoundManager = SoundManager.getInstance(getSherlockActivity());
 
 		View cdView = inflater.inflate(R.layout.countdown_fragment, null);
+        //mCountdownLayout = (RelativeLayout) cdView.findViewById(R.id.countdown_layout);
         mCountdownView = (StopwatchView) cdView.findViewById(R.id.cdview);
         mTimerText = (TextView) cdView.findViewById(R.id.time_counter);
         mTimerText.setOnTouchListener(new View.OnTouchListener(){
             @Override
-            public boolean onTouch(View v, MotionEvent m)
-            {
+            public boolean onTouch(View v, MotionEvent m){
                if(mCurrentTimeMillis == 0) requestTimeDialog();
                return true;
             }
@@ -79,12 +89,14 @@ public class CountdownFragment extends SherlockFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
+
 		SharedPreferences settings = getActivity().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(PREF_IS_RUNNING, mRunningState);
 		mWatchThread.saveState(editor);
-        editor.putInt(KEY_LAST_HOUR,mLastHour);
+        editor.putInt(KEY_LAST_HOUR, mLastHour);
         editor.putInt(KEY_LAST_MIN,mLastMin);
-        editor.putInt(KEY_LAST_SEC,mLastSec);
+        editor.putInt(KEY_LAST_SEC, mLastSec);
 		editor.commit();
 	}
 	
@@ -136,10 +148,24 @@ public class CountdownFragment extends SherlockFragment {
         mLastHour=settings.getInt(KEY_LAST_HOUR,0);
         mLastMin=settings.getInt(KEY_LAST_MIN,0);
         mLastSec=settings.getInt(KEY_LAST_SEC,0);
+        mRunningState = settings.getBoolean(PREF_IS_RUNNING,false);
         mCountdownView.restoreState(settings);
         mCurrentTimeMillis = mCountdownView.getWatchTime();
 
         ((UltimateStopwatchActivity) getSherlockActivity()).registerCountdownFragment(this);
+
+
+        Paint paint = new Paint();
+        Rect bounds = new Rect();
+        paint.setTypeface(Typeface.SANS_SERIF);// your preference here
+        paint.setTextSize(getResources().getDimension(R.dimen.counter_font));// have this the same as your text size
+        String text = "-00:00:00.000";
+        paint.getTextBounds(text, 0, text.length(), bounds);
+        int text_width =  bounds.width();
+        int width = getResources().getDisplayMetrics().widthPixels;
+        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) width = width/2;
+
+        mTimerText.setPadding((width-text_width)/2,0,0,0);
 	}
 
 	@Override
@@ -197,24 +223,27 @@ public class CountdownFragment extends SherlockFragment {
 
     private void setUIState()
     {
-        boolean isRunning = isRunning();
-        mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || isRunning || (mCurrentTimeMillis!=0));
-        if(!isRunning && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0)
+        boolean stateChanged = (mRunningState != isRunning());
+        mRunningState = isRunning();
+        mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || mRunningState || (mCurrentTimeMillis!=0));
+        if(!mRunningState && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0)
         {
             mStartButton.setText(getString(R.string.start));
             mSoundManager.stopCountdownTicking();
         }else
         {
-            mStartButton.setText(isRunning?getString(R.string.pause):getString(R.string.start));
-
-            if(isRunning())
+            mStartButton.setText(mRunningState?getString(R.string.pause):getString(R.string.start));
+            if(stateChanged)
             {
-                mSoundManager.playSound(SoundManager.SOUND_START);
-                mSoundManager.startCountDownTicking();
-            }else
-            {
-                mSoundManager.playSound(SoundManager.SOUND_STOP);
-                mSoundManager.stopCountdownTicking();
+                if(isRunning())
+                {
+                    mSoundManager.playSound(SoundManager.SOUND_START);
+                    mSoundManager.startCountDownTicking();
+                }else
+                {
+                    mSoundManager.playSound(SoundManager.SOUND_STOP);
+                    mSoundManager.stopCountdownTicking();
+                }
             }
         }
     }

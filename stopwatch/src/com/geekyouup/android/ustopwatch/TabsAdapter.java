@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -80,6 +81,33 @@ public class TabsAdapter extends FragmentPagerAdapter
 
     @Override
     public void onPageScrollStateChanged(int state) {
+        switch(state)
+        {
+            case ViewPager.SCROLL_STATE_IDLE:
+                Log.d("USW","Scroll state idle");
+                for (int i = 0; i < 2; ++i) {
+                    final View child = mViewPager.getChildAt(i);
+                    if (child.getVisibility() != View.GONE) {
+                        child.setDrawingCacheEnabled(false);
+                    }
+                }
+                break;
+            case ViewPager.SCROLL_STATE_DRAGGING:
+                Log.d("USW","Scroll dragging");
+
+
+                for (int i = 0; i < 2; ++i) {
+                    final View child = mViewPager.getChildAt(i);
+                    if (child.getVisibility() != View.GONE) {
+                        child.setDrawingCacheEnabled(true);
+                    }
+                }
+
+                break;
+            case ViewPager.SCROLL_STATE_SETTLING:
+                Log.d("USW","Scroll state settling");
+                break;
+        }
     }
 
     @Override
@@ -87,7 +115,7 @@ public class TabsAdapter extends FragmentPagerAdapter
         Object tag = tab.getTag();
         for (int i = 0; i < mTabs.size(); i++) {
             if (mTabs.get(i) == tag) {
-                mViewPager.setCurrentItem(i);
+                mViewPager.setCurrentItem(i,true);
                 mCurrentTab = i;
             }
         }

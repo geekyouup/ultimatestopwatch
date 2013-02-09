@@ -62,7 +62,7 @@ public class SoundManager {
             float streamVolume = mgr
                     .getStreamVolume(AudioManager.STREAM_MUSIC);
             int playingSoundId = soundPool.play(soundPoolMap.get(soundId), streamVolume,
-                    streamVolume, 1, endlessLoop?-1:0, 1f);
+                    streamVolume, 1, endlessLoop?35:0, 1f);
 
             if(endlessLoop) mLoopingSoundId = playingSoundId;
 
@@ -71,8 +71,11 @@ public class SoundManager {
 
     public void stopEndlessAlarm()
     {
-        if(mLoopingSoundId != -1) soundPool.stop(mLoopingSoundId);
-        mLoopingSoundId=-1;
+        try
+        {
+            if(mLoopingSoundId != -1) soundPool.stop(mLoopingSoundId);
+            mLoopingSoundId=-1;
+        }catch(Exception e){}
     }
 
     public void startCountDownTicking()

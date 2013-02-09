@@ -65,6 +65,11 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 		if (screenSize == Configuration.SCREENLAYOUT_SIZE_SMALL) {
 			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		}
+
+        //If launched from Countdown notification then goto countdown clock directly
+        if(getIntent()!=null && getIntent().getBooleanExtra(AlarmUpdater.INTENT_EXTRA_LAUNCH_COUNTDOWN,false)){
+            getSupportActionBar().setSelectedNavigationItem(2);
+        }
 	}
 
     private void setupActionBar()

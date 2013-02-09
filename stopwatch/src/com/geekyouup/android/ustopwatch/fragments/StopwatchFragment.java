@@ -1,6 +1,10 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Message;
 import android.provider.Settings;
 import android.widget.Button;
@@ -31,8 +35,10 @@ public class StopwatchFragment extends SherlockFragment {
     private TextView mTimerText;
     private double mCurrentTimeMillis=0;
     private SoundManager mSoundManager;
+    private boolean mRunningState = false;
 	
 	private static final String PREFS_NAME="USW_SWFRAG_PREFS";
+    private static final String PREF_IS_RUNNING = "key_stopwatch_is_running";
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,6 +87,7 @@ public class StopwatchFragment extends SherlockFragment {
 		Log.d("USW","onPause StopwatchFragment");
 		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(PREF_IS_RUNNING, mRunningState);
 		mWatchThread.saveState(editor);
 		editor.commit();
 
@@ -115,8 +122,23 @@ public class StopwatchFragment extends SherlockFragment {
         AlarmUpdater.cancelChronometerNotification(getSherlockActivity());
 
 		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        mRunningState = settings.getBoolean(PREF_IS_RUNNING,false);
 		mStopwatchView.restoreState(settings);
         ((UltimateStopwatchActivity) getSherlockActivity()).registerStopwatchFragment(this);
+
+        //center the timer text in a fixed position, stops wiggling numbers
+
+        Paint paint = new Paint();
+        Rect bounds = new Rect();
+        paint.setTypeface(Typeface.SANS_SERIF);// your preference here
+        paint.setTextSize(getResources().getDimension(R.dimen.counter_font));// have this the same as your text size
+        String text = "00:00:00.000";
+        paint.getTextBounds(text, 0, text.length(), bounds);
+        int text_width =  bounds.width();
+        int width = getResources().getDisplayMetrics().widthPixels;
+        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) width = width/2;
+
+        mTimerText.setPadding((width-text_width)/2,0,0,0);
     }
 
 	@Override
@@ -130,7 +152,6 @@ public class StopwatchFragment extends SherlockFragment {
         setUIState();
 	}
 
-    private boolean mRunningState = false;
     private void setUIState()
     {
         boolean stateChanged = (mRunningState != isRunning());

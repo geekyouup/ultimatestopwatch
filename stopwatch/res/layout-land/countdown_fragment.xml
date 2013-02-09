@@ -16,7 +16,7 @@
               android:layout_width="match_parent" android:layout_height="wrap_content"
               android:text="@string/default_time" android:textColor="@color/text_grey"
               android:fontFamily="sans-serif-light"
-              android:gravity="center" android:background="@color/countdown_background"
+              android:background="@color/countdown_background"
               />
 
         <LinearLayout
@@ -53,16 +53,6 @@
                     android:textColor="@drawable/blue_button_landscape_text_color"
                     android:fontFamily="sans-serif"
                     />
-            <!--Button android:id="@+id/saveButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="LAP"
-                    android:textSize="18dp"
-                    android:background="@color/countdown_background"
-                    android:textColor="@drawable/blue_button_landscape_text_color"
-                    android:fontFamily="sans-serif"
-                    / -->
         </LinearLayout>
         </RelativeLayout>
 

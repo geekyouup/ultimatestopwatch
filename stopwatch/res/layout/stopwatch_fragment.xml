@@ -8,9 +8,7 @@
               android:layout_width="match_parent" android:layout_height="wrap_content"
               android:text="@string/default_time" android:textColor="@color/text_grey"
               android:fontFamily="sans-serif-light"
-              android:layout_alignParentTop="true"
-              android:gravity="center_horizontal"
-            android:layout_marginTop="5dp"/>
+              android:layout_marginTop="5dp"/>
 
 <com.geekyouup.android.ustopwatch.fragments.StopwatchView
       android:id="@+id/swview"

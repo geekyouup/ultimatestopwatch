@@ -1,8 +1,6 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.ArrayList;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,22 +12,17 @@ import android.widget.*;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.geekyouup.android.ustopwatch.R;
 import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
-
 
 public class LapTimesFragment extends SherlockListFragment implements LapTimeListener {
 
 	private LapTimesBaseAdapter mAdapter;
 	private ArrayList<LapTimeBlock> mLapTimes = new ArrayList<LapTimeBlock>();
-	private static final String PREFS_NAME_LAPTIMESFRAG = "usw_prefs_laptimesfrag";
-	private static final String KEY_CURRENT_VIEW = "current_view";
-	private ViewFlipper mViewFlipper;
 	private LapTimeRecorder mLapTimeRecorder;
-    private ActionMode mActionMode;
-	
+    private ArrayList<Integer> mCheckedItems;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,57 +38,25 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 	@Override
 	public void onStart() {
 		super.onStart();
-		getListView().setCacheColorHint(Color.WHITE);
-		mAdapter=new LapTimesBaseAdapter(getActivity(), mLapTimes);
-		setListAdapter(mAdapter);
-
-        ((UltimateStopwatchActivity)getActivity()).registerLapTimeFragment(this);
-
-        /*final ActionMode.Callback actionModeCallback = new ActionMode.Callback(){
+        final LapTimesFragment ltf = this;
+        ListView listView = getListView();
+        listView.setCacheColorHint(Color.WHITE);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
 
             @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                MenuInflater inflater = mode.getMenuInflater();
-                inflater.inflate(R.menu.menu_laptimes_contextual, menu);
-                return true;
-            }
-
-            @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
-            @Override public void onDestroyActionMode(ActionMode mode) {}
-
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_context_delete:
-
-                        mode.finish();
-                        return true;
-                    default:
-                        mode.finish();
-                        return false;
+            public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int i, long l, boolean checked) {
+                if(mCheckedItems==null) mCheckedItems=new ArrayList<Integer>();
+                if(checked)
+                {
+                    mCheckedItems.add(new Integer(i));
+                    Log.d("USW", "Item clicked " + i + ", total " + mCheckedItems.size());
                 }
-            }
-        };
-
-        AdapterView.OnItemLongClickListener listener = new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View view, int position, long id) {
-                final ListView listView = getListView();
-
-
-
-                mActionMode = getSherlockActivity().startActionMode(actionModeCallback);
-                view.setSelected(true);
-                return true;
-            }
-        };
-
-        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        getListView().setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-
-            @Override
-            public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int i, long l, boolean b) {
-                Toast.makeText(getSherlockActivity(),"Item clicked " + i,Toast.LENGTH_SHORT).show();
+                else
+                {
+                    mCheckedItems.remove(new Integer(i));
+                    Log.d("USW", "Item clicked " + i + ", total " + mCheckedItems.size());
+                }
             }
 
             @Override
@@ -115,8 +76,10 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
                 // Respond to clicks on the actions in the CAB
                 switch (menuItem.getItemId()) {
                     case R.id.menu_context_delete:
-                        //deleteSelectedItems();
+                        mLapTimeRecorder.deleteLapTimes(mCheckedItems,ltf);
                         actionMode.finish(); // Action picked, so close the CAB
+                        mCheckedItems.clear();
+                        mCheckedItems=null;
                         return true;
                     default:
                         return false;
@@ -124,52 +87,44 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
             }
 
             @Override
-            public void onDestroyActionMode(android.view.ActionMode actionMode)
-            {
-                mActionMode = null;
+            public void onDestroyActionMode(android.view.ActionMode actionMode) {
             }
         });
-        getListView().setOnItemLongClickListener(listener);
-        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(mActionMode!=null) view.setSelected(true);
-            }
-        });    */
-	}
 
+        mAdapter=new LapTimesBaseAdapter(getActivity(), mLapTimes);
+		setListAdapter(mAdapter);
+
+        ((UltimateStopwatchActivity)getActivity()).registerLapTimeFragment(this);
+
+        //on long touch start the contextual actionbar
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View view, int position, long id) {
+                final ListView listView = getListView();
+                getSherlockActivity().startActionMode(new ActionMode.Callback(){
+                    @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {return false;}
+                    @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+                    @Override public void onDestroyActionMode(ActionMode mode) {}
+                    @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {return false;}
+                });
+                return true;
+            }
+        });
+	}
 
     @Override
 	public void onPause() {
 		super.onPause();
-		
-		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME_LAPTIMESFRAG, Context.MODE_PRIVATE);
-		if (settings != null) {
-			SharedPreferences.Editor editor = settings.edit();
-			if (editor != null) {
-				if(mViewFlipper!=null) editor.putInt(KEY_CURRENT_VIEW, mViewFlipper.getDisplayedChild());
-				editor.commit();
-			}
-		}
-		
-		Log.d("USW","LaptimesFragment.onPause()");
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		
-		Log.d("USW","LaptimesFragment.onResume()");
-		
+
 		// if vars stored then use them
-		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME_LAPTIMESFRAG, Context.MODE_PRIVATE);
-		if (settings != null) {
-            mLapTimes.clear();
-            mLapTimes.addAll(mLapTimeRecorder.getTimes());
-            mAdapter.notifyDataSetChanged();
-            
-            setMode(settings.getInt(KEY_CURRENT_VIEW, 0));
-		}
+        mLapTimes.clear();
+        mLapTimes.addAll(mLapTimeRecorder.getTimes());
+        mAdapter.notifyDataSetChanged();
 	}
 
 	public void reset()
@@ -181,14 +136,6 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 	public void notifyDataSetChanged()
 	{
 		mAdapter.notifyDataSetChanged();
-	}
-	
-	public void setMode(int mode)
-	{
-		if(mViewFlipper!= null)
-		{
-			mViewFlipper.setDisplayedChild(mode);
-		}
 	}
 
 	@Override

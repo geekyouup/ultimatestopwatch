@@ -2,13 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/countdown_background">
+    android:background="@color/countdown_background"
+    android:id="@+id/countdown_layout"
+    android:orientation="vertical">
 
     <TextView android:id="@+id/time_counter" android:textSize="@dimen/counter_font"
               android:layout_width="match_parent" android:layout_height="wrap_content"
               android:text="@string/default_time" android:textColor="@color/white"
               android:fontFamily="sans-serif-light"
-              android:gravity="center"
               android:layout_marginTop="5dp"
             />
 

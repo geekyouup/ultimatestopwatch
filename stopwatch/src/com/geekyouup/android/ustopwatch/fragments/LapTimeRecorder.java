@@ -7,12 +7,10 @@ import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
 public class LapTimeRecorder {
 	
-	private static final ArrayList<Double> mLapTimes = new ArrayList<Double>();
+	private static ArrayList<Double> mLapTimes = new ArrayList<Double>();
 	private static final String PREFS_NAME_LAPTIMES = "usw_prefs_laptimes";
 	private static final String KEY_LAPTIME_X = "LAPTIME_";
 	private static LapTimeRecorder mSelf;
-
-    private int mCurrentLapTimeIndex = 0;
 
     //if a 0 laptime is stored then it is a reset signal and start of new block
 	
@@ -32,7 +30,6 @@ public class LapTimeRecorder {
             while((lt = settings.getLong(KEY_LAPTIME_X+lapTimeNum,-1L)) != -1L)
             {
             	mLapTimes.add(lt);
-                if(lt==0) mCurrentLapTimeIndex++;
             	lapTimeNum++;
             }
 		}
@@ -57,8 +54,6 @@ public class LapTimeRecorder {
 	public void recordLapTime(double time, UltimateStopwatchActivity activity)
 	{
 		mLapTimes.add(0,time);
-        if(time == 0) mCurrentLapTimeIndex++;
-
         if(activity!=null)
         {
             LapTimesFragment ltf = activity.getLapTimeFragment();
@@ -98,7 +93,6 @@ public class LapTimeRecorder {
 	public void reset(UltimateStopwatchActivity activity)
 	{
 		mLapTimes.clear();
-        mCurrentLapTimeIndex=0;
 		SharedPreferences settings = activity.getSharedPreferences(PREFS_NAME_LAPTIMES, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.clear();
@@ -110,4 +104,28 @@ public class LapTimeRecorder {
             if(ltf != null) ltf.lapTimesUpdated();
         }
 	}
+
+    public void deleteLapTimes(ArrayList<Integer> positions, LapTimesFragment ltf)
+    {
+        int numTimes = mLapTimes.size();
+        int timeNumber = 0;
+        ArrayList<Double> newLapTimes = new ArrayList<Double>();
+        for(int i=0;i<numTimes;i++)
+        {
+            double laptime = mLapTimes.get(i);
+            if(laptime == 0)
+            {
+                if(i==0) continue; //skip if the first element is a 0
+                timeNumber++;
+            }
+
+            if(!positions.contains(new Integer(timeNumber)))
+            {
+                newLapTimes.add(laptime);
+            }
+        }
+
+        mLapTimes = newLapTimes;
+        ltf.lapTimesUpdated();
+    }
 }

@@ -14,7 +14,9 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 
 public class AlarmUpdater {
-	
+
+    public static final String INTENT_EXTRA_LAUNCH_COUNTDOWN = "launch_countdown";
+
 	public static void cancelCountdownAlarm(Context context)
 	{
 		try
@@ -58,10 +60,12 @@ public class AlarmUpdater {
             return START_NOT_STICKY;
         }
 
+        //show Countdown Complete notification
         private void notifyStatusBar() {
             // The PendingIntent to launch our activity if the user selects this notification
             Intent launcher = new Intent(this,UltimateStopwatchActivity.class);
             launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            launcher.putExtra(INTENT_EXTRA_LAUNCH_COUNTDOWN, true);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
 
             // Set the icon, scrolling text and timestamp
@@ -105,12 +109,12 @@ public class AlarmUpdater {
             launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
 
-            Notification notification = new Notification.Builder(context)
+            Notification notification =  new NotificationCompat.Builder(context)
                     .setContentTitle(context.getString(R.string.app_name))
-                    .setUsesChronometer(true)
                     .setWhen(System.currentTimeMillis() - startTime)
                     .setSmallIcon(R.drawable.notification_icon)
                     .setContentIntent(contentIntent)
+                    .setUsesChronometer(true)
                     .build();
 
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

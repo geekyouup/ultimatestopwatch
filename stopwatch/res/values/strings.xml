@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Ultimate Stopwatch</string>
-    <string name="app_name_caps">ULTIMATE STOPWATCH</string>
+    <string name="app_name_caps">USW</string>
 	<string name="message_stopped">Stopped</string>
 	<string name="timer_title">Set Countdown Timer</string>
 	<string name="timer_start">OK</string>
@@ -44,7 +44,7 @@
     <string name="settings_libraries">LIBRARIES</string>
     <string name="settings_sound_secs">Sound for Seconds</string>
     <string name="settings_vibrate">Vibrate on Alert</string>
-    <string name="settings_endless_alert">Endless alert</string>
+    <string name="settings_endless_alert">Extra long alert</string>
     <string name="settings_about_text">The Ultimate Stopwatch, developed by Rich \'GeekYouUp\' Hyndman and designed by marie-schweiz.de</string>
     <string name="settings_libraries_text">ActionBarSherlock by Jake Warton\nhttp://actionbarsherlock.com/</string>
 

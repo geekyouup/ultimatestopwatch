@@ -498,65 +498,9 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				mCanvasHeight = height;
 
 				loadGraphics(null,isStopwatchMode());
-				
-				Log.d("USW", "Surface Width:" + width + ", Surface Height:" + height + ", AppXOffset: " + mAppOffsetX + ", bgImageWidth: " + mBackgroundImage.getWidth());
 			}
 		}
-		
-		private void scaleImages()
-		{
-			// need to check 2 things. If image is narrower than canvas
-			// scale it down, then if image is taller than canvas shift it down
-			int bgImageWidth = mBackgroundImage.getWidth();
-			int bgImageHeight = mBackgroundImage.getHeight();
-			mScaleFactor=1;
 
-            Log.d("USW","Scaling issue, canvasWidth" + mCanvasWidth + " - imgWidgth " + bgImageWidth + "!!!!!!!!");
-            Log.d("USW","Scaling issue, canvasHeight" + mCanvasHeight + " - imgHeight " + bgImageHeight + "!!!!!!!!");
-
-            if(bgImageWidth > mCanvasWidth) mScaleFactor = ((double) mCanvasWidth / (double) bgImageWidth);
-			if(bgImageHeight > mCanvasHeight)
-            {   double mScaleFactor2 = ((double)mCanvasHeight / (double) bgImageHeight);
-                if(mScaleFactor2<mScaleFactor) mScaleFactor = mScaleFactor2;
-            }
-
-            /*mScaleFactor = ((double) mCanvasWidth / (double) bgImageWidth);
-            if( ((double)bgImageHeight*mScaleFactor) > mCanvasHeight)
-            {
-                //double mScaleFactor2 = ((double)mCanvasHeight / (double) bgImageHeight);
-                //if(mScaleFactor2<mScaleFactor) mScaleFactor = mScaleFactor2;
-                mScaleFactor = ((double) mCanvasHeight / (double) bgImageHeight);
-            } */
-
-            Log.d("USW","ScaleFactor " + mScaleFactor);
-			if(mScaleFactor != 1)
-			{
-				mBackgroundImage = Bitmap
-				.createScaledBitmap(mBackgroundImage, (int) ((double) bgImageWidth * mScaleFactor),
-						(int) ((double) bgImageHeight * mScaleFactor),
-						true);
-
-				mMinsHalfHeight = (int) ((double) mMinsHalfHeight * mScaleFactor);
-				mMinsHalfWidth = (int) ((double) mMinsHalfWidth * mScaleFactor);
-				mSecsHalfHeight= (int) ((double) mSecsHalfHeight * mScaleFactor);
-				mSecsHalfWidth= (int) ((double) mSecsHalfWidth * mScaleFactor);
-				
-				bgImageWidth = mBackgroundImage.getWidth();
-				bgImageHeight = mBackgroundImage.getHeight();
-			}
-
-            mBackgroundStartY = (mCanvasHeight - bgImageHeight) / 2;
-			if (mBackgroundStartY < 0)
-				mAppOffsetY = -mBackgroundStartY;
-
-			mSecsCenterY = mBackgroundStartY + (bgImageHeight / 2); //new graphics have watch center in center
-			mMinsCenterY = mBackgroundStartY + (bgImageHeight * 314 / 1000);//mSecsCenterY - 44;
-			
-			mAppOffsetX = (mCanvasWidth - mBackgroundImage.getWidth()) / 2;
-
-			mSecsCenterX = mCanvasWidth/2;
-			mMinsCenterX = mCanvasWidth/2;
-		}
 	}
 
 	

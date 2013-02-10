@@ -2,6 +2,7 @@ package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.ArrayList;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,54 +43,59 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
         ListView listView = getListView();
         listView.setCacheColorHint(Color.WHITE);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
 
-            @Override
-            public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int i, long l, boolean checked) {
-                if(mCheckedItems==null) mCheckedItems=new ArrayList<Integer>();
-                if(checked)
-                {
-                    mCheckedItems.add(new Integer(i));
-                    Log.d("USW", "Item clicked " + i + ", total " + mCheckedItems.size());
+        //MultiMode Choice is only available in Honeycomb+
+        if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+        {
+            listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+
+                @Override
+                public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int i, long l, boolean checked) {
+                    if(mCheckedItems==null) mCheckedItems=new ArrayList<Integer>();
+                    if(checked)
+                    {
+                        mCheckedItems.add(new Integer(i));
+                        Log.d("USW", "Item clicked " + i + ", total " + mCheckedItems.size());
+                    }
+                    else
+                    {
+                        mCheckedItems.remove(new Integer(i));
+                        Log.d("USW", "Item clicked " + i + ", total " + mCheckedItems.size());
+                    }
                 }
-                else
-                {
-                    mCheckedItems.remove(new Integer(i));
-                    Log.d("USW", "Item clicked " + i + ", total " + mCheckedItems.size());
+
+                @Override
+                public boolean onCreateActionMode(android.view.ActionMode actionMode, android.view.Menu menu) {
+                    android.view.MenuInflater inflater = actionMode.getMenuInflater();
+                    inflater.inflate(R.menu.menu_laptimes_contextual, menu);
+                    return true;
                 }
-            }
 
-            @Override
-            public boolean onCreateActionMode(android.view.ActionMode actionMode, android.view.Menu menu) {
-                android.view.MenuInflater inflater = actionMode.getMenuInflater();
-                inflater.inflate(R.menu.menu_laptimes_contextual, menu);
-                return true;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(android.view.ActionMode actionMode, android.view.Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(android.view.ActionMode actionMode, android.view.MenuItem menuItem) {
-                // Respond to clicks on the actions in the CAB
-                switch (menuItem.getItemId()) {
-                    case R.id.menu_context_delete:
-                        mLapTimeRecorder.deleteLapTimes(mCheckedItems,ltf);
-                        actionMode.finish(); // Action picked, so close the CAB
-                        mCheckedItems.clear();
-                        mCheckedItems=null;
-                        return true;
-                    default:
-                        return false;
+                @Override
+                public boolean onPrepareActionMode(android.view.ActionMode actionMode, android.view.Menu menu) {
+                    return false;
                 }
-            }
 
-            @Override
-            public void onDestroyActionMode(android.view.ActionMode actionMode) {
-            }
-        });
+                @Override
+                public boolean onActionItemClicked(android.view.ActionMode actionMode, android.view.MenuItem menuItem) {
+                    // Respond to clicks on the actions in the CAB
+                    switch (menuItem.getItemId()) {
+                        case R.id.menu_context_delete:
+                            mLapTimeRecorder.deleteLapTimes(mCheckedItems,ltf);
+                            actionMode.finish(); // Action picked, so close the CAB
+                            mCheckedItems.clear();
+                            mCheckedItems=null;
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+
+                @Override
+                public void onDestroyActionMode(android.view.ActionMode actionMode) {
+                }
+            });
+        }
 
         mAdapter=new LapTimesBaseAdapter(getActivity(), mLapTimes);
 		setListAdapter(mAdapter);

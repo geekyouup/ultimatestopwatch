@@ -94,7 +94,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			mStopwatchMode=isStopwatchMode;
 
 			Resources res = mContext.getResources();
-			loadGraphics(res, isStopwatchMode());
+			//loadGraphics(res, isStopwatchMode());
 
             mCountDownBGColor = getResources().getColor(R.color.countdown_background);
 
@@ -103,36 +103,59 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
             setZOrderOnTop(true);
 		}
 
-		private void loadGraphics(Resources res, boolean isStopwatch)
-		{
-			if(res==null) res = mContext.getResources();
+        private void loadGraphics(Resources res, boolean isStopwatch)
+        {
+            if(res==null) res = mContext.getResources();
+            mSkipDraw=true;
 
-			mSkipDraw=true;
-			//switch background graphic
-			if(isStopwatch)
-			{
-				mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.background);
-				mSecHand = res.getDrawable(R.drawable.sechand);
-				mMinHand = res.getDrawable(R.drawable.minhand);
-			}else
-			{
-				mBackgroundImage = BitmapFactory.decodeResource(res, R.drawable.background_cd);
-				mSecHand = res.getDrawable(R.drawable.sechand_cd);
-				mMinHand = res.getDrawable(R.drawable.minhand_cd);
-			}
-			
-			mSecsHalfWidth = mSecHand.getIntrinsicWidth()/2;
-			mSecsHalfHeight = mSecHand.getIntrinsicHeight()/2;
-			
-			mMinsHalfWidth = mMinHand.getIntrinsicWidth()/2;
-			mMinsHalfHeight = mMinHand.getIntrinsicHeight()/2;
-			
-			mBackgroundStartY = (mCanvasHeight - mBackgroundImage.getHeight()) / 2;
-			mAppOffsetX = (mCanvasWidth - mBackgroundImage.getWidth()) / 2;
-			
-			scaleImages();
-			mSkipDraw=false;
-		}
+            int minDim = Math.min(mCanvasHeight,mCanvasWidth);
+            final BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inScaled=false;
+            double handsScaleFactor = 1;
+
+            if(minDim >= 720){
+                mBackgroundImage = BitmapFactory.decodeResource(res, isStopwatch?R.drawable.background720:R.drawable.background720_cd,options);
+            }else if(minDim >= 590){
+                mBackgroundImage = BitmapFactory.decodeResource(res, isStopwatch?R.drawable.background590:R.drawable.background590_cd,options);
+                handsScaleFactor=0.82;
+            }else if(minDim >= 460){
+                mBackgroundImage = BitmapFactory.decodeResource(res, isStopwatch?R.drawable.background460:R.drawable.background460_cd,options);
+                handsScaleFactor= 0.64;
+            }else if(minDim >= 320){
+                mBackgroundImage = BitmapFactory.decodeResource(res, isStopwatch?R.drawable.background320:R.drawable.background320_cd,options);
+                handsScaleFactor=0.444;
+            }else{
+                mBackgroundImage = BitmapFactory.decodeResource(res, isStopwatch?R.drawable.background240:R.drawable.background240_cd,options);
+                handsScaleFactor= 0.333;
+            }
+
+            mSecHand = res.getDrawable(isStopwatch?R.drawable.sechand:R.drawable.sechand_cd);
+            mMinHand = res.getDrawable(isStopwatch?R.drawable.minhand:R.drawable.minhand_cd);
+
+            mSecsHalfWidth = mSecHand.getIntrinsicWidth()/2;
+            mSecsHalfHeight = mSecHand.getIntrinsicHeight()/2;
+
+            mMinsHalfWidth = mMinHand.getIntrinsicWidth()/2;
+            mMinsHalfHeight = mMinHand.getIntrinsicHeight()/2;
+
+            mMinsHalfHeight = (int) ((double) mMinsHalfHeight * handsScaleFactor);
+            mMinsHalfWidth = (int) ((double) mMinsHalfWidth * handsScaleFactor);
+            mSecsHalfHeight= (int) ((double) mSecsHalfHeight * handsScaleFactor);
+            mSecsHalfWidth= (int) ((double) mSecsHalfWidth * handsScaleFactor);
+
+            mBackgroundStartY = (mCanvasHeight - mBackgroundImage.getHeight()) / 2;
+            mAppOffsetX = (mCanvasWidth - mBackgroundImage.getWidth()) / 2;
+
+            if (mBackgroundStartY < 0)
+                mAppOffsetY = -mBackgroundStartY;
+
+            mSecsCenterY = mBackgroundStartY + (mBackgroundImage.getHeight() / 2); //new graphics have watch center in center
+            mMinsCenterY = mBackgroundStartY + (mBackgroundImage.getHeight() * 314 / 1000);//mSecsCenterY - 44;
+            mSecsCenterX = mCanvasWidth/2;
+            mMinsCenterX = mCanvasWidth/2;
+
+            mSkipDraw=false;
+        }
 
 		public void setHandler(Handler handler) {
 			this.mHandler = handler;
@@ -311,7 +334,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 					setState(savedState.getInt(KEY_STATE+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), STATE_PAUSE));
 					mLastTime = savedState.getLong(KEY_LASTTIME+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), System.currentTimeMillis());
 					mDisplayTimeMillis = savedState.getLong(KEY_NOWTIME+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), 0);
-					loadGraphics(null, mStopwatchMode);
+					//loadGraphics(null, mStopwatchMode);
 					updatePhysics();
 				}
 				notifyStateChanged();
@@ -419,7 +442,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		}
 
 		public void setIsStopwatchMode(boolean isStopwatchMode) {
-			this.mStopwatchMode = isStopwatchMode;
+            this.mStopwatchMode = isStopwatchMode;
 			resetVars();
 			loadGraphics(null, isStopwatchMode);
 		}
@@ -488,7 +511,10 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			int bgImageHeight = mBackgroundImage.getHeight();
 			mScaleFactor=1;
 
-         	if(bgImageWidth > mCanvasWidth) mScaleFactor = ((double) mCanvasWidth / (double) bgImageWidth);
+            Log.d("USW","Scaling issue, canvasWidth" + mCanvasWidth + " - imgWidgth " + bgImageWidth + "!!!!!!!!");
+            Log.d("USW","Scaling issue, canvasHeight" + mCanvasHeight + " - imgHeight " + bgImageHeight + "!!!!!!!!");
+
+            if(bgImageWidth > mCanvasWidth) mScaleFactor = ((double) mCanvasWidth / (double) bgImageWidth);
 			if(bgImageHeight > mCanvasHeight)
             {   double mScaleFactor2 = ((double)mCanvasHeight / (double) bgImageHeight);
                 if(mScaleFactor2<mScaleFactor) mScaleFactor = mScaleFactor2;
@@ -502,14 +528,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
                 mScaleFactor = ((double) mCanvasHeight / (double) bgImageHeight);
             } */
 
-
             Log.d("USW","ScaleFactor " + mScaleFactor);
 			if(mScaleFactor != 1)
 			{
 				mBackgroundImage = Bitmap
 				.createScaledBitmap(mBackgroundImage, (int) ((double) bgImageWidth * mScaleFactor),
 						(int) ((double) bgImageHeight * mScaleFactor),
-						false);
+						true);
 
 				mMinsHalfHeight = (int) ((double) mMinsHalfHeight * mScaleFactor);
 				mMinsHalfWidth = (int) ((double) mMinsHalfWidth * mScaleFactor);
@@ -519,8 +544,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				bgImageWidth = mBackgroundImage.getWidth();
 				bgImageHeight = mBackgroundImage.getHeight();
 			}
-			
-			mBackgroundStartY = (mCanvasHeight - bgImageHeight) / 2;
+
+            mBackgroundStartY = (mCanvasHeight - bgImageHeight) / 2;
 			if (mBackgroundStartY < 0)
 				mAppOffsetY = -mBackgroundStartY;
 

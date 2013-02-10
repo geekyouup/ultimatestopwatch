@@ -124,9 +124,12 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
             }else if(minDim >= 320){
                 mBackgroundImage = BitmapFactory.decodeResource(res, isStopwatch?R.drawable.background320:R.drawable.background320_cd,options);
                 handsScaleFactor=0.444;
-            }else{
+            }else if(minDim >= 240){
                 mBackgroundImage = BitmapFactory.decodeResource(res, isStopwatch?R.drawable.background240:R.drawable.background240_cd,options);
                 handsScaleFactor= 0.333;
+            }else{
+                mBackgroundImage = BitmapFactory.decodeResource(res, isStopwatch?R.drawable.background150:R.drawable.background150_cd,options);
+                handsScaleFactor= 0.208;
             }
 
             mSecHand = res.getDrawable(isStopwatch?R.drawable.sechand:R.drawable.sechand_cd);

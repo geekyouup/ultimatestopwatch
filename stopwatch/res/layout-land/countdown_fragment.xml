@@ -36,9 +36,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/countdown_background"
+                    android:background="@drawable/blue_button_landscape_bg_color"
                     android:textColor="@drawable/blue_button_landscape_text_color"
-                    android:text="START"
+                    android:text="@string/start"
                     android:textSize="18dp"
                     android:fontFamily="sans-serif"
                     />
@@ -47,9 +47,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="RESET"
+                    android:text="@string/reset"
                     android:textSize="18dp"
-                    android:background="@color/countdown_background"
+                    android:background="@drawable/blue_button_landscape_bg_color"
                     android:textColor="@drawable/blue_button_landscape_text_color"
                     android:fontFamily="sans-serif"
                     />

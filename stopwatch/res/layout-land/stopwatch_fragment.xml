@@ -16,7 +16,7 @@
     <RelativeLayout android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:layout_weight="1"
-                android:gravity="center">
+                  android:gravity="center">
 
     <TextView android:id="@+id/counter_text" android:textSize="@dimen/counter_font"
               android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -40,9 +40,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/white"
+                    android:background="@drawable/red_button_landscape_bg_color"
                     android:textColor="@drawable/red_button_landscape_text_color"
-                    android:text="START"
+                    android:text="@string/start"
                     android:textSize="18dp"
                     android:fontFamily="sans-serif"
                     />
@@ -51,9 +51,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="RESET"
+                    android:text="@string/reset"
                     android:textSize="18dp"
-                    android:background="@color/white"
+                    android:background="@drawable/red_button_landscape_bg_color"
                     android:textColor="@drawable/red_button_landscape_text_color"
                     android:fontFamily="sans-serif"
                     />
@@ -61,9 +61,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="LAP"
+                    android:text="@string/lap"
                     android:textSize="18dp"
-                    android:background="@color/white"
+                    android:background="@drawable/red_button_landscape_bg_color"
                     android:textColor="@drawable/red_button_landscape_text_color"
                     android:fontFamily="sans-serif"
                     />

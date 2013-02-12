@@ -41,9 +41,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private static final String KEY_NOWTIME = "currenttime";
         private static final String KEY_COUNTDOWN_SUFFIX = "_cd";
 		private double mScaleFactor = 1; //how much to scale the images up or down by
-		/*
-		 * Member (state) fields
-		 */
+
 		/** The drawable to use as the background of the animation canvas */
 		private Bitmap mBackgroundImage;
 		private int mBackgroundStartY;
@@ -52,7 +50,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private double mMinsAngle = 0;
 		private double mSecsAngle = 0;
 		private double mDisplayTimeMillis = 0;
-		private double twoPI = Math.PI * 2.0;
+		private final double twoPI = Math.PI * 2.0;
 		private boolean mStopwatchMode = true;
 
 		private int mCanvasWidth = 320;
@@ -85,7 +83,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private SurfaceHolder mSurfaceHolder;
 		private Handler mHandler;
 		private Context mContext;
-        int mCountDownBGColor = 0xff000000;
+        private int mCountDownBGColor = 0xff000000;
 
 		public StopwatchThead(SurfaceHolder surfaceHolder, Context context, boolean isStopwatchMode) {
 			// get handles to some important objects
@@ -190,7 +188,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		}
 
 		public void reset() {
-			resetVars();
+            resetVars();
 		}
 
 		private void resetVars() {
@@ -216,7 +214,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 				if(start) doStart();
                 else
                 {
-                    updatePhysics();
+                    updatePhysics(false);
                 }
 			}
 		}
@@ -231,7 +229,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 					if(c!= null)
 					{
 						synchronized (mSurfaceHolder) {
-							if (mMode == STATE_RUNNING) updatePhysics();
+							if (mMode == STATE_RUNNING) updatePhysics(false);
 							if(!mSkipDraw) doDraw(c);
 						}
 					}
@@ -250,7 +248,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		/**
 		 * Update the time
 		 */
-		private void updatePhysics() {
+		private void updatePhysics(boolean appResuming) {
 			long now = System.currentTimeMillis();
 
 			if(mMode == STATE_RUNNING)
@@ -276,9 +274,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 			// stop timer at end
 			if (mMode == STATE_RUNNING && !isStopwatchMode() && mDisplayTimeMillis <= 0) {
-                Log.d("USW","updatePhysics resetting timer mDisplayTime="+mDisplayTimeMillis);
 				resetVars(); // applies pause state
-                notifyCountdownComplete();
+                notifyCountdownComplete(appResuming);
 			}
 		}		
 		
@@ -342,7 +339,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 					mLastTime = savedState.getLong(KEY_LASTTIME+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), System.currentTimeMillis());
 					mDisplayTimeMillis = savedState.getLong(KEY_NOWTIME+(mStopwatchMode?"":KEY_COUNTDOWN_SUFFIX), 0);
 					//loadGraphics(null, mStopwatchMode);
-					updatePhysics();
+					updatePhysics(true);
 				}
 				notifyStateChanged();
 				AlarmUpdater.cancelCountdownAlarm(mContext); //just to be sure
@@ -372,10 +369,9 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		 * Sets the  mode. That is, whether we are running, paused, in the
 		 * failure state etc.
 		 */
-		public void setState(int mode) {
+		private void setState(int mode) {
 			synchronized (mSurfaceHolder) {
 				mMode = mode;
-				Log.d("USW", "Mode set to " + mMode);
 			}
 		}
 
@@ -408,12 +404,13 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			}
 		}
 
-        private void notifyCountdownComplete()
+        private void notifyCountdownComplete(boolean appResuming)
         {
             if (mHandler != null) {
                 Message msg = mHandler.obtainMessage();
                 Bundle b = new Bundle();
                 b.putBoolean(CountdownFragment.MSG_COUNTDOWN_COMPLETE, true);
+                b.putBoolean(CountdownFragment.MSG_APP_RESUMING, appResuming);
                 msg.setData(b);
                 mHandler.sendMessage(msg);
             }
@@ -450,7 +447,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 		public void setIsStopwatchMode(boolean isStopwatchMode) {
             this.mStopwatchMode = isStopwatchMode;
-			resetVars();
+			//resetVars(); //why was this being called here? Relic from when we had one clock face?
 			loadGraphics(null, isStopwatchMode);
 		}
 
@@ -520,9 +517,6 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 
 	public StopwatchView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-
-		Log.d("USW", "New StopwatchView instantiated");
-
 		mContext = context;
 
 		// register our interest in hearing about changes to our surface
@@ -613,7 +607,6 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 	}
 
 	public void restoreState(SharedPreferences savedState) {
-		Log.d("USW", "Restore state received");
 		mRestoreState = savedState;
 	}
 

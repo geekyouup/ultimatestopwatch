@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -46,8 +44,10 @@ public class CountdownFragment extends SherlockFragment {
 
     public static final String MSG_REQUEST_COUNTDOWN_DLG = "msg_usw_counter";
     public static final String MSG_COUNTDOWN_COMPLETE = "msg_countdown_complete";
-    //private RelativeLayout mCountdownLayout;
-	
+    public static final String MSG_APP_RESUMING = "msg_app_resuming";
+    private int mLastSecond=0;
+
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -89,7 +89,6 @@ public class CountdownFragment extends SherlockFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-
 		SharedPreferences settings = getActivity().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(PREF_IS_RUNNING, mRunningState);
@@ -101,14 +100,8 @@ public class CountdownFragment extends SherlockFragment {
 	}
 	
 	@Override
-	public void onStop() {
-		super.onStop();
-	}
-	
-	@Override
 	public void onResume() {
 		super.onResume();
-
         // cancel next alarm if there is one, and clear notification bar
         AlarmUpdater.cancelCountdownAlarm(getSherlockActivity());
 
@@ -124,17 +117,30 @@ public class CountdownFragment extends SherlockFragment {
                         requestTimeDialog();
                     } else if(m.getData().getBoolean(MSG_COUNTDOWN_COMPLETE, false))
                     {
-                        mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM, SettingsActivity.isEndlessAlarm());
+                        boolean appResuming = m.getData().getBoolean(MSG_APP_RESUMING, false);
+                        if(!appResuming)
+                        {
+                            mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM, SettingsActivity.isEndlessAlarm());
 
-                        if(SettingsActivity.isVibrate()){
-                            Vibrator vibrator = (Vibrator) getSherlockActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                            vibrator.vibrate(1000);
+                            if(SettingsActivity.isVibrate()){
+                                Vibrator vibrator = (Vibrator) getSherlockActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                                vibrator.vibrate(1000);
+                            }
                         }
 
-                        reset(SettingsActivity.isEndlessAlarm());
+                        reset(!appResuming && SettingsActivity.isEndlessAlarm());
                     } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME,false)) {
                         mCurrentTimeMillis = m.getData().getDouble(
                                 UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
+
+                        int currentSecond = (int) mCurrentTimeMillis/1000;
+                        if(currentSecond>mLastSecond)
+                        {
+                            mSoundManager.doTick();
+                            mLastSecond=currentSecond;
+                        }else if(mLastSecond == 0) mLastSecond = (int) mCurrentTimeMillis/1000;
+
+
                         setTime(mCurrentTimeMillis);
                     } else if(m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE,false))
                     {
@@ -154,7 +160,6 @@ public class CountdownFragment extends SherlockFragment {
 
         ((UltimateStopwatchActivity) getSherlockActivity()).registerCountdownFragment(this);
 
-
         Paint paint = new Paint();
         Rect bounds = new Rect();
         paint.setTypeface(Typeface.SANS_SERIF);// your preference here
@@ -166,11 +171,6 @@ public class CountdownFragment extends SherlockFragment {
         if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) width = width/2;
 
         mTimerText.setPadding((width-text_width)/2,0,0,0);
-	}
-
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
 	}
 	
 	public void startStop()
@@ -228,23 +228,12 @@ public class CountdownFragment extends SherlockFragment {
         mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || mRunningState || (mCurrentTimeMillis!=0));
         if(!mRunningState && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0)
         {
-            mStartButton.setText(getString(R.string.start));
-            mSoundManager.stopCountdownTicking();
+            if(isAdded()) mStartButton.setText(getString(R.string.start));
         }else
         {
-            mStartButton.setText(mRunningState?getString(R.string.pause):getString(R.string.start));
+            if(isAdded()) mStartButton.setText(mRunningState?getString(R.string.pause):getString(R.string.start));
             if(stateChanged)
-            {
-                if(isRunning())
-                {
-                    mSoundManager.playSound(SoundManager.SOUND_START);
-                    mSoundManager.startCountDownTicking();
-                }else
-                {
-                    mSoundManager.playSound(SoundManager.SOUND_STOP);
-                    mSoundManager.stopCountdownTicking();
-                }
-            }
+                    mSoundManager.playSound(isRunning()?SoundManager.SOUND_START:SoundManager.SOUND_STOP);
         }
     }
 
@@ -330,7 +319,6 @@ public class CountdownFragment extends SherlockFragment {
         mSelectTime.setTitle(getString(R.string.timer_title));
         mSelectTime.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.timer_start), new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which) {
-                //removeSplashText();
                 mDialogOnScreen=false;
                 mHoursValue = TimeUtils.getDlgHours();
                 mMinsValue = TimeUtils.getDlgMins();

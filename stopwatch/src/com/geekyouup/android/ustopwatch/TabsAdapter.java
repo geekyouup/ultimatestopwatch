@@ -84,7 +84,6 @@ public class TabsAdapter extends FragmentPagerAdapter
         switch(state)
         {
             case ViewPager.SCROLL_STATE_IDLE:
-                Log.d("USW","Scroll state idle");
                 for (int i = 0; i < 2; ++i) {
                     final View child = mViewPager.getChildAt(i);
                     if (child.getVisibility() != View.GONE) {
@@ -93,9 +92,6 @@ public class TabsAdapter extends FragmentPagerAdapter
                 }
                 break;
             case ViewPager.SCROLL_STATE_DRAGGING:
-                Log.d("USW","Scroll dragging");
-
-
                 for (int i = 0; i < 2; ++i) {
                     final View child = mViewPager.getChildAt(i);
                     if (child.getVisibility() != View.GONE) {
@@ -105,7 +101,6 @@ public class TabsAdapter extends FragmentPagerAdapter
 
                 break;
             case ViewPager.SCROLL_STATE_SETTLING:
-                Log.d("USW","Scroll state settling");
                 break;
         }
     }

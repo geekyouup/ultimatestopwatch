@@ -20,10 +20,6 @@ public class SoundManager {
     public static final int SOUND_TICK = 6;
 
     private static boolean mAudioOn = true;
-    private boolean isCountdownTicking = false;
-    private boolean isStopwatchTicking = false;
-
-    private int mTickStreamId = 0;
     private HashMap<Integer, Integer> soundPoolMap;
 
     private SoundManager(Context cxt)
@@ -78,72 +74,21 @@ public class SoundManager {
         }catch(Exception e){}
     }
 
-    public void startCountDownTicking()
+    public void doTick()
     {
-        isCountdownTicking=true;
-        startTicking();
-    }
-
-    public void startStopwatchTicking()
-    {
-        isStopwatchTicking=true;
-        startTicking();
-    }
-
-    public void stopCountdownTicking()
-    {
-        isCountdownTicking=false;
-        stopTicking();
-    }
-
-    public void stopStopwatchTicking()
-    {
-        isStopwatchTicking=false;
-        stopTicking();
-    }
-
-    private void startTicking()
-    {
-        if(mAudioOn && mTickStreamId==0 && SettingsActivity.isTicking())
+        if(mAudioOn && SettingsActivity.isTicking())
         {
             AudioManager mgr = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
             float streamVolume = mgr
                     .getStreamVolume(AudioManager.STREAM_MUSIC);
-            mTickStreamId = soundPool.play(soundPoolMap.get(SOUND_TICK), streamVolume,
-                    streamVolume, 1, -1, 1f);
+            soundPool.play(soundPoolMap.get(SOUND_TICK), streamVolume,
+                    streamVolume, 1, 0, 1f);
         }
-    }
-
-
-    private void stopTicking()
-    {
-        if(!isCountdownTicking && !isStopwatchTicking && mTickStreamId!=0)
-        {
-            try{soundPool.stop(mTickStreamId);}catch(Exception e){}
-            mTickStreamId=0;
-        }
-    }
-
-    public void muteTicking()
-    {
-        if(mTickStreamId!=0)
-        {
-            try{soundPool.stop(mTickStreamId);}catch(Exception e){}
-            mTickStreamId=0;
-        }
-    }
-
-    public void unmuteTicking()
-    {
-        if(mAudioOn && (isCountdownTicking || isStopwatchTicking)) startTicking();
     }
 
     public void setAudioState(boolean on)
     {
         mAudioOn=on;
-
-        if(!on && (isCountdownTicking || isStopwatchTicking)) muteTicking();
-        else if(on && (isCountdownTicking || isStopwatchTicking)) startTicking();
     }
 
     public boolean isAudioOn()

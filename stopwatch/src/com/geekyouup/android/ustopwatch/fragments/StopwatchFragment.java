@@ -1,14 +1,11 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Message;
-import android.provider.Settings;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.geekyouup.android.ustopwatch.*;
@@ -17,13 +14,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import com.geekyouup.android.ustopwatch.fragments.StopwatchView.StopwatchThead;
-import org.w3c.dom.Text;
 
 public class StopwatchFragment extends SherlockFragment {
 
@@ -39,7 +33,8 @@ public class StopwatchFragment extends SherlockFragment {
 	
 	private static final String PREFS_NAME="USW_SWFRAG_PREFS";
     private static final String PREF_IS_RUNNING = "key_stopwatch_is_running";
-	
+    private int mLastSecond=0;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -84,7 +79,6 @@ public class StopwatchFragment extends SherlockFragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		Log.d("USW","onPause StopwatchFragment");
 		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(PREF_IS_RUNNING, mRunningState);
@@ -111,6 +105,14 @@ public class StopwatchFragment extends SherlockFragment {
                     if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME,false)) {
                         mCurrentTimeMillis = m.getData().getDouble(UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
                         setTime(mCurrentTimeMillis);
+
+                        int currentSecond = (int) mCurrentTimeMillis/1000;
+                        if(currentSecond>mLastSecond)
+                        {
+                            mSoundManager.doTick();
+                            mLastSecond=currentSecond;
+                        }
+
                     }else if(m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE,false))
                     {
                         setUIState();
@@ -127,12 +129,11 @@ public class StopwatchFragment extends SherlockFragment {
         ((UltimateStopwatchActivity) getSherlockActivity()).registerStopwatchFragment(this);
 
         //center the timer text in a fixed position, stops wiggling numbers
-
         Paint paint = new Paint();
         Rect bounds = new Rect();
         paint.setTypeface(Typeface.SANS_SERIF);// your preference here
         paint.setTextSize(getResources().getDimension(R.dimen.counter_font));// have this the same as your text size
-        String text = "00:00:00.000";
+        String text = getString(R.string.default_time); //00:00:00.000
         paint.getTextBounds(text, 0, text.length(), bounds);
         int text_width =  bounds.width();
         int width = getResources().getDisplayMetrics().widthPixels;
@@ -140,11 +141,6 @@ public class StopwatchFragment extends SherlockFragment {
 
         mTimerText.setPadding((width-text_width)/2,0,0,0);
     }
-
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-	}
 	
 	public void startStop()
 	{
@@ -157,20 +153,11 @@ public class StopwatchFragment extends SherlockFragment {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
         mResetButton.setEnabled(mRunningState || (mCurrentTimeMillis!=0));
-        mStartButton.setText(mRunningState?getString(R.string.pause):getString(R.string.start));
+
+        if(isAdded()) mStartButton.setText(mRunningState?getString(R.string.pause):getString(R.string.start));
 
         if(stateChanged)
-        {
-            if(mRunningState)
-            {
-                mSoundManager.playSound(SoundManager.SOUND_START);
-                mSoundManager.startStopwatchTicking();
-            }else
-            {
-                mSoundManager.playSound(SoundManager.SOUND_STOP);
-                mSoundManager.stopStopwatchTicking();
-            }
-        }
+            mSoundManager.playSound(mRunningState?SoundManager.SOUND_START:SoundManager.SOUND_STOP);
     }
 
 	public void reset()
@@ -178,7 +165,6 @@ public class StopwatchFragment extends SherlockFragment {
 		mWatchThread.reset();
 
         mSoundManager.playSound(SoundManager.SOUND_RESET);
-        mSoundManager.stopStopwatchTicking();
 
         mResetButton.setEnabled(false);
         mStartButton.setText(getString(R.string.start));

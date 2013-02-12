@@ -108,7 +108,6 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
         editor.commit();
 
 		LapTimeRecorder.getInstance().saveTimes(this);
-        mSoundManager.muteTicking();
 	}
 
     @Override

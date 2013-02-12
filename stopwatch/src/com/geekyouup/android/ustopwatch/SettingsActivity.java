@@ -30,8 +30,6 @@ public class SettingsActivity extends SherlockActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isTicking=b;
-                if(b) SoundManager.getInstance(context).unmuteTicking();
-                else SoundManager.getInstance(context).muteTicking();
             }
         });
 

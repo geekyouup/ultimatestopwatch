@@ -285,7 +285,8 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private void doDraw(Canvas canvas) {
 			// Draw the background image. Operations on the Canvas accumulate
             canvas.drawColor(isStopwatchMode()?Color.WHITE:mCountDownBGColor);
-			canvas.drawBitmap(mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
+			if(mBackgroundImage!=null)
+                canvas.drawBitmap(mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
 
             // draw the mins hand with its current rotatiom
             canvas.save();

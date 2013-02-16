@@ -122,7 +122,7 @@ public class CountdownFragment extends SherlockFragment {
                         {
                             mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM, SettingsActivity.isEndlessAlarm());
 
-                            if(SettingsActivity.isVibrate()){
+                            if(SettingsActivity.isVibrate() && getSherlockActivity()!=null){
                                 Vibrator vibrator = (Vibrator) getSherlockActivity().getSystemService(Context.VIBRATOR_SERVICE);
                                 vibrator.vibrate(1000);
                             }

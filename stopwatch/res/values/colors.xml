@@ -20,7 +20,8 @@
     <color name="text_grey">#ff666666</color>
     <color name="text_light_grey">#ff888888</color>
     <color name="background">#ffffffff</color>
-    <color name="countdown_background">#ff111111</color>
+    <color name="stopwatch_background">#fff7f7f7</color>
+    <color name="countdown_background">#ff090909</color>
     <color name="actionbar_title_color">#000000</color>
     <color name="highlight_color">#82171D</color>
 

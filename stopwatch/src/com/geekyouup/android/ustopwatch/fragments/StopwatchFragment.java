@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Message;
+import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -21,22 +22,22 @@ import com.geekyouup.android.ustopwatch.fragments.StopwatchView.StopwatchThead;
 
 public class StopwatchFragment extends SherlockFragment {
 
-	private StopwatchView mStopwatchView;
-	private StopwatchThead mWatchThread;
-	private Button mResetButton;
+    private StopwatchView mStopwatchView;
+    private StopwatchThead mWatchThread;
+    private Button mResetButton;
     private Button mStartButton;
     private View mSaveLapTimeButton;
     private TextView mTimerText;
-    private double mCurrentTimeMillis=0;
+    private double mCurrentTimeMillis = 0;
     private SoundManager mSoundManager;
     private boolean mRunningState = false;
-	
-	private static final String PREFS_NAME="USW_SWFRAG_PREFS";
-    private static final String PREF_IS_RUNNING = "key_stopwatch_is_running";
-    private int mLastSecond=0;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    private static final String PREFS_NAME = "USW_SWFRAG_PREFS";
+    private static final String PREF_IS_RUNNING = "key_stopwatch_is_running";
+    private int mLastSecond = 0;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mSoundManager = SoundManager.getInstance(getSherlockActivity());
 
@@ -45,10 +46,14 @@ public class StopwatchFragment extends SherlockFragment {
         mStopwatchView = (StopwatchView) swView.findViewById(R.id.swview);
 
         mStartButton = (Button) swView.findViewById(R.id.startButton);
-        mStartButton.setOnClickListener(new View.OnClickListener() {
+        mStartButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                startStop();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    startStop();
+                    return true;
+                }
+                return false;
             }
         });
 
@@ -65,56 +70,52 @@ public class StopwatchFragment extends SherlockFragment {
         mSaveLapTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isRunning())
-                {
-                    LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime(),(UltimateStopwatchActivity)getSherlockActivity());
+                if (isRunning()) {
+                    LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime(), (UltimateStopwatchActivity) getSherlockActivity());
                     mSoundManager.playSound(SoundManager.SOUND_LAPTIME);
                 }
             }
         });
 
         return swView;
-	}
-	
-	@Override
-	public void onPause() {
-		super.onPause();
-		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = settings.edit();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(PREF_IS_RUNNING, mRunningState);
-		mWatchThread.saveState(editor);
-		editor.commit();
+        mWatchThread.saveState(editor);
+        editor.commit();
 
-        try
-        {
-            if(isRunning() && mCurrentTimeMillis>0)
+        try {
+            if (isRunning() && mCurrentTimeMillis > 0)
                 AlarmUpdater.showChronometerNotification(getSherlockActivity(), (long) mCurrentTimeMillis);
-        }catch (Exception e){}
-	}
+        } catch (Exception e) {
+        }
+    }
 
-	@Override
-	public void onResume() {
-		super.onResume();
+    @Override
+    public void onResume() {
+        super.onResume();
 
-		mWatchThread = mStopwatchView.createNewThread(true);
-        if(mWatchThread!=null)
-        {
+        mWatchThread = mStopwatchView.createNewThread(true);
+        if (mWatchThread != null) {
             mWatchThread.setHandler(new Handler() {
                 @Override
                 public void handleMessage(Message m) {
-                    if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME,false)) {
+                    if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME, false)) {
                         mCurrentTimeMillis = m.getData().getDouble(UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
                         setTime(mCurrentTimeMillis);
 
-                        int currentSecond = (int) mCurrentTimeMillis/1000;
-                        if(currentSecond>mLastSecond)
-                        {
+                        int currentSecond = (int) mCurrentTimeMillis / 1000;
+                        if (currentSecond > mLastSecond) {
                             mSoundManager.doTick();
-                            mLastSecond=currentSecond;
+                            mLastSecond = currentSecond;
                         }
 
-                    }else if(m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE,false))
-                    {
+                    } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE, false)) {
                         setUIState();
                     }
                 }
@@ -123,9 +124,9 @@ public class StopwatchFragment extends SherlockFragment {
 
         AlarmUpdater.cancelChronometerNotification(getSherlockActivity());
 
-		SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        mRunningState = settings.getBoolean(PREF_IS_RUNNING,false);
-		mStopwatchView.restoreState(settings);
+        SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        mRunningState = settings.getBoolean(PREF_IS_RUNNING, false);
+        mStopwatchView.restoreState(settings);
         ((UltimateStopwatchActivity) getSherlockActivity()).registerStopwatchFragment(this);
 
         //center the timer text in a fixed position, stops wiggling numbers
@@ -135,50 +136,45 @@ public class StopwatchFragment extends SherlockFragment {
         paint.setTextSize(getResources().getDimension(R.dimen.counter_font));// have this the same as your text size
         String text = getString(R.string.default_time); //00:00:00.000
         paint.getTextBounds(text, 0, text.length(), bounds);
-        int text_width =  bounds.width();
+        int text_width = bounds.width();
         int width = getResources().getDisplayMetrics().widthPixels;
-        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) width = width/2;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) width = width / 2;
 
-        mTimerText.setPadding((width-text_width)/2,0,0,0);
+        mTimerText.setPadding((width - text_width) / 2, 0, 0, 0);
     }
-	
-	public void startStop()
-	{
-		mWatchThread.startStop();
-        setUIState();
-	}
 
-    private void setUIState()
-    {
+    public void startStop() {
+        mWatchThread.startStop();
+        setUIState();
+    }
+
+    private void setUIState() {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
-        mResetButton.setEnabled(mRunningState || (mCurrentTimeMillis!=0));
+        mResetButton.setEnabled(mRunningState || (mCurrentTimeMillis != 0));
 
-        if(isAdded()) mStartButton.setText(mRunningState?getString(R.string.pause):getString(R.string.start));
+        if (isAdded()) mStartButton.setText(mRunningState ? getString(R.string.pause) : getString(R.string.start));
 
-        if(stateChanged)
-            mSoundManager.playSound(mRunningState?SoundManager.SOUND_START:SoundManager.SOUND_STOP);
+        if (stateChanged)
+            mSoundManager.playSound(mRunningState ? SoundManager.SOUND_START : SoundManager.SOUND_STOP);
     }
 
-	public void reset()
-	{
-		mWatchThread.reset();
+    public void reset() {
+        mWatchThread.reset();
 
         mSoundManager.playSound(SoundManager.SOUND_RESET);
 
         mResetButton.setEnabled(false);
         mStartButton.setText(getString(R.string.start));
-	}
-
-    private void setTime(double millis)
-    {
-        if(mTimerText!=null)
-            mTimerText.setText(TimeUtils.createStyledSpannableString(getSherlockActivity(), millis,true));
     }
 
-    public boolean isRunning()
-    {
-        return mWatchThread!=null && (mWatchThread.isRunning() && !mWatchThread.isPaused());
+    private void setTime(double millis) {
+        if (mTimerText != null)
+            mTimerText.setText(TimeUtils.createStyledSpannableString(getSherlockActivity(), millis, true));
     }
-	
+
+    public boolean isRunning() {
+        return mWatchThread != null && (mWatchThread.isRunning() && !mWatchThread.isPaused());
+    }
+
 }

@@ -83,7 +83,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		private SurfaceHolder mSurfaceHolder;
 		private Handler mHandler;
 		private Context mContext;
-        private int mCountDownBGColor = 0xff000000;
+        private int mBGColor = 0xff000000;
 
 		public StopwatchThead(SurfaceHolder surfaceHolder, Context context, boolean isStopwatchMode) {
 			// get handles to some important objects
@@ -94,7 +94,7 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 			Resources res = mContext.getResources();
 			//loadGraphics(res, isStopwatchMode());
 
-            mCountDownBGColor = getResources().getColor(R.color.countdown_background);
+            mBGColor = getResources().getColor(isStopwatchMode?R.color.stopwatch_background:R.color.countdown_background);
 
             //fix the background colour shearing when swiping by setting the surface on top of the window
             //and fixing the window bg color
@@ -284,25 +284,28 @@ public class StopwatchView extends SurfaceView implements SurfaceHolder.Callback
 		 */
 		private void doDraw(Canvas canvas) {
 			// Draw the background image. Operations on the Canvas accumulate
-            canvas.drawColor(isStopwatchMode()?Color.WHITE:mCountDownBGColor);
+            canvas.drawColor(mBGColor);
 			if(mBackgroundImage!=null)
                 canvas.drawBitmap(mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
 
             // draw the mins hand with its current rotatiom
-            canvas.save();
-            canvas.rotate((float) Math.toDegrees(mMinsAngle), mMinsCenterX, mMinsCenterY + mAppOffsetY);
-            mMinHand.setBounds(mMinsCenterX - mMinsHalfWidth, mMinsCenterY - mMinsHalfHeight + mAppOffsetY,
-                    mMinsCenterX + mMinsHalfWidth, mMinsCenterY + mAppOffsetY + mMinsHalfHeight);
-            mMinHand.draw(canvas);
-            canvas.restore();
+            if(mMinHand!=null && mSecHand !=null)
+            {
+                canvas.save();
+                canvas.rotate((float) Math.toDegrees(mMinsAngle), mMinsCenterX, mMinsCenterY + mAppOffsetY);
+                mMinHand.setBounds(mMinsCenterX - mMinsHalfWidth, mMinsCenterY - mMinsHalfHeight + mAppOffsetY,
+                        mMinsCenterX + mMinsHalfWidth, mMinsCenterY + mAppOffsetY + mMinsHalfHeight);
+                mMinHand.draw(canvas);
+                canvas.restore();
 
-			// Draw the secs hand with its current rotation
-			canvas.save();
-			canvas.rotate((float) Math.toDegrees(mSecsAngle), mSecsCenterX, mSecsCenterY + mAppOffsetY);
-			mSecHand.setBounds(mSecsCenterX - mSecsHalfWidth, mSecsCenterY - mSecsHalfHeight + mAppOffsetY,
-					mSecsCenterX + mSecsHalfWidth, mSecsCenterY + mAppOffsetY + mSecsHalfHeight);
-			mSecHand.draw(canvas);
-			canvas.restore();
+                // Draw the secs hand with its current rotation
+                canvas.save();
+                canvas.rotate((float) Math.toDegrees(mSecsAngle), mSecsCenterX, mSecsCenterY + mAppOffsetY);
+                mSecHand.setBounds(mSecsCenterX - mSecsHalfWidth, mSecsCenterY - mSecsHalfHeight + mAppOffsetY,
+                        mSecsCenterX + mSecsHalfWidth, mSecsCenterY + mAppOffsetY + mSecsHalfHeight);
+                mSecHand.draw(canvas);
+                canvas.restore();
+            }
 		}
 
 		/**

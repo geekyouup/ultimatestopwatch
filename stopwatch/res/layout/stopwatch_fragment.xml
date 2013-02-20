@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/background">
+    android:background="@color/stopwatch_background">
 
     <TextView android:id="@+id/counter_text" android:textSize="@dimen/counter_font"
               android:layout_width="match_parent" android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
       android:layout_height="fill_parent"
       android:layout_marginBottom="45dp"
       android:layout_below="@id/counter_text"
-      android:background="@color/white"/>
+      android:background="@color/stopwatch_background"/>
 
 <LinearLayout android:layout_width="match_parent"
                android:layout_height="wrap_content"

@@ -4,14 +4,15 @@
               android:layout_height="fill_parent"
               android:orientation="horizontal"
               android:layout_alignParentTop="true"
-              android:background="@color/background">
+              android:background="@color/stopwatch_background">
 
     <com.geekyouup.android.ustopwatch.fragments.StopwatchView
             android:id="@+id/swview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@color/white"
-            android:layout_weight="1"/>
+            android:background="@color/stopwatch_background"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"/>
 
     <RelativeLayout android:layout_width="match_parent"
                   android:layout_height="match_parent"

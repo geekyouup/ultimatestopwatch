@@ -76,14 +76,18 @@ public class CountdownFragment extends SherlockFragment {
         });
 
         mStartButton = (Button) cdView.findViewById(R.id.startButton);
-        mStartButton.setOnClickListener(new View.OnClickListener() {
+        mStartButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                startStop();
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    startStop();
+                    return true;
+                }
+                return false;
             }
         });
 
-		return cdView;
+        return cdView;
 	}
 	
 	@Override

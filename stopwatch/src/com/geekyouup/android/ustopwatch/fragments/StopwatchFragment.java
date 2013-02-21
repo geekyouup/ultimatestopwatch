@@ -1,6 +1,7 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -51,10 +52,14 @@ public class StopwatchFragment extends SherlockFragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mStartButton.setBackgroundColor(getResources().getColor(R.color.red_button_bg_selected));
                     startStop();
                     return true;
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    mStartButton.setBackgroundColor(getResources().getColor(R.color.red_button_bg));
+                    return true;
                 }
-                return false;
+                return true;
             }
         });
 

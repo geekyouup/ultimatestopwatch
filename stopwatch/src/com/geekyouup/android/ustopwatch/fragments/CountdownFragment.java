@@ -80,10 +80,14 @@ public class CountdownFragment extends SherlockFragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mStartButton.setBackgroundColor(getResources().getColor(R.color.blue_button_bg_selected));
                     startStop();
                     return true;
+                }else if(event.getAction() == MotionEvent.ACTION_UP){
+                    mStartButton.setBackgroundColor(getResources().getColor(R.color.blue_button_bg));
+                    return true;
                 }
-                return false;
+                return true;
             }
         });
 

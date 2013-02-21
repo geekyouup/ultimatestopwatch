@@ -10,10 +10,10 @@
     <color name="actionbar_title_color">#000000</color>
     <color name="highlight_color">#82171D</color>
 
-    <color name="red_button_bg">#82171D</color>
-    <color name="red_button_bg_selected">#803033</color>
-    <color name="red_button_text">#ffffff</color>
-    <color name="red_button_text_disabled">#963D37</color>
+    <color name="red_button_bg">#ff82171D</color>
+    <color name="red_button_bg_selected">#ff803033</color>
+    <color name="red_button_text">#ffffffff</color>
+    <color name="red_button_text_disabled">#ff963D37</color>
 
     <color name="blue_button_bg">#3098D6</color>
     <color name="blue_button_bg_selected">#6EADDF</color>

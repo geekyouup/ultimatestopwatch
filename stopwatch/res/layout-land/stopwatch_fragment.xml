@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:custom="http://schemas.android.com/apk/res/com.geekyouup.android.ustopwatch"
             android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:orientation="horizontal"
               android:layout_alignParentTop="true"
               android:background="@color/stopwatch_background">
 
-    <com.geekyouup.android.ustopwatch.fragments.StopwatchView
+
+<com.geekyouup.android.ustopwatch.fragments.StopwatchCustomView
             android:id="@+id/swview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@color/stopwatch_background"
             android:layout_weight="1"
-            android:layout_marginTop="5dp"/>
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/counter_text"
+            android:background="@color/stopwatch_background"
+            custom:watchType="type_stopwatch"/>
+
 
     <RelativeLayout android:layout_width="match_parent"
                   android:layout_height="match_parent"

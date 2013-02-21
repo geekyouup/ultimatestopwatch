@@ -3,6 +3,7 @@ package com.geekyouup.android.ustopwatch.fragments;
 import java.util.ArrayList;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
 public class LapTimeRecorder {
@@ -13,7 +14,6 @@ public class LapTimeRecorder {
 	private static LapTimeRecorder mSelf;
 
     //if a 0 laptime is stored then it is a reset signal and start of new block
-	
 	public static LapTimeRecorder getInstance()
 	{
 		if(mSelf == null) mSelf = new LapTimeRecorder();
@@ -27,10 +27,20 @@ public class LapTimeRecorder {
             int lapTimeNum=0;
             mLapTimes.clear();
             double lt=0;
+            boolean prevZero = false;
             while((lt = settings.getLong(KEY_LAPTIME_X+lapTimeNum,-1L)) != -1L)
             {
-            	mLapTimes.add(lt);
-            	lapTimeNum++;
+                lapTimeNum++;
+                if(lt==0 && prevZero){
+                    continue;
+                }
+                else if(lt==0){
+                    prevZero=true;
+                }else{
+                    prevZero=false;
+                }
+
+                mLapTimes.add(lt);
             }
 		}
 	}
@@ -44,7 +54,10 @@ public class LapTimeRecorder {
 				editor.clear();
                 if(mLapTimes!= null && mLapTimes.size()>0)
                 {
-                	for(int i=0;i<mLapTimes.size();i++) editor.putLong(KEY_LAPTIME_X+i,mLapTimes.get(i).longValue());
+                	for(int i=0;i<mLapTimes.size();i++)
+                    {
+                        editor.putLong(KEY_LAPTIME_X+i,mLapTimes.get(i).longValue());
+                    }
                 }
 				editor.commit();
 			}
@@ -53,7 +66,7 @@ public class LapTimeRecorder {
 	
 	public void recordLapTime(double time, UltimateStopwatchActivity activity)
 	{
-		mLapTimes.add(0,time);
+        mLapTimes.add(0,time);
         if(activity!=null)
         {
             LapTimesFragment ltf = activity.getLapTimeFragment();
@@ -63,6 +76,7 @@ public class LapTimeRecorder {
 
     public void stopwatchReset()
     {
+        if(mLapTimes.get(0) != null && mLapTimes.get(0)==0) return; //don't record multiple resets
         mLapTimes.add(0,0d);
     }
 

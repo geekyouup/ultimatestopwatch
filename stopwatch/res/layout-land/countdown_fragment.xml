@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:custom="http://schemas.android.com/apk/res/com.geekyouup.android.ustopwatch"
             android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:orientation="horizontal"
@@ -56,10 +57,11 @@
         </LinearLayout>
         </RelativeLayout>
 
-    <com.geekyouup.android.ustopwatch.fragments.StopwatchView
+    <com.geekyouup.android.ustopwatch.fragments.StopwatchCustomView
             android:id="@+id/cdview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:background="@color/countdown_background"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            custom:watchType="type_countdown"/>
 </LinearLayout>

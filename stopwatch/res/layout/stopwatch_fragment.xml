@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:custom="http://schemas.android.com/apk/res/com.geekyouup.android.ustopwatch"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/stopwatch_background">
@@ -10,13 +11,14 @@
               android:fontFamily="sans-serif-light"
               android:layout_marginTop="5dp"/>
 
-<com.geekyouup.android.ustopwatch.fragments.StopwatchView
-      android:id="@+id/swview"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:layout_marginBottom="45dp"
-      android:layout_below="@id/counter_text"
-      android:background="@color/stopwatch_background"/>
+<com.geekyouup.android.ustopwatch.fragments.StopwatchCustomView
+            android:id="@+id/swview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="45dp"
+            android:layout_below="@id/counter_text"
+            android:background="@color/stopwatch_background"
+            custom:watchType="type_stopwatch"/>
 
 <LinearLayout android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -49,14 +51,15 @@
             android:layout_weight="3"
             android:contentDescription="@string/contentdesc_reset"
             />
-    <ImageButton android:id="@+id/saveButton"
+    <Button android:id="@+id/saveButton"
                  android:layout_width="match_parent"
                  android:layout_height="45dp"
                  android:background="@drawable/red_button_bg_color"
-                 android:src="@drawable/icon_laptime"
+                 android:text="@string/lap"
+                 android:textSize="@dimen/bottom_bar_portrait_button_font_size"
+                 android:textColor="@drawable/red_button_text_color"
+                 android:fontFamily="sans-serif"
                  android:layout_weight="4"
-                 android:padding="11dp"
-                 android:scaleType="fitCenter"
                  android:contentDescription="@string/contentdesc_laptime"
             />
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="StopwatchCustomView">
+        <attr name="watchType" format="enum">
+            <enum name="type_stopwatch" value="1"/>
+            <enum name="type_countdown" value="0"/>
+        </attr>
+    </declare-styleable>
+</resources>

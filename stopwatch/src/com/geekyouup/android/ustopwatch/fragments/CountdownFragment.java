@@ -21,8 +21,8 @@ import android.graphics.Rect;
 
 public class CountdownFragment extends SherlockFragment {
 
-	private StopwatchView mCountdownView;
-	private StopwatchThead mWatchThread;
+	private StopwatchCustomView mCountdownView;
+//	private StopwatchThead mWatchThread;
     private double mCurrentTimeMillis;
 
     private Button mResetButton;
@@ -55,7 +55,7 @@ public class CountdownFragment extends SherlockFragment {
 
 		View cdView = inflater.inflate(R.layout.countdown_fragment, null);
         //mCountdownLayout = (RelativeLayout) cdView.findViewById(R.id.countdown_layout);
-        mCountdownView = (StopwatchView) cdView.findViewById(R.id.cdview);
+        mCountdownView = (StopwatchCustomView) cdView.findViewById(R.id.cdview);
         mTimerText = (TextView) cdView.findViewById(R.id.time_counter);
         mTimerText.setOnTouchListener(new View.OnTouchListener(){
             @Override
@@ -96,7 +96,7 @@ public class CountdownFragment extends SherlockFragment {
 		SharedPreferences settings = getActivity().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(PREF_IS_RUNNING, mRunningState);
-		mWatchThread.saveState(editor);
+		mCountdownView.saveState(editor);
         editor.putInt(KEY_LAST_HOUR, mLastHour);
         editor.putInt(KEY_LAST_MIN,mLastMin);
         editor.putInt(KEY_LAST_SEC, mLastSec);
@@ -109,50 +109,44 @@ public class CountdownFragment extends SherlockFragment {
         // cancel next alarm if there is one, and clear notification bar
         AlarmUpdater.cancelCountdownAlarm(getSherlockActivity());
 
-		mWatchThread = mCountdownView.createNewThread(false);
-        mWatchThread.setIsStopwatchMode(false);
-
-        if(mWatchThread!=null)
-        {
-            mWatchThread.setHandler(new Handler() {
-                @Override
-                public void handleMessage(Message m) {
-                    if (m.getData().getBoolean(MSG_REQUEST_COUNTDOWN_DLG, false)) {
-                        requestTimeDialog();
-                    } else if(m.getData().getBoolean(MSG_COUNTDOWN_COMPLETE, false))
+        mCountdownView.setHandler(new Handler() {
+            @Override
+            public void handleMessage(Message m) {
+                if (m.getData().getBoolean(MSG_REQUEST_COUNTDOWN_DLG, false)) {
+                    requestTimeDialog();
+                } else if(m.getData().getBoolean(MSG_COUNTDOWN_COMPLETE, false))
+                {
+                    boolean appResuming = m.getData().getBoolean(MSG_APP_RESUMING, false);
+                    if(!appResuming)
                     {
-                        boolean appResuming = m.getData().getBoolean(MSG_APP_RESUMING, false);
-                        if(!appResuming)
-                        {
-                            mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM, SettingsActivity.isEndlessAlarm());
+                        mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM, SettingsActivity.isEndlessAlarm());
 
-                            if(SettingsActivity.isVibrate() && getSherlockActivity()!=null){
-                                Vibrator vibrator = (Vibrator) getSherlockActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                                vibrator.vibrate(1000);
-                            }
+                        if(SettingsActivity.isVibrate() && getSherlockActivity()!=null){
+                            Vibrator vibrator = (Vibrator) getSherlockActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                            vibrator.vibrate(1000);
                         }
-
-                        reset(!appResuming && SettingsActivity.isEndlessAlarm());
-                    } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME,false)) {
-                        mCurrentTimeMillis = m.getData().getDouble(
-                                UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
-
-                        int currentSecond = (int) mCurrentTimeMillis/1000;
-                        if(currentSecond>mLastSecond)
-                        {
-                            mSoundManager.doTick();
-                            mLastSecond=currentSecond;
-                        }else if(mLastSecond == 0) mLastSecond = (int) mCurrentTimeMillis/1000;
-
-
-                        setTime(mCurrentTimeMillis);
-                    } else if(m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE,false))
-                    {
-                        setUIState();
                     }
+
+                    reset(!appResuming && SettingsActivity.isEndlessAlarm());
+                } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME,false)) {
+                    mCurrentTimeMillis = m.getData().getDouble(
+                            UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
+
+                    int currentSecond = (int) mCurrentTimeMillis/1000;
+                    if(currentSecond>mLastSecond)
+                    {
+                        mSoundManager.doTick();
+                        mLastSecond=currentSecond;
+                    }else if(mLastSecond == 0) mLastSecond = (int) mCurrentTimeMillis/1000;
+
+
+                    setTime(mCurrentTimeMillis);
+                } else if(m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE,false))
+                {
+                    setUIState();
                 }
-            });
-        }
+            }
+        });
 
 		SharedPreferences settings = getSherlockActivity().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
         mLastHour=settings.getInt(KEY_LAST_HOUR,0);
@@ -184,7 +178,7 @@ public class CountdownFragment extends SherlockFragment {
             requestTimeDialog();
         }else
         {
-            mWatchThread.startStop();
+            mCountdownView.startStop();
             mResetButton.setEnabled(true);
             mStartButton.setText(isRunning()?getString(R.string.pause):getString(R.string.start));
         }
@@ -192,7 +186,7 @@ public class CountdownFragment extends SherlockFragment {
 
     public void reset(boolean endlessAlarmSounding)
     {
-        mWatchThread.reset();
+        mCountdownView.reset();
         mResetButton.setEnabled(endlessAlarmSounding);
         mStartButton.setText(getString(R.string.start));
         setTime(mLastHour, mLastMin, mLastSec);
@@ -208,7 +202,7 @@ public class CountdownFragment extends SherlockFragment {
         mLastHour=hour;
         mLastMin=minute;
         mLastSec=seconds;
-        mWatchThread.setTime(hour, minute, seconds,false);
+        mCountdownView.setTime(hour, minute, seconds,false);
         setUIState();
     }
 
@@ -222,7 +216,7 @@ public class CountdownFragment extends SherlockFragment {
 
     public boolean isRunning()
     {
-        return mWatchThread!=null && (mWatchThread.isRunning() && !mWatchThread.isPaused());
+        return (mCountdownView!=null && mCountdownView.isRunning());
     }
 
     private void setUIState()

@@ -48,8 +48,12 @@ public class TimeUtils {
         return createSpannableString(context, text, lightTheme);
     }
 
-	public static View createTimeSelectDialogLayout(Context cxt, LayoutInflater layoutInflater) {
+	public static View createTimeSelectDialogLayout(Context cxt, LayoutInflater layoutInflater, int hours, int mins, int secs) {
 		View countdownView = layoutInflater.inflate(R.layout.countdown, null);
+
+        if(mSecsValue==0) mSecsValue=secs;
+        if(mMinsValue==0) mMinsValue=mins;
+        if(mHoursValue==0) mHoursValue=hours;
 
 		final TextView mSecsText = (TextView) countdownView.findViewById(R.id.secsTxt);
 		final TextView mMinsText = (TextView) countdownView.findViewById(R.id.minsTxt);

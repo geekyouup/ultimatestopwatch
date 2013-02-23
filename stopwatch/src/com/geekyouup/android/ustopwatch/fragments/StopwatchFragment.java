@@ -1,12 +1,11 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,12 +19,11 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.geekyouup.android.ustopwatch.fragments.StopwatchView.StopwatchThead;
+
 
 public class StopwatchFragment extends SherlockFragment {
 
     private StopwatchCustomView mStopwatchView;
-    //private StopwatchThead mWatchThread;
     private Button mResetButton;
     private Button mStartButton;
     private View mSaveLapTimeButton;
@@ -52,14 +50,10 @@ public class StopwatchFragment extends SherlockFragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mStartButton.setBackgroundColor(getResources().getColor(R.color.red_button_bg_selected));
                     startStop();
-                    return true;
-                }else if(event.getAction() == MotionEvent.ACTION_UP){
-                    mStartButton.setBackgroundColor(getResources().getColor(R.color.red_button_bg));
-                    return true;
+                    return false;
                 }
-                return true;
+                return false;
             }
         });
 

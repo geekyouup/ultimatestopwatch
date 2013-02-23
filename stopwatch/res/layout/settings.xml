@@ -40,6 +40,21 @@
 
     <CheckBox android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:text="@string/settings_animations"
+              android:textColor="#222222"
+              android:textSize="16dp"
+              android:fontFamily="sans-serif"
+              android:paddingLeft="48dp"
+              android:layout_marginTop="8dp"
+              android:layout_marginBottom="8dp"
+              android:id="@+id/settings_animations"/>
+
+    <View   android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#EBEBEB"/>
+
+    <CheckBox android:layout_width="match_parent"
+              android:layout_height="wrap_content"
               android:text="@string/settings_vibrate"
               android:textColor="#222222"
               android:textSize="16dp"

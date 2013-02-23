@@ -11,7 +11,7 @@
     <color name="highlight_color">#82171D</color>
 
     <color name="red_button_bg">#ff82171D</color>
-    <color name="red_button_bg_selected">#ff803033</color>
+    <color name="red_button_bg_selected">#ffac3033</color>
     <color name="red_button_text">#ffffffff</color>
     <color name="red_button_text_disabled">#ff963D37</color>
 

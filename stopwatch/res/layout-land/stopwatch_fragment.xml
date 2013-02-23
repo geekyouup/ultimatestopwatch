@@ -15,7 +15,6 @@
             android:layout_weight="1"
             android:layout_marginTop="5dp"
             android:layout_below="@id/counter_text"
-            android:background="@color/stopwatch_background"
             custom:watchType="type_stopwatch"/>
 
 

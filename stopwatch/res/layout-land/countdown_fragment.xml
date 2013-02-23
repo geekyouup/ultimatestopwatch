@@ -61,7 +61,6 @@
             android:id="@+id/cdview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@color/countdown_background"
             android:layout_weight="1"
             custom:watchType="type_countdown"/>
 </LinearLayout>

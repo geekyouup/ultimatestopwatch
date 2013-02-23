@@ -11,18 +11,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.geekyouup.android.ustopwatch.*;
-import com.geekyouup.android.ustopwatch.fragments.StopwatchView.StopwatchThead;
 import android.graphics.Rect;
 
 public class CountdownFragment extends SherlockFragment {
 
 	private StopwatchCustomView mCountdownView;
-//	private StopwatchThead mWatchThread;
     private double mCurrentTimeMillis;
 
     private Button mResetButton;
@@ -45,8 +44,13 @@ public class CountdownFragment extends SherlockFragment {
     public static final String MSG_REQUEST_COUNTDOWN_DLG = "msg_usw_counter";
     public static final String MSG_COUNTDOWN_COMPLETE = "msg_countdown_complete";
     public static final String MSG_APP_RESUMING = "msg_app_resuming";
-    private int mLastSecond=0;
+    private int mLastSecondTicked =0;
 
+    //countdown picker dialog variables
+    private boolean mDialogOnScreen = false;
+    private static int mHoursValue = 0;
+    private static int mMinsValue = 0;
+    private static int mSecsValue = 0;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,7 +58,6 @@ public class CountdownFragment extends SherlockFragment {
         mSoundManager = SoundManager.getInstance(getSherlockActivity());
 
 		View cdView = inflater.inflate(R.layout.countdown_fragment, null);
-        //mCountdownLayout = (RelativeLayout) cdView.findViewById(R.id.countdown_layout);
         mCountdownView = (StopwatchCustomView) cdView.findViewById(R.id.cdview);
         mTimerText = (TextView) cdView.findViewById(R.id.time_counter);
         mTimerText.setOnTouchListener(new View.OnTouchListener(){
@@ -80,14 +83,10 @@ public class CountdownFragment extends SherlockFragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mStartButton.setBackgroundColor(getResources().getColor(R.color.blue_button_bg_selected));
                     startStop();
-                    return true;
-                }else if(event.getAction() == MotionEvent.ACTION_UP){
-                    mStartButton.setBackgroundColor(getResources().getColor(R.color.blue_button_bg));
-                    return true;
+                    return false;
                 }
-                return true;
+                return false;
             }
         });
 
@@ -136,18 +135,19 @@ public class CountdownFragment extends SherlockFragment {
                     mCurrentTimeMillis = m.getData().getDouble(
                             UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
 
+                    //If we've crossed into a new second then make the tick sound
                     int currentSecond = (int) mCurrentTimeMillis/1000;
-                    if(currentSecond>mLastSecond)
+                    if(currentSecond> mLastSecondTicked)
                     {
                         mSoundManager.doTick();
-                        mLastSecond=currentSecond;
-                    }else if(mLastSecond == 0) mLastSecond = (int) mCurrentTimeMillis/1000;
+                        mLastSecondTicked =currentSecond;
+                    }else if(mLastSecondTicked == 0) mLastSecondTicked = currentSecond;
 
 
                     setTime(mCurrentTimeMillis);
                 } else if(m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE,false))
                 {
-                    setUIState();
+                    setUIState(false);
                 }
             }
         });
@@ -190,10 +190,9 @@ public class CountdownFragment extends SherlockFragment {
 
     public void reset(boolean endlessAlarmSounding)
     {
-        mCountdownView.reset();
         mResetButton.setEnabled(endlessAlarmSounding);
-        mStartButton.setText(getString(R.string.start));
-        setTime(mLastHour, mLastMin, mLastSec);
+        mStartButton.setText(isAdded()?getString(R.string.start):"START");
+        setTime(mLastHour, mLastMin, mLastSec, true);
     }
 
 	public void reset()
@@ -201,13 +200,13 @@ public class CountdownFragment extends SherlockFragment {
 		reset(false);
 	}
 
-    public void setTime(int hour, int minute, int seconds)
+    public void setTime(int hour, int minute, int seconds, boolean disableReset)
     {
         mLastHour=hour;
         mLastMin=minute;
         mLastSec=seconds;
         mCountdownView.setTime(hour, minute, seconds,false);
-        setUIState();
+        setUIState(disableReset);
     }
 
     private void setTime(double millis)
@@ -223,11 +222,11 @@ public class CountdownFragment extends SherlockFragment {
         return (mCountdownView!=null && mCountdownView.isRunning());
     }
 
-    private void setUIState()
+    private void setUIState(boolean disableReset)
     {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
-        mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || mRunningState || (mCurrentTimeMillis!=0));
+        mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || !disableReset);
         if(!mRunningState && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0)
         {
             if(isAdded()) mStartButton.setText(getString(R.string.start));
@@ -239,13 +238,11 @@ public class CountdownFragment extends SherlockFragment {
         }
     }
 
-    private boolean mDialogOnScreen = false;
-    private static int mHoursValue = 0;
-    private static int mMinsValue = 0;
-    private static int mSecsValue = 0;
-
     public void requestTimeDialog()
     {
+        if(mHoursValue==0) mHoursValue=mLastHour;
+        if(mMinsValue==0) mMinsValue=mLastMin;
+        if(mSecsValue==0) mSecsValue=mLastSec;
         if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
         {
             requestAPI11TimeDialog();
@@ -287,7 +284,7 @@ public class CountdownFragment extends SherlockFragment {
                         mMinsValue = npMins.getValue();
                         mSecsValue = npSecs.getValue();
                         setTime(mHoursValue,
-                                mMinsValue, mSecsValue);
+                                mMinsValue, mSecsValue, true);
                     }
                 });
         mSelectTime.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.timer_cancel),
@@ -314,7 +311,7 @@ public class CountdownFragment extends SherlockFragment {
         if(mDialogOnScreen) return;
 
         LayoutInflater inflator = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View ll = TimeUtils.createTimeSelectDialogLayout(activity, inflator);
+        View ll = TimeUtils.createTimeSelectDialogLayout(activity, inflator,mHoursValue,mMinsValue,mSecsValue);
 
         AlertDialog mSelectTime = new AlertDialog.Builder(activity).create();
         mSelectTime.setView(ll);
@@ -326,7 +323,7 @@ public class CountdownFragment extends SherlockFragment {
                 mMinsValue = TimeUtils.getDlgMins();
                 mSecsValue = TimeUtils.getDlgSecs();
                 setTime(mHoursValue,
-                        mMinsValue, mSecsValue);
+                        mMinsValue, mSecsValue, true);
             }});
         mSelectTime.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.timer_cancel), new DialogInterface.OnClickListener(){
             public void onClick(DialogInterface dialog, int which) {

@@ -20,7 +20,6 @@
             android:layout_height="fill_parent"
             android:layout_marginBottom="45dp"
             android:layout_below="@id/time_counter"
-            android:background="@color/countdown_background"
             custom:watchType="type_countdown"/>
 
 <LinearLayout android:layout_width="match_parent"

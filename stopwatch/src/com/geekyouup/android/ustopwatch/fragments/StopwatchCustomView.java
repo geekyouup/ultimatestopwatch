@@ -14,10 +14,9 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import com.geekyouup.android.ustopwatch.AlarmUpdater;
-import com.geekyouup.android.ustopwatch.R;
-import com.geekyouup.android.ustopwatch.SoundManager;
-import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import com.actionbarsherlock.internal.nineoldandroids.animation.ValueAnimator;
+import com.geekyouup.android.ustopwatch.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,18 +34,19 @@ public class StopwatchCustomView extends View {
 
     private static final String KEY_STATE = "state_bool";
     private static final String KEY_LASTTIME = "lasttime";
-    private static final String KEY_NOWTIME = "currenttime";
+    private static final String KEY_NOWTIME = "currenttime_int";
     private static final String KEY_COUNTDOWN_SUFFIX = "_cd";
 
     private Bitmap mBackgroundImage;
     private int mBackgroundStartY;
     private int mAppOffsetX = 0;
     private int mAppOffsetY = 0;
-    private double mMinsAngle = 0;
-    private double mSecsAngle = 0;
-    private double mDisplayTimeMillis = 0;
-    private final double twoPI = Math.PI * 2.0;
+    private float mMinsAngle = 0;
+    private float mSecsAngle = 0;
+    private int mDisplayTimeMillis = 0;  //max value is 100hours, 360000000ms
+    private final float twoPI = (float) (Math.PI * 2.0);
     private boolean mStopwatchMode = true;
+    private long mTouching = 0;
 
     private int mCanvasWidth = 320;
     private int mCanvasHeight = 480;
@@ -66,7 +66,7 @@ public class StopwatchCustomView extends View {
     private long mLastTime = 0;
     private Drawable mSecHand;
     private Drawable mMinHand;
-
+    //pass back messages to UI thread
     private Handler mHandler;
 
     public StopwatchCustomView(Context context, AttributeSet attrs) {
@@ -90,6 +90,7 @@ public class StopwatchCustomView extends View {
         Resources res = getResources();
         mBGColor = getResources().getColor(mIsStopwatch ? R.color.stopwatch_background : R.color.countdown_background);
 
+        //the stopwatch graphics are square, so find the smallest dimension they must fit in and load appropriately
         int minDim = Math.min(mCanvasHeight, mCanvasWidth);
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
@@ -170,7 +171,6 @@ public class StopwatchCustomView extends View {
         }
     }
 
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         // Account for padding
@@ -184,8 +184,7 @@ public class StopwatchCustomView extends View {
 
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        // Draw the background image. Operations on the Canvas accumulate
-        //canvas.drawColor(mBGColor);
+        // Draw the background image
         if (mBackgroundImage != null)
             canvas.drawBitmap(mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
 
@@ -209,17 +208,76 @@ public class StopwatchCustomView extends View {
         }
     }
 
-    public void setTime(int hour, int minute, int seconds, boolean start) {
+    //set the time on the stopwatch/countdown face, animating the hands if resettings countdown
+    public void setTime(int hours, int minutes, int seconds, boolean start) {
         mIsRunning = false;
         mLastTime = System.currentTimeMillis();
-        mMinsAngle = (Math.PI * 2 * ((double) minute / 30.0));
-        mSecsAngle = (Math.PI * 2 * ((double) seconds / 60.0));
-        mDisplayTimeMillis = hour * 3600000 + minute * 60000 + seconds * 1000;
+        if(!mIsStopwatch && SettingsActivity.isAnimating()){
+            animateHandsTo(hours, minutes, seconds);
+        }else
+        {
+            mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
+            mMinsAngle = (twoPI * ((float) minutes / 30.0f));
+            mSecsAngle = (twoPI * ((float) seconds / 60.0f));
 
-        if (start) start();
-        else updatePhysics(false);
+            if (start) start();
+            else updatePhysics(false);
+        }
+
     }
 
+    private void animateHandsTo(final int hours, final int minutes, final int seconds)
+    {
+        final float toSecsAngle = twoPI * seconds / 60f;
+        final float toMinsAngle = twoPI * ((minutes>30?minutes-30:minutes) / 30f +  seconds / 1800f);
+        mSecsAngle = mSecsAngle%twoPI; //avoids more than 1 rotation
+        mMinsAngle = mMinsAngle%twoPI; //avoids more than 1 rotation
+
+        float maxAngleChange = Math.max(Math.abs(mSecsAngle-toSecsAngle), Math.abs(toMinsAngle - mMinsAngle));
+        int duration;
+        if(maxAngleChange < Math.PI/2) duration = 300;
+        else if(maxAngleChange < Math.PI) duration = 750;
+        else duration = 1250;
+
+        final ValueAnimator secsAnimation = ValueAnimator.ofFloat(mSecsAngle, toSecsAngle);
+        secsAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        secsAnimation.setDuration(duration);
+        secsAnimation.start();
+
+        final ValueAnimator minsAnimation = ValueAnimator.ofFloat(mMinsAngle, toMinsAngle);
+        minsAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        minsAnimation.setDuration(duration);
+        minsAnimation.start();
+
+        final ValueAnimator clockAnimation = ValueAnimator.ofInt((int) mDisplayTimeMillis, (hours * 3600000 + minutes * 60000 + seconds * 1000));
+        clockAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        clockAnimation.setDuration(duration);
+        clockAnimation.start();
+
+        //approach is to go from xMs to yMs using the standard updatePhysics routine and speeding up time.
+        post(new Runnable() {
+            @Override
+            public void run() {
+
+                if (secsAnimation.isRunning() || minsAnimation.isRunning()) {
+                    mSecsAngle = (Float) secsAnimation.getAnimatedValue();
+                    mMinsAngle = (Float) minsAnimation.getAnimatedValue();
+                    broadcastClockTime(-(Integer) clockAnimation.getAnimatedValue());
+                    invalidate();
+                    postDelayed(this, 15);
+                } else {
+                    mSecsAngle = toSecsAngle; //ensure the hands have ended at correct position
+                    mMinsAngle = toMinsAngle;
+                    mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
+                    broadcastClockTime(-mDisplayTimeMillis);
+                    invalidate();
+                }
+
+            }
+        });
+    }
+
+    //Stopwatch and countdown animation runnable
     private Runnable animator = new Runnable() {
         @Override
         public void run() {
@@ -248,8 +306,8 @@ public class StopwatchCustomView extends View {
         }
 
         // mins is 0 to 30
-        mMinsAngle = twoPI * (mDisplayTimeMillis / 1800000.0);
-        mSecsAngle = twoPI * (mDisplayTimeMillis / 60000.0);
+        mMinsAngle = twoPI * (float)(mDisplayTimeMillis / 1800000.0f);
+        mSecsAngle = twoPI * (float) (mDisplayTimeMillis / 60000.0f);
 
         if (mDisplayTimeMillis < 0) mDisplayTimeMillis = 0;
 
@@ -264,6 +322,7 @@ public class StopwatchCustomView extends View {
         }
     }
 
+    //send the latest time to the parent fragment to populate the digits
     private void broadcastClockTime(double mTime) {
         if (mHandler != null) {
             Message msg = mHandler.obtainMessage();
@@ -275,7 +334,7 @@ public class StopwatchCustomView extends View {
         }
     }
 
-    long mTouching = 0;
+    // Deal with touch events, either start/stop or swipe
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -311,22 +370,6 @@ public class StopwatchCustomView extends View {
         return (mIsRunning);
     }
 
-    /**
-     * Resumes from a pause.
-     */
-   /* public void unpause() {
-        // stop timer at end
-        if (!mIsStopwatch && mDisplayTimeMillis <= 0) {
-            reset(); // applies pause state
-        } else {
-            // Move the real time clock up to now
-            mLastTime = System.currentTimeMillis();
-            mMode = STATE_RUNNING;
-            removeCallbacks(animator);
-            post(animator);
-        }
-    }*/
-
     public void start() {
         mLastTime = System.currentTimeMillis();
         mIsRunning = true;
@@ -338,10 +381,8 @@ public class StopwatchCustomView extends View {
      * Pauses the physics update & animation.
      */
     public void stop() {
-        if (mIsRunning){
-            mIsRunning = false;
-            removeCallbacks(animator);
-        }
+        mIsRunning = false;
+        removeCallbacks(animator);
     }
 
     public void reset() {
@@ -376,7 +417,7 @@ public class StopwatchCustomView extends View {
 
             map.putBoolean(KEY_STATE + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), mIsRunning);
             map.putLong(KEY_LASTTIME + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), mLastTime);
-            map.putLong(KEY_NOWTIME + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), (long) mDisplayTimeMillis);
+            map.putInt(KEY_NOWTIME + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), mDisplayTimeMillis);
         } else {
             map.clear();
         }
@@ -391,7 +432,7 @@ public class StopwatchCustomView extends View {
         if (savedState != null) {
             mIsRunning = (savedState.getBoolean(KEY_STATE + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), false));
             mLastTime = savedState.getLong(KEY_LASTTIME + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), System.currentTimeMillis());
-            mDisplayTimeMillis = savedState.getLong(KEY_NOWTIME + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), 0);
+            mDisplayTimeMillis = savedState.getInt(KEY_NOWTIME + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), 0);
             updatePhysics(true);
 
             removeCallbacks(animator);
@@ -400,5 +441,11 @@ public class StopwatchCustomView extends View {
         notifyStateChanged();
         AlarmUpdater.cancelCountdownAlarm(getContext()); //just to be sure
     }
+
+    @Override
+    public boolean isOpaque (){
+        return true;
+    }
+
 
 }

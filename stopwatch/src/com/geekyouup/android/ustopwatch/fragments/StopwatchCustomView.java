@@ -18,6 +18,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import com.actionbarsherlock.internal.nineoldandroids.animation.ValueAnimator;
 import com.geekyouup.android.ustopwatch.*;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Created with IntelliJ IDEA.
  * User: rhyndman
@@ -159,8 +161,17 @@ public class StopwatchCustomView extends View {
         }
     }
 
-    private void notifyCountdownComplete(boolean appResuming)
-    {
+    private void notifyIconHint() {
+        if (mHandler != null) {
+            Message msg = mHandler.obtainMessage();
+            Bundle b = new Bundle();
+            b.putBoolean(CountdownFragment.MSG_REQUEST_ICON_FLASH, true);
+            msg.setData(b);
+            mHandler.sendMessage(msg);
+        }
+    }
+
+    private void notifyCountdownComplete(boolean appResuming) {
         if (mHandler != null) {
             Message msg = mHandler.obtainMessage();
             Bundle b = new Bundle();
@@ -212,31 +223,28 @@ public class StopwatchCustomView extends View {
     public void setTime(int hours, int minutes, int seconds, boolean start) {
         mIsRunning = false;
         mLastTime = System.currentTimeMillis();
-        if(!mIsStopwatch && SettingsActivity.isAnimating()){
-            animateHandsTo(hours, minutes, seconds);
-        }else
-        {
+        if (SettingsActivity.isAnimating()) {
+            animateWatchTo(hours, minutes, seconds);
+        } else {
             mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
             mMinsAngle = (twoPI * ((float) minutes / 30.0f));
             mSecsAngle = (twoPI * ((float) seconds / 60.0f));
-
+            broadcastClockTime(mDisplayTimeMillis);
             if (start) start();
             else updatePhysics(false);
         }
-
     }
 
-    private void animateHandsTo(final int hours, final int minutes, final int seconds)
-    {
-        final float toSecsAngle = twoPI * seconds / 60f;
-        final float toMinsAngle = twoPI * ((minutes>30?minutes-30:minutes) / 30f +  seconds / 1800f);
-        mSecsAngle = mSecsAngle%twoPI; //avoids more than 1 rotation
-        mMinsAngle = mMinsAngle%twoPI; //avoids more than 1 rotation
+    private void animateWatchTo(final int hours, final int minutes, final int seconds) {
+        final float toSecsAngle = twoPI * seconds / 60f; //forces hands to go back to 0 not forwards
+        final float toMinsAngle = twoPI * ((minutes > 30 ? minutes - 30 : minutes) / 30f + seconds / 1800f);
+        mSecsAngle = mSecsAngle % twoPI; //avoids more than 1 rotation
+        mMinsAngle = mMinsAngle % twoPI; //avoids more than 1 rotation
 
-        float maxAngleChange = Math.max(Math.abs(mSecsAngle-toSecsAngle), Math.abs(toMinsAngle - mMinsAngle));
+        float maxAngleChange = Math.max(Math.abs(mSecsAngle - toSecsAngle), Math.abs(toMinsAngle - mMinsAngle));
         int duration;
-        if(maxAngleChange < Math.PI/2) duration = 300;
-        else if(maxAngleChange < Math.PI) duration = 750;
+        if (maxAngleChange < Math.PI / 2) duration = 300;
+        else if (maxAngleChange < Math.PI) duration = 750;
         else duration = 1250;
 
         final ValueAnimator secsAnimation = ValueAnimator.ofFloat(mSecsAngle, toSecsAngle);
@@ -262,14 +270,14 @@ public class StopwatchCustomView extends View {
                 if (secsAnimation.isRunning() || minsAnimation.isRunning()) {
                     mSecsAngle = (Float) secsAnimation.getAnimatedValue();
                     mMinsAngle = (Float) minsAnimation.getAnimatedValue();
-                    broadcastClockTime(-(Integer) clockAnimation.getAnimatedValue());
+                    broadcastClockTime(mIsStopwatch ? (Integer) clockAnimation.getAnimatedValue() : -(Integer) clockAnimation.getAnimatedValue());
                     invalidate();
                     postDelayed(this, 15);
                 } else {
                     mSecsAngle = toSecsAngle; //ensure the hands have ended at correct position
                     mMinsAngle = toMinsAngle;
                     mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
-                    broadcastClockTime(-mDisplayTimeMillis);
+                    broadcastClockTime(mIsStopwatch ? mDisplayTimeMillis : -mDisplayTimeMillis);
                     invalidate();
                 }
 
@@ -284,9 +292,7 @@ public class StopwatchCustomView extends View {
             updatePhysics(false);
             invalidate();
 
-            if (mIsRunning)
-                postDelayed(this, 15);
-
+            if (mIsRunning) postDelayed(this, 15);
         }
     };
 
@@ -306,7 +312,7 @@ public class StopwatchCustomView extends View {
         }
 
         // mins is 0 to 30
-        mMinsAngle = twoPI * (float)(mDisplayTimeMillis / 1800000.0f);
+        mMinsAngle = twoPI * (float) (mDisplayTimeMillis / 1800000.0f);
         mSecsAngle = twoPI * (float) (mDisplayTimeMillis / 60000.0f);
 
         if (mDisplayTimeMillis < 0) mDisplayTimeMillis = 0;
@@ -317,7 +323,7 @@ public class StopwatchCustomView extends View {
 
         // stop timer at end
         if (mIsRunning && !mIsStopwatch && mDisplayTimeMillis <= 0) {
-            reset(); // applies pause state
+            //reset();
             notifyCountdownComplete(appResuming);
         }
     }
@@ -339,22 +345,17 @@ public class StopwatchCustomView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             SoundManager sm = SoundManager.getInstance(getContext());
-            if(sm.isEndlessAlarmSounding())
-            {
+            if (sm.isEndlessAlarmSounding()) {
                 sm.stopEndlessAlarm();
-            }else
-            {
+            } else {
                 mTouching = System.currentTimeMillis();
             }
-        }else if(event.getAction() == MotionEvent.ACTION_MOVE)
-        {
-            if(mTouching>0 && System.currentTimeMillis()-mTouching > 1000)
-                mTouching=0L;   //reset touch if user is swiping
-        }
-        else if(event.getAction() == MotionEvent.ACTION_UP)
-        {
-            if(mTouching>0)  startStop();
-            mTouching=0L;
+        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            if (mTouching > 0 && System.currentTimeMillis() - mTouching > 1000)
+                mTouching = 0L;   //reset touch if user is swiping
+        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (mTouching > 0) startStop();
+            mTouching = 0L;
         }
         return true;
     }
@@ -362,11 +363,15 @@ public class StopwatchCustomView extends View {
     public boolean startStop() {
         if (mIsRunning) {
             stop();
-        } else {
+            notifyStateChanged();
+        } else if (mIsStopwatch || mDisplayTimeMillis != 0) { // don't start the countdown if it is 0
             start();
+            notifyStateChanged();
+        } else if (mDisplayTimeMillis == 0)//countdown at 0, just flash the icon
+        {
+            notifyIconHint();
+            return false;
         }
-
-        notifyStateChanged();
         return (mIsRunning);
     }
 
@@ -383,16 +388,6 @@ public class StopwatchCustomView extends View {
     public void stop() {
         mIsRunning = false;
         removeCallbacks(animator);
-    }
-
-    public void reset() {
-        mIsRunning = false;
-        mLastTime = 0;
-        mMinsAngle = 0;
-        mSecsAngle = 0;
-        mDisplayTimeMillis = 0;
-
-        broadcastClockTime(0);
     }
 
     public boolean isRunning() {
@@ -436,14 +431,14 @@ public class StopwatchCustomView extends View {
             updatePhysics(true);
 
             removeCallbacks(animator);
-            if(mIsRunning) post(animator);
+            if (mIsRunning) post(animator);
         }
         notifyStateChanged();
         AlarmUpdater.cancelCountdownAlarm(getContext()); //just to be sure
     }
 
     @Override
-    public boolean isOpaque (){
+    public boolean isOpaque() {
         return true;
     }
 

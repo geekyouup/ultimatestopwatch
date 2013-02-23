@@ -76,7 +76,7 @@ public class LapTimeRecorder {
 
     public void stopwatchReset()
     {
-        if(mLapTimes.get(0) != null && mLapTimes.get(0)==0) return; //don't record multiple resets
+        if(mLapTimes.size()>0 && mLapTimes.get(0) != null && mLapTimes.get(0)==0) return; //don't record multiple resets
         mLapTimes.add(0,0d);
     }
 

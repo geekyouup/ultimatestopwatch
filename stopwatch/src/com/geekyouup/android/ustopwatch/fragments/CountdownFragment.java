@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.actionbarsherlock.app.SherlockFragment;
@@ -41,7 +40,7 @@ public class CountdownFragment extends SherlockFragment {
     private static final String KEY_LAST_MIN = "key_last_min";
     private static final String KEY_LAST_SEC = "key_last_sec";
 
-    public static final String MSG_REQUEST_COUNTDOWN_DLG = "msg_usw_counter";
+    public static final String MSG_REQUEST_ICON_FLASH = "msg_flash_icon";
     public static final String MSG_COUNTDOWN_COMPLETE = "msg_countdown_complete";
     public static final String MSG_APP_RESUMING = "msg_app_resuming";
     private int mLastSecondTicked =0;
@@ -115,8 +114,8 @@ public class CountdownFragment extends SherlockFragment {
         mCountdownView.setHandler(new Handler() {
             @Override
             public void handleMessage(Message m) {
-                if (m.getData().getBoolean(MSG_REQUEST_COUNTDOWN_DLG, false)) {
-                    requestTimeDialog();
+                if (m.getData().getBoolean(MSG_REQUEST_ICON_FLASH, false)) {
+                    ((UltimateStopwatchActivity)getSherlockActivity()).flashResetTimeIcon();
                 } else if(m.getData().getBoolean(MSG_COUNTDOWN_COMPLETE, false))
                 {
                     boolean appResuming = m.getData().getBoolean(MSG_APP_RESUMING, false);
@@ -179,7 +178,8 @@ public class CountdownFragment extends SherlockFragment {
 	{
         if(!isRunning() && mCurrentTimeMillis == 0)
         {
-            requestTimeDialog();
+            //flash the choose time button in the action bar
+            ((UltimateStopwatchActivity)getSherlockActivity()).flashResetTimeIcon();
         }else
         {
             mCountdownView.startStop();
@@ -192,7 +192,7 @@ public class CountdownFragment extends SherlockFragment {
     {
         mResetButton.setEnabled(endlessAlarmSounding);
         mStartButton.setText(isAdded()?getString(R.string.start):"START");
-        setTime(mLastHour, mLastMin, mLastSec, true);
+        mCountdownView.setTime(mLastHour,mLastMin,mLastSec,false);
     }
 
 	public void reset()
@@ -227,9 +227,9 @@ public class CountdownFragment extends SherlockFragment {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
         mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || !disableReset);
-        if(!mRunningState && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0)
+        if(!mRunningState && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0 && isAdded())
         {
-            if(isAdded()) mStartButton.setText(getString(R.string.start));
+            mStartButton.setText(getString(R.string.start));
         }else
         {
             if(isAdded()) mStartButton.setText(mRunningState?getString(R.string.pause):getString(R.string.start));

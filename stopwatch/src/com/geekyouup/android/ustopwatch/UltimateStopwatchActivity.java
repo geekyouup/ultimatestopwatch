@@ -5,12 +5,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.view.ViewPager;
 
+import android.widget.ImageView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuInflater;
@@ -39,6 +42,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     private ViewPager mViewPager;
     private TabsAdapter mTabsAdapter;
     private Menu mMenu;
+    private boolean mFlashResetIcon = false;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -148,6 +152,30 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
                 break;
             case 2:
                 inflater.inflate(R.menu.menu_countdown, menu);
+                if(mFlashResetIcon) //icon hint for set countdown time
+                {
+                    final MenuItem item = menu.findItem(R.id.menu_resettime);
+                    item.setActionView(R.layout.action_bar_settime_animation);
+                    ImageView iv = (ImageView) item.getActionView().findViewById(R.id.settime_imageview);
+                    ((AnimationDrawable) iv.getDrawable()).start();
+
+                    //remove the action provider again after 1sec
+                    new AsyncTask<Void, Integer, Void>(){
+                        @Override
+                        protected Void doInBackground(Void... arg0) {
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {}
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Void result) {
+                            item.setActionView(null);
+                            mFlashResetIcon=false;
+                        }
+                    }.execute((Void)null);
+                }
                 break;
             case 0:
             default:
@@ -208,5 +236,11 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     public void registerStopwatchFragment(StopwatchFragment swf)
     {
         mStopwatchFragment = swf;
+    }
+
+    public void flashResetTimeIcon()
+    {
+        mFlashResetIcon=true;
+        invalidateOptionsMenu();
     }
 }

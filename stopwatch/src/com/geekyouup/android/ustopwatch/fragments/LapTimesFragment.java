@@ -32,8 +32,7 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.laptimes_fragment, container, false);
-		return v;
+		return inflater.inflate(R.layout.laptimes_fragment, container, false);
 	}
 	
 	@Override
@@ -54,13 +53,11 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
                     if(mCheckedItems==null) mCheckedItems=new ArrayList<Integer>();
                     if(checked)
                     {
-                        mCheckedItems.add(new Integer(i));
-                        Log.d("USW", "Item clicked " + i + ", total " + mCheckedItems.size());
+                        mCheckedItems.add(i);
                     }
                     else
                     {
                         mCheckedItems.remove(new Integer(i));
-                        Log.d("USW", "Item clicked " + i + ", total " + mCheckedItems.size());
                     }
                 }
 
@@ -106,7 +103,6 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View view, int position, long id) {
-                final ListView listView = getListView();
                 getSherlockActivity().startActionMode(new ActionMode.Callback(){
                     @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {return false;}
                     @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }

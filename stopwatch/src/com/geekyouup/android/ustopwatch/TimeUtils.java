@@ -3,7 +3,6 @@ package com.geekyouup.android.ustopwatch;
 import android.text.SpannableString;
 import android.text.style.TextAppearanceSpan;
 import android.util.Log;
-import com.geekyouup.android.ustopwatch.R;
 
 import android.content.Context;
 import android.text.Editable;
@@ -24,7 +23,7 @@ public class TimeUtils {
 	private static int mHoursValue = 0;
 
 	public static String createTimeString(double time) {
-		if (time == 0) return new String(START_TIME);
+		if (time == 0) return START_TIME;
 		boolean isNeg = false;
 		if(time<0)
 		{
@@ -64,12 +63,11 @@ public class TimeUtils {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				if (s != null && s.length() == 0) {
 					mSecsValue = 0;
-				} else
+				} else  {
 					try {
-						mSecsValue = Integer.parseInt(s.toString());
-					} catch (Exception e) {
-					}
-				;
+						if(s!=null) mSecsValue = Integer.parseInt(s.toString());
+					} catch (Exception ignored) {}
+                }
 			}
 
 			@Override
@@ -87,12 +85,11 @@ public class TimeUtils {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				if (s != null && s.length() == 0) {
 					mMinsValue = 0;
-				} else
+				} else {
 					try {
-						mMinsValue = Integer.parseInt(s.toString());
-					} catch (Exception e) {
-					}
-				;
+						if(s!=null) mMinsValue = Integer.parseInt(s.toString());
+					} catch (Exception ignored) {}
+                }
 			}
 
 			@Override
@@ -112,11 +109,9 @@ public class TimeUtils {
 					mHoursValue = 0;
 				} else
 					try {
-						mHoursValue = Integer.parseInt(s.toString());
-					} catch (Exception e) {
-					}
-				;
-			}
+						if(s!=null) mHoursValue = Integer.parseInt(s.toString());
+					} catch (Exception ignored) {}
+            }
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {

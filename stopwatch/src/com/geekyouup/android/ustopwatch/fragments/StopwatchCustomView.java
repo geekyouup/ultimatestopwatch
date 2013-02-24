@@ -23,13 +23,10 @@ import com.geekyouup.android.ustopwatch.*;
  * User: rhyndman
  * Date: 2/21/13
  * Time: 10:32 AM
- * To change this template use File | Settings | File Templates.
  */
 public class StopwatchCustomView extends View {
 
     private boolean mIsStopwatch = true; //true=stopwatch, false=countdown
-    private int mBGColor = 0xfff7f7f7;
-
     private boolean mIsRunning = false;
 
     private static final String KEY_STATE = "state_bool";
@@ -88,13 +85,11 @@ public class StopwatchCustomView extends View {
 
     private void init() {
         Resources res = getResources();
-        mBGColor = getResources().getColor(mIsStopwatch ? R.color.stopwatch_background : R.color.countdown_background);
-
         //the stopwatch graphics are square, so find the smallest dimension they must fit in and load appropriately
         int minDim = Math.min(mCanvasHeight, mCanvasWidth);
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
-        double handsScaleFactor = 1;
+        double handsScaleFactor;
 
         if (minDim >= 1000) {
             mBackgroundImage = BitmapFactory.decodeResource(res, mIsStopwatch ? R.drawable.background1000 : R.drawable.background1000_cd, options);
@@ -204,7 +199,7 @@ public class StopwatchCustomView extends View {
 
         //forces hands to go back to 0 not forwards
         final float toSecsAngle = shortestAngleToDestination(mSecsAngle, twoPI * seconds / 60f, resetting);
-        //avoid mutliple minutes hands rotates as faxce is 0-29 not 0-59
+        //avoid multiple minutes hands rotates as face is 0-29 not 0-59
         final float toMinsAngle = shortestAngleToDestination(mMinsAngle, twoPI * ((minutes > 30 ? minutes - 30 : minutes) / 30f + seconds / 1800f), resetting);
 
         float maxAngleChange = Math.max(Math.abs(mSecsAngle - toSecsAngle), Math.abs(toMinsAngle - mMinsAngle));
@@ -223,7 +218,7 @@ public class StopwatchCustomView extends View {
         minsAnimation.setDuration(duration);
         minsAnimation.start();
 
-        final ValueAnimator clockAnimation = ValueAnimator.ofInt((int) mDisplayTimeMillis, (hours * 3600000 + minutes * 60000 + seconds * 1000));
+        final ValueAnimator clockAnimation = ValueAnimator.ofInt(mDisplayTimeMillis, (hours * 3600000 + minutes * 60000 + seconds * 1000));
         clockAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
         clockAnimation.setDuration(duration);
         clockAnimation.start();
@@ -306,8 +301,8 @@ public class StopwatchCustomView extends View {
         }
 
         // mins is 0 to 30
-        mMinsAngle = twoPI * (float) (mDisplayTimeMillis / 1800000.0f);
-        mSecsAngle = twoPI * (float) (mDisplayTimeMillis / 60000.0f);
+        mMinsAngle = twoPI * (mDisplayTimeMillis / 1800000.0f);
+        mSecsAngle = twoPI * mDisplayTimeMillis / 60000.0f;
 
         if (mDisplayTimeMillis < 0) mDisplayTimeMillis = 0;
 
@@ -348,8 +343,7 @@ public class StopwatchCustomView extends View {
         } else if (mIsStopwatch || mDisplayTimeMillis != 0) { // don't start the countdown if it is 0
             start();
             notifyStateChanged();
-        } else if (mDisplayTimeMillis == 0)//countdown at 0, just flash the icon
-        {
+        } else { //mDisplayTimeMillis == 0
             notifyIconHint();
             return false;
         }

@@ -4,7 +4,6 @@ import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.widget.Button;
@@ -66,7 +65,7 @@ public class StopwatchFragment extends SherlockFragment {
             }
         });
 
-        mSaveLapTimeButton = (View) swView.findViewById(R.id.saveButton);
+        mSaveLapTimeButton = swView.findViewById(R.id.saveButton);
         mSaveLapTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,8 +92,7 @@ public class StopwatchFragment extends SherlockFragment {
         try {
             if (isRunning() && mCurrentTimeMillis > 0)
                 AlarmUpdater.showChronometerNotification(getSherlockActivity(), (long) mCurrentTimeMillis);
-        } catch (Exception e) {
-        }
+        } catch (Exception ignored) {}
     }
 
     @Override

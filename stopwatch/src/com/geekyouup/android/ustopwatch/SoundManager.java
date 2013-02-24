@@ -71,7 +71,7 @@ public class SoundManager {
         {
             if(mLoopingSoundId != -1) soundPool.stop(mLoopingSoundId);
             mLoopingSoundId=-1;
-        }catch(Exception e){}
+        }catch(Exception ignored){}
     }
 
     public void doTick()

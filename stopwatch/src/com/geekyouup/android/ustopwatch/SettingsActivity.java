@@ -8,10 +8,6 @@ import com.actionbarsherlock.app.SherlockActivity;
 
 public class SettingsActivity extends SherlockActivity {
 
-    private CompoundButton mSwitchSoundTicking;
-    private CompoundButton mSwitchEndlessAlarm;
-    private CompoundButton mSwitchVibrate;
-    private CompoundButton mSwitchAnimating;
     private static boolean isTicking=false;
     private static boolean isEndlessAlarm = false;
     private static boolean isVibrate = false;
@@ -27,35 +23,35 @@ public class SettingsActivity extends SherlockActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
 
-        mSwitchSoundTicking = (CompoundButton) findViewById(R.id.settings_seconds_sound);
+        CompoundButton mSwitchSoundTicking = (CompoundButton) findViewById(R.id.settings_seconds_sound);
         mSwitchSoundTicking.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isTicking=b;
+                isTicking = b;
             }
         });
 
-        mSwitchAnimating = (CompoundButton) findViewById(R.id.settings_animations);
+        CompoundButton mSwitchAnimating = (CompoundButton) findViewById(R.id.settings_animations);
         mSwitchAnimating.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isAnimating=b;
+                isAnimating = b;
             }
         });
 
-        mSwitchEndlessAlarm = (CompoundButton) findViewById(R.id.settings_endless_alert);
+        CompoundButton mSwitchEndlessAlarm = (CompoundButton) findViewById(R.id.settings_endless_alert);
         mSwitchEndlessAlarm.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isEndlessAlarm=b;
+                isEndlessAlarm = b;
             }
         });
 
-        mSwitchVibrate = (CompoundButton) findViewById(R.id.settings_vibrate);
+        CompoundButton mSwitchVibrate = (CompoundButton) findViewById(R.id.settings_vibrate);
         mSwitchVibrate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isVibrate=b;
+                isVibrate = b;
             }
         });
 

@@ -7,7 +7,6 @@ import java.util.ArrayList;
  * User: rhyndman
  * Date: 11/23/12
  * Time: 3:58 PM
- * To change this template use File | Settings | File Templates.
  */
 public class LapTimeBlock {
 

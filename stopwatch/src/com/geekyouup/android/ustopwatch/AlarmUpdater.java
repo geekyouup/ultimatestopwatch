@@ -28,12 +28,12 @@ public class AlarmUpdater {
 			PendingIntent piWakeUp = PendingIntent.getService(context,0, defineIntent, PendingIntent.FLAG_NO_CREATE);
 	        
 			if(piWakeUp != null) alarmMan.cancel(piWakeUp);
-		}catch(Exception e){}
+		}catch(Exception ignored){}
         
 		try
 		{
 			((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.main);
-		}catch(Exception e){}
+		}catch(Exception ignored){}
 	}
 	//cancels alarm then sets new one
 	public static void setCountdownAlarm(Context context, long inMillis)
@@ -86,8 +86,7 @@ public class AlarmUpdater {
 	            notification.flags |= Notification.FLAG_SHOW_LIGHTS;
 	            notification.audioStreamType=AudioManager.STREAM_NOTIFICATION;
 	            //notification.sound= Uri.parse("android.resource://com.geekyouup.android.ustopwatch/" + R.raw.alarm);
-            }catch(Exception e)
-            {}
+            }catch(Exception ignored){}
             
             notification.defaults |= (Notification.DEFAULT_ALL);
 
@@ -152,6 +151,6 @@ public class AlarmUpdater {
         {
             ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.stopwatch_fragment);
             //((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.countdown_fragment);
-        }catch(Exception e){}
+        }catch(Exception ignored){}
     }
 }

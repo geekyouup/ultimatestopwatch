@@ -19,7 +19,6 @@ import java.util.ArrayList;
  * User: rhyndman
  * Date: 10/4/12
  * Time: 3:33 PM
- * To change this template use File | Settings | File Templates.
  */
 public class TabsAdapter extends FragmentPagerAdapter
         implements ActionBar.TabListener, ViewPager.OnPageChangeListener {

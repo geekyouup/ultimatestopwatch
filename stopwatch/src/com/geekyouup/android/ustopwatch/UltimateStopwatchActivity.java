@@ -165,7 +165,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
                         protected Void doInBackground(Void... arg0) {
                             try {
                                 Thread.sleep(1000);
-                            } catch (InterruptedException e) {}
+                            } catch (InterruptedException ignored) {}
                             return null;
                         }
 
@@ -183,7 +183,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
                 break;
         }
 
-        //get audio icon and set correct varient
+        //get audio icon and set correct variant
         MenuItem audioButton = menu.findItem(R.id.menu_audiotoggle);
         if(audioButton!=null) audioButton.setIcon(mSoundManager.isAudioOn()?R.drawable.audio_on:R.drawable.audio_off);
         mMenu=menu;

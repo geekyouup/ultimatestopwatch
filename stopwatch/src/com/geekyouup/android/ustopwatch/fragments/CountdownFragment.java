@@ -192,7 +192,7 @@ public class CountdownFragment extends SherlockFragment {
     {
         mResetButton.setEnabled(endlessAlarmSounding);
         mStartButton.setText(isAdded()?getString(R.string.start):"START");
-        mCountdownView.setTime(mLastHour,mLastMin,mLastSec,false);
+        mCountdownView.setTime(mLastHour,mLastMin,mLastSec,true);
     }
 
 	public void reset()

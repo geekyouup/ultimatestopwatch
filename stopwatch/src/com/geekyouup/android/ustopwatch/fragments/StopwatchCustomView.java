@@ -18,8 +18,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import com.actionbarsherlock.internal.nineoldandroids.animation.ValueAnimator;
 import com.geekyouup.android.ustopwatch.*;
 
-import java.util.concurrent.CountDownLatch;
-
 /**
  * Created with IntelliJ IDEA.
  * User: rhyndman
@@ -147,41 +145,6 @@ public class StopwatchCustomView extends View {
         mMinsCenterX = mCanvasWidth / 2;
     }
 
-    public void setHandler(Handler handler) {
-        this.mHandler = handler;
-    }
-
-    private void notifyStateChanged() {
-        if (mHandler != null) {
-            Message msg = mHandler.obtainMessage();
-            Bundle b = new Bundle();
-            b.putBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE, true);
-            msg.setData(b);
-            mHandler.sendMessage(msg);
-        }
-    }
-
-    private void notifyIconHint() {
-        if (mHandler != null) {
-            Message msg = mHandler.obtainMessage();
-            Bundle b = new Bundle();
-            b.putBoolean(CountdownFragment.MSG_REQUEST_ICON_FLASH, true);
-            msg.setData(b);
-            mHandler.sendMessage(msg);
-        }
-    }
-
-    private void notifyCountdownComplete(boolean appResuming) {
-        if (mHandler != null) {
-            Message msg = mHandler.obtainMessage();
-            Bundle b = new Bundle();
-            b.putBoolean(CountdownFragment.MSG_COUNTDOWN_COMPLETE, true);
-            b.putBoolean(CountdownFragment.MSG_APP_RESUMING, appResuming);
-            msg.setData(b);
-            mHandler.sendMessage(msg);
-        }
-    }
-
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         // Account for padding
@@ -198,7 +161,6 @@ public class StopwatchCustomView extends View {
         // Draw the background image
         if (mBackgroundImage != null)
             canvas.drawBitmap(mBackgroundImage, mAppOffsetX, mBackgroundStartY + mAppOffsetY, null);
-
 
         // draw the mins hand with its current rotatiom
         if (mMinHand != null && mSecHand != null) {
@@ -220,26 +182,30 @@ public class StopwatchCustomView extends View {
     }
 
     //set the time on the stopwatch/countdown face, animating the hands if resettings countdown
-    public void setTime(int hours, int minutes, int seconds, boolean start) {
+    //To make the animation feel right, we always wind backwards when resetting
+    public void setTime(int hours, int minutes, int seconds, boolean resetting) {
         mIsRunning = false;
         mLastTime = System.currentTimeMillis();
         if (SettingsActivity.isAnimating()) {
-            animateWatchTo(hours, minutes, seconds);
+            animateWatchTo(hours, minutes, seconds, resetting);
         } else {
             mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
             mMinsAngle = (twoPI * ((float) minutes / 30.0f));
             mSecsAngle = (twoPI * ((float) seconds / 60.0f));
             broadcastClockTime(mDisplayTimeMillis);
-            if (start) start();
-            else updatePhysics(false);
+            updatePhysics(false);
         }
     }
 
-    private void animateWatchTo(final int hours, final int minutes, final int seconds) {
-        final float toSecsAngle = twoPI * seconds / 60f; //forces hands to go back to 0 not forwards
-        final float toMinsAngle = twoPI * ((minutes > 30 ? minutes - 30 : minutes) / 30f + seconds / 1800f);
+    private void animateWatchTo(final int hours, final int minutes, final int seconds, boolean resetting) {
+
         mSecsAngle = mSecsAngle % twoPI; //avoids more than 1 rotation
         mMinsAngle = mMinsAngle % twoPI; //avoids more than 1 rotation
+
+        //forces hands to go back to 0 not forwards
+        final float toSecsAngle = shortestAngleToDestination(mSecsAngle, twoPI * seconds / 60f, resetting);
+        //avoid mutliple minutes hands rotates as faxce is 0-29 not 0-59
+        final float toMinsAngle = shortestAngleToDestination(mMinsAngle, twoPI * ((minutes > 30 ? minutes - 30 : minutes) / 30f + seconds / 1800f), resetting);
 
         float maxAngleChange = Math.max(Math.abs(mSecsAngle - toSecsAngle), Math.abs(toMinsAngle - mMinsAngle));
         int duration;
@@ -267,7 +233,7 @@ public class StopwatchCustomView extends View {
             @Override
             public void run() {
 
-                if (secsAnimation.isRunning() || minsAnimation.isRunning()) {
+                if (secsAnimation.isRunning() || minsAnimation.isRunning() || clockAnimation.isRunning()) {
                     mSecsAngle = (Float) secsAnimation.getAnimatedValue();
                     mMinsAngle = (Float) minsAnimation.getAnimatedValue();
                     broadcastClockTime(mIsStopwatch ? (Integer) clockAnimation.getAnimatedValue() : -(Integer) clockAnimation.getAnimatedValue());
@@ -283,6 +249,34 @@ public class StopwatchCustomView extends View {
 
             }
         });
+    }
+
+    //To get from -6 rads to 1 rads, shortest distance is clockwise through 0 rads
+    //From 1 rads to 5 rads shortest distance is CCW back through 0 rads
+    //This method returns the angle in rads closest to fromAngle that is equivalent to toAngle
+    //unless we are animating a reset, as it feels better to always reset by reversing the hand direction
+    //e.g. toAngle+2*Pi may be closer than toAngle
+    private float shortestAngleToDestination(final float fromAngle, final float toAngle, boolean resetting) {
+        if (resetting && mIsStopwatch) // hands must always go backwards
+        {
+            return toAngle; // stopwatch reset always returns to 0,
+        } else if (resetting && !mIsStopwatch) //hands must always go forwards
+        {
+            //countdown reset can be to any clock position, ensure CW rotation
+            if (toAngle > fromAngle) return toAngle;
+            else return (toAngle + twoPI);
+        } else //not restting hands must take shortest route
+        {
+            float absFromMinusTo = Math.abs(fromAngle - toAngle);
+            //toAngle-twoPi, toAngle, toAngle+twoPi
+            if (absFromMinusTo < Math.abs(fromAngle - (toAngle + twoPI))) {
+                if (Math.abs(fromAngle - (toAngle - twoPI)) < absFromMinusTo) {
+                    return (toAngle - twoPI);
+                } else {
+                    return toAngle;
+                }
+            } else return toAngle + twoPI;
+        }
     }
 
     //Stopwatch and countdown animation runnable
@@ -323,20 +317,7 @@ public class StopwatchCustomView extends View {
 
         // stop timer at end
         if (mIsRunning && !mIsStopwatch && mDisplayTimeMillis <= 0) {
-            //reset();
             notifyCountdownComplete(appResuming);
-        }
-    }
-
-    //send the latest time to the parent fragment to populate the digits
-    private void broadcastClockTime(double mTime) {
-        if (mHandler != null) {
-            Message msg = mHandler.obtainMessage();
-            Bundle b = new Bundle();
-            b.putBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME, true);
-            b.putDouble(UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE, mTime);
-            msg.setData(b);
-            mHandler.sendMessage(msg);
         }
     }
 
@@ -437,9 +418,50 @@ public class StopwatchCustomView extends View {
         AlarmUpdater.cancelCountdownAlarm(getContext()); //just to be sure
     }
 
+    //for optimization purposes
     @Override
     public boolean isOpaque() {
         return true;
+    }
+
+    //Message Handling between Activity/Fragment and View
+    public void setHandler(Handler handler) {
+        this.mHandler = handler;
+    }
+
+    private void notifyStateChanged() {
+        Bundle b = new Bundle();
+        b.putBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE, true);
+        sendMessageToHandler(b);
+    }
+
+    private void notifyIconHint() {
+        Bundle b = new Bundle();
+        b.putBoolean(CountdownFragment.MSG_REQUEST_ICON_FLASH, true);
+        sendMessageToHandler(b);
+    }
+
+    private void notifyCountdownComplete(boolean appResuming) {
+        Bundle b = new Bundle();
+        b.putBoolean(CountdownFragment.MSG_COUNTDOWN_COMPLETE, true);
+        b.putBoolean(CountdownFragment.MSG_APP_RESUMING, appResuming);
+        sendMessageToHandler(b);
+    }
+
+    //send the latest time to the parent fragment to populate the digits
+    private void broadcastClockTime(double mTime) {
+        Bundle b = new Bundle();
+        b.putBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME, true);
+        b.putDouble(UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE, mTime);
+        sendMessageToHandler(b);
+    }
+
+    private void sendMessageToHandler(Bundle b) {
+        if (mHandler != null) {
+            Message msg = mHandler.obtainMessage();
+            msg.setData(b);
+            mHandler.sendMessage(msg);
+        }
     }
 
 

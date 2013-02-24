@@ -160,7 +160,7 @@ public class StopwatchFragment extends SherlockFragment {
     }
 
     public void reset() {
-        mStopwatchView.setTime(0,0,0,false);
+        mStopwatchView.setTime(0,0,0,true);
         mSoundManager.playSound(SoundManager.SOUND_RESET);
 
         mResetButton.setEnabled(false);

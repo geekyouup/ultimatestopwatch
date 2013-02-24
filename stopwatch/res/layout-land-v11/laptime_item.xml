@@ -5,7 +5,8 @@ android:layout_height="50dp"
 android:orientation="horizontal"
 android:gravity="center"
 android:paddingTop="5dp"
-android:paddingBottom="5dp" >
+android:paddingBottom="5dp"
+android:background="?android:attr/activatedBackgroundIndicator">
 <TextView
     android:id="@+id/laptime_text"
     android:layout_width="wrap_content"

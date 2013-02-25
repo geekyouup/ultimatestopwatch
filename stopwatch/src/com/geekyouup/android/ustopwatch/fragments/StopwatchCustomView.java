@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -56,6 +57,7 @@ public class StopwatchCustomView extends View {
     private int mSecsHalfHeight = 0;
     private int mMinsHalfWidth = 0;
     private int mMinsHalfHeight = 0;
+    private static final boolean USE_VSYNC = (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN);
 
     /**
      * Used to figure out elapsed time between frames
@@ -279,7 +281,9 @@ public class StopwatchCustomView extends View {
         @Override
         public void run() {
             updatePhysics(false);
-            invalidate();
+
+            if(USE_VSYNC) postInvalidateOnAnimation();
+            else invalidate();
 
             if (mIsRunning) postDelayed(this, 15);
         }

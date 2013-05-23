@@ -50,6 +50,8 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
+        getWindow().setBackgroundDrawable(null);
+
         getSupportActionBar().setIcon(R.drawable.icon_ab);
         setTitle(getString(R.string.app_name_caps));
 

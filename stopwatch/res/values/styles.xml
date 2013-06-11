@@ -16,23 +16,6 @@
 
 <resources>
 
-    <style name="AppTheme" parent="@style/Theme.Sherlock.Light">
-        <item name="actionBarStyle">@style/CustomActionBarStyle</item>
-        <item name="android:actionBarStyle">@style/CustomActionBarStyle</item>
-    </style>
-
-    <style name="CustomActionBarStyle" parent="@style/Widget.Sherlock.ActionBar">
-        <item name="titleTextStyle">@style/CustomTitleColorBar</item>
-        <item name="android:titleTextStyle">@style/CustomTitleColorBar</item>
-        <item name="android:background">@android:color/white</item>
-        <item name="background">@android:color/white</item>
-    </style>
-
-    <!-- Style for the color title bar -->
-    <style name="CustomTitleColorBar" parent="@style/TextAppearance.Sherlock.Widget.ActionBar.Title">
-        <item name="android:textColor">@android:color/black</item>
-    </style>
-
     <!-- Time Counter Spannable Styles -->
     <style name="TimeTextLight">
         <item name="android:textColor">#999999</item>

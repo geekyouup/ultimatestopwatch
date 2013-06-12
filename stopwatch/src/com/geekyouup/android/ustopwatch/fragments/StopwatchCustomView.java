@@ -180,17 +180,24 @@ public class StopwatchCustomView extends View {
 
     //set the time on the stopwatch/countdown face, animating the hands if resettings countdown
     //To make the animation feel right, we always wind backwards when resetting
-    public void setTime(int hours, int minutes, int seconds, boolean resetting) {
+    public void setTime(final int hours, final int minutes, final int seconds, boolean resetting) {
         mIsRunning = false;
         mLastTime = System.currentTimeMillis();
         if (SettingsActivity.isAnimating()) {
             animateWatchTo(hours, minutes, seconds, resetting);
         } else {
-            mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
-            mMinsAngle = (twoPI * ((float) minutes / 30.0f));
-            mSecsAngle = (twoPI * ((float) seconds / 60.0f));
-            broadcastClockTime(mDisplayTimeMillis);
-            updatePhysics(false);
+            //to fix bug #42, now the hands reset even when paused
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    //during the animation also roll back the clock time to the current hand times.
+                    mSecsAngle = (twoPI * ((float) seconds / 60.0f)); //ensure the hands have ended at correct position
+                    mMinsAngle = (twoPI * ((float) minutes / 30.0f));
+                    mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
+                    broadcastClockTime(mIsStopwatch ? mDisplayTimeMillis : -mDisplayTimeMillis);
+                    invalidate();
+                }
+            });
         }
     }
 
@@ -230,6 +237,7 @@ public class StopwatchCustomView extends View {
             @Override
             public void run() {
 
+                //during the animation also roll back the clock time to the current hand times.
                 if (secsAnimation.isRunning() || minsAnimation.isRunning() || clockAnimation.isRunning()) {
                     mSecsAngle = (Float) secsAnimation.getAnimatedValue();
                     mMinsAngle = (Float) minsAnimation.getAnimatedValue();

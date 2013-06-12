@@ -65,7 +65,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 		mPowerMan = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-		// stop landscape more on QVGA/HVGA
+		// stop landscape on QVGA/HVGA
 		int screenSize = getResources().getConfiguration().screenLayout
 				& Configuration.SCREENLAYOUT_SIZE_MASK;
 		if (screenSize == Configuration.SCREENLAYOUT_SIZE_SMALL) {

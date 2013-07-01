@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -71,6 +72,7 @@ public class StopwatchCustomView extends View {
     public StopwatchCustomView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
+        //find out if this view is specificed as a stopwatch or countdown view
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.StopwatchCustomView,
@@ -187,6 +189,7 @@ public class StopwatchCustomView extends View {
             animateWatchTo(hours, minutes, seconds, resetting);
         } else {
             //to fix bug #42, now the hands reset even when paused
+            removeCallbacks(animator);
             post(new Runnable() {
                 @Override
                 public void run() {
@@ -233,6 +236,7 @@ public class StopwatchCustomView extends View {
         clockAnimation.start();
 
         //approach is to go from xMs to yMs using the standard updatePhysics routine and speeding up time.
+        removeCallbacks(animator);
         post(new Runnable() {
             @Override
             public void run() {
@@ -256,11 +260,11 @@ public class StopwatchCustomView extends View {
         });
     }
 
-    //To get from -6 rads to 1 rads, shortest distance is clockwise through 0 rads
-    //From 1 rads to 5 rads shortest distance is CCW back through 0 rads
     //This method returns the angle in rads closest to fromAngle that is equivalent to toAngle
     //unless we are animating a reset, as it feels better to always reset by reversing the hand direction
     //e.g. toAngle+2*Pi may be closer than toAngle
+    //To get from -6 rads to 1 rads, shortest distance is clockwise through 0 rads
+    //From 1 rads to 5 rads shortest distance is CCW back through 0 rads
     private float shortestAngleToDestination(final float fromAngle, final float toAngle, boolean resetting) {
         if (resetting && mIsStopwatch) // hands must always go backwards
         {
@@ -285,15 +289,17 @@ public class StopwatchCustomView extends View {
     }
 
     //Stopwatch and countdown animation runnable
-    private Runnable animator = new Runnable() {
+    private final Runnable animator = new Runnable() {
         @Override
         public void run() {
             updatePhysics(false);
 
-            if(USE_VSYNC) postInvalidateOnAnimation();
-            else invalidate();
-
-            if (mIsRunning) postDelayed(this, 15);
+            if(mIsRunning)
+            {
+                invalidate();
+                removeCallbacks(this);
+                ViewCompat.postOnAnimation(StopwatchCustomView.this, this);
+            }
         }
     };
 

@@ -93,6 +93,8 @@ public class StopwatchFragment extends SherlockFragment {
             if (isRunning() && mCurrentTimeMillis > 0)
                 AlarmUpdater.showChronometerNotification(getSherlockActivity(), (long) mCurrentTimeMillis);
         } catch (Exception ignored) {}
+
+        mStopwatchView.stop();
     }
 
     @Override
@@ -109,8 +111,8 @@ public class StopwatchFragment extends SherlockFragment {
                     int currentSecond = (int) mCurrentTimeMillis / 1000;
                     if (currentSecond > mLastSecond) {
                         mSoundManager.doTick();
-                        mLastSecond = currentSecond;
                     }
+                    mLastSecond = currentSecond;
 
                 } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE, false)) {
                     setUIState();
@@ -131,8 +133,8 @@ public class StopwatchFragment extends SherlockFragment {
         Rect bounds = new Rect();
         paint.setTypeface(Typeface.SANS_SERIF);// your preference here
         paint.setTextSize(getResources().getDimension(R.dimen.counter_font));// have this the same as your text size
-        String text = getString(R.string.default_time); //00:00:00.000
-        paint.getTextBounds(text, 0, text.length(), bounds);
+        String counterText = getString(R.string.default_time); //00:00:00.000
+        paint.getTextBounds(counterText, 0, counterText.length(), bounds);
         int text_width = bounds.width();
         int width = getResources().getDisplayMetrics().widthPixels;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) width = width / 2;

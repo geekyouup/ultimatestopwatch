@@ -103,6 +103,8 @@ public class CountdownFragment extends SherlockFragment {
         editor.putInt(KEY_LAST_MIN,mLastMin);
         editor.putInt(KEY_LAST_SEC, mLastSec);
 		editor.commit();
+
+        mCountdownView.stop();
 	}
 	
 	@Override
@@ -139,8 +141,8 @@ public class CountdownFragment extends SherlockFragment {
                     if(currentSecond> mLastSecondTicked)
                     {
                         mSoundManager.doTick();
-                        mLastSecondTicked =currentSecond;
-                    }else if(mLastSecondTicked == 0) mLastSecondTicked = currentSecond;
+                    }
+                    mLastSecondTicked = currentSecond;
 
 
                     setTime(mCurrentTimeMillis);

@@ -8,10 +8,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -20,12 +20,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import com.actionbarsherlock.internal.nineoldandroids.animation.ValueAnimator;
 import com.geekyouup.android.ustopwatch.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: rhyndman
- * Date: 2/21/13
- * Time: 10:32 AM
- */
 public class StopwatchCustomView extends View {
 
     private boolean mIsStopwatch = true; //true=stopwatch, false=countdown
@@ -58,7 +52,7 @@ public class StopwatchCustomView extends View {
     private int mSecsHalfHeight = 0;
     private int mMinsHalfWidth = 0;
     private int mMinsHalfHeight = 0;
-    private static final boolean USE_VSYNC = (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN);
+    //private Paint mBackgroundPaint;
 
     /**
      * Used to figure out elapsed time between frames
@@ -235,7 +229,7 @@ public class StopwatchCustomView extends View {
         clockAnimation.setDuration(duration);
         clockAnimation.start();
 
-        //approach is to go from xMs to yMs using the standard updatePhysics routine and speeding up time.
+        //approach is to go from xMs to yMs
         removeCallbacks(animator);
         post(new Runnable() {
             @Override
@@ -292,7 +286,7 @@ public class StopwatchCustomView extends View {
     private final Runnable animator = new Runnable() {
         @Override
         public void run() {
-            updatePhysics(false);
+            updateWatchState(false);
 
             if(mIsRunning)
             {
@@ -306,7 +300,7 @@ public class StopwatchCustomView extends View {
     /**
      * Update the time
      */
-    private void updatePhysics(boolean appResuming) {
+    private void updateWatchState(boolean appResuming) {
         long now = System.currentTimeMillis();
 
         if (mIsRunning) {
@@ -368,18 +362,29 @@ public class StopwatchCustomView extends View {
         return (mIsRunning);
     }
 
-    public void start() {
+    private void start() {
         mLastTime = System.currentTimeMillis();
         mIsRunning = true;
+
+        //vibrate
+        if(SettingsActivity.isVibrate()){
+            Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(20);
+        }
+
         removeCallbacks(animator);
         post(animator);
     }
 
-    /**
-     * Pauses the physics update & animation.
-     */
-    public void stop() {
+    protected void stop() {
         mIsRunning = false;
+
+        //vibrate
+        if(SettingsActivity.isVibrate()){
+            Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(20);
+        }
+
         removeCallbacks(animator);
     }
 
@@ -421,7 +426,7 @@ public class StopwatchCustomView extends View {
             mIsRunning = (savedState.getBoolean(KEY_STATE + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), false));
             mLastTime = savedState.getLong(KEY_LASTTIME + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), System.currentTimeMillis());
             mDisplayTimeMillis = savedState.getInt(KEY_NOWTIME + (mStopwatchMode ? "" : KEY_COUNTDOWN_SUFFIX), 0);
-            updatePhysics(true);
+            updateWatchState(true);
 
             removeCallbacks(animator);
             if (mIsRunning) post(animator);

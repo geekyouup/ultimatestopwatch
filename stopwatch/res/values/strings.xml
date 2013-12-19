@@ -43,7 +43,7 @@
     <string name="settings_about">ABOUT</string>
     <string name="settings_libraries">LIBRARIES</string>
     <string name="settings_sound_secs">Sound for Seconds</string>
-    <string name="settings_vibrate">Vibrate on Alert</string>
+    <string name="settings_vibrate">Vibrations</string>
     <string name="settings_endless_alert">Extra Long Alert</string>
     <string name="settings_animations">Hand Animations</string>
     <string name="settings_about_text">The Ultimate Stopwatch, developed by Rich \'GeekYouUp\' Hyndman and designed by marie-schweiz.de</string>

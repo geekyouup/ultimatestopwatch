@@ -3,6 +3,7 @@ package com.geekyouup.android.ustopwatch;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.widget.CompoundButton;
 import com.actionbarsherlock.app.SherlockActivity;
 
@@ -10,7 +11,7 @@ public class SettingsActivity extends SherlockActivity {
 
     private static boolean isTicking=false;
     private static boolean isEndlessAlarm = false;
-    private static boolean isVibrate = false;
+    private static boolean isVibrate = true;
     private static boolean isAnimating = true;
     private static final String KEY_TICKING = "key_ticking_on";
     private static final String KEY_ENDLESS_ALARM = "key_endless_alarm_on";
@@ -58,6 +59,13 @@ public class SettingsActivity extends SherlockActivity {
         mSwitchEndlessAlarm.setChecked(isEndlessAlarm);
         mSwitchSoundTicking.setChecked(isTicking);
         mSwitchVibrate.setChecked(isVibrate);
+
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
+                && !((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).hasVibrator()){
+            mSwitchVibrate.setChecked(false);
+            mSwitchVibrate.setEnabled(false);
+        }
+
         mSwitchAnimating.setChecked(isAnimating);
     }
 

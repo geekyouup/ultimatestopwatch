@@ -4,20 +4,19 @@ import java.util.ArrayList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
-import com.actionbarsherlock.app.SherlockListFragment;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
+import android.support.v4.app.ListFragment;
+import android.view.Menu;
+import android.view.MenuItem;
 import com.geekyouup.android.ustopwatch.R;
 import com.geekyouup.android.ustopwatch.UltimateStopwatchActivity;
 
-public class LapTimesFragment extends SherlockListFragment implements LapTimeListener {
+public class LapTimesFragment extends ListFragment implements LapTimeListener {
 
 	private LapTimesBaseAdapter mAdapter;
 	private ArrayList<LapTimeBlock> mLapTimes = new ArrayList<LapTimeBlock>();
@@ -103,7 +102,7 @@ public class LapTimesFragment extends SherlockListFragment implements LapTimeLis
         getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View view, int position, long id) {
-                getSherlockActivity().startActionMode(new ActionMode.Callback(){
+                getActivity().startActionMode(new ActionMode.Callback(){
                     @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {return false;}
                     @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
                     @Override public void onDestroyActionMode(ActionMode mode) {}

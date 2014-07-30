@@ -1,5 +1,6 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,18 +8,19 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
+import android.support.v4.app.FragmentActivity;
 import android.view.*;
 import android.widget.*;
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import android.support.v4.app.Fragment;
 import com.geekyouup.android.ustopwatch.*;
 import android.graphics.Rect;
 
-public class CountdownFragment extends SherlockFragment {
+public class CountdownFragment extends Fragment {
 
 	private StopwatchCustomView mCountdownView;
     private double mCurrentTimeMillis;
@@ -54,7 +56,7 @@ public class CountdownFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mSoundManager = SoundManager.getInstance(getSherlockActivity());
+        mSoundManager = SoundManager.getInstance(getActivity());
 
 		View cdView = inflater.inflate(R.layout.countdown_fragment, null);
         mCountdownView = (StopwatchCustomView) cdView.findViewById(R.id.cdview);
@@ -111,13 +113,13 @@ public class CountdownFragment extends SherlockFragment {
 	public void onResume() {
 		super.onResume();
         // cancel next alarm if there is one, and clear notification bar
-        AlarmUpdater.cancelCountdownAlarm(getSherlockActivity());
+        AlarmUpdater.cancelCountdownAlarm(getActivity());
 
         mCountdownView.setHandler(new Handler() {
             @Override
             public void handleMessage(Message m) {
                 if (m.getData().getBoolean(MSG_REQUEST_ICON_FLASH, false)) {
-                    ((UltimateStopwatchActivity)getSherlockActivity()).flashResetTimeIcon();
+                    ((UltimateStopwatchActivity)getActivity()).flashResetTimeIcon();
                 } else if(m.getData().getBoolean(MSG_COUNTDOWN_COMPLETE, false))
                 {
                     boolean appResuming = m.getData().getBoolean(MSG_APP_RESUMING, false);
@@ -125,8 +127,8 @@ public class CountdownFragment extends SherlockFragment {
                     {
                         mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM, SettingsActivity.isEndlessAlarm());
 
-                        if(SettingsActivity.isVibrate() && getSherlockActivity()!=null){
-                            Vibrator vibrator = (Vibrator) getSherlockActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                        if(SettingsActivity.isVibrate() && getActivity()!=null){
+                            Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                             vibrator.vibrate(1000);
                         }
                     }
@@ -153,7 +155,7 @@ public class CountdownFragment extends SherlockFragment {
             }
         });
 
-		SharedPreferences settings = getSherlockActivity().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
+		SharedPreferences settings = getActivity().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
         mLastHour=settings.getInt(KEY_LAST_HOUR,0);
         mLastMin=settings.getInt(KEY_LAST_MIN,0);
         mLastSec=settings.getInt(KEY_LAST_SEC,0);
@@ -161,7 +163,7 @@ public class CountdownFragment extends SherlockFragment {
         mCountdownView.restoreState(settings);
         mCurrentTimeMillis = mCountdownView.getWatchTime();
 
-        ((UltimateStopwatchActivity) getSherlockActivity()).registerCountdownFragment(this);
+        ((UltimateStopwatchActivity) getActivity()).registerCountdownFragment(this);
 
         Paint paint = new Paint();
         Rect bounds = new Rect();
@@ -181,7 +183,7 @@ public class CountdownFragment extends SherlockFragment {
         if(!isRunning() && mCurrentTimeMillis == 0)
         {
             //flash the choose time button in the action bar
-            ((UltimateStopwatchActivity)getSherlockActivity()).flashResetTimeIcon();
+            ((UltimateStopwatchActivity)getActivity()).flashResetTimeIcon();
         }else
         {
             mCountdownView.startStop();
@@ -215,7 +217,7 @@ public class CountdownFragment extends SherlockFragment {
     {
         if(mTimerText!=null)
         {
-             mTimerText.setText(TimeUtils.createStyledSpannableString(getSherlockActivity(), millis,false));
+             mTimerText.setText(TimeUtils.createStyledSpannableString(getActivity(), millis,false));
         }
     }
 
@@ -254,12 +256,13 @@ public class CountdownFragment extends SherlockFragment {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void requestAPI11TimeDialog() {
         // stop stacking of dialogs
         if (mDialogOnScreen)
             return;
 
-        ContextThemeWrapper wrapper = new ContextThemeWrapper(getSherlockActivity(), android.R.style.Theme_Holo);
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(getActivity(), android.R.style.Theme_Holo);
         final LayoutInflater inflater = (LayoutInflater) wrapper.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View ll = inflater.inflate(R.layout.countdown_picker,null);
 
@@ -308,7 +311,7 @@ public class CountdownFragment extends SherlockFragment {
 
     private void requestPreAPI11TimeDialog()
     {
-        SherlockFragmentActivity activity = getSherlockActivity();
+        FragmentActivity activity = getActivity();
         //stop stacking of dialogs
         if(mDialogOnScreen) return;
 

@@ -1,13 +1,14 @@
 package com.geekyouup.android.ustopwatch;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.CompoundButton;
-import com.actionbarsherlock.app.SherlockActivity;
 
-public class SettingsActivity extends SherlockActivity {
+public class SettingsActivity extends ActionBarActivity {
 
     private static boolean isTicking=false;
     private static boolean isEndlessAlarm = false;
@@ -19,6 +20,7 @@ public class SettingsActivity extends SherlockActivity {
     private static final String KEY_ANIMATING = "key_animations_on";
 
     /** Called when the activity is first created. */
+    @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

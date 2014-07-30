@@ -1,5 +1,6 @@
 package com.geekyouup.android.ustopwatch;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,15 +14,15 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.v4.view.ViewPager;
 
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.widget.ImageView;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.MenuInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import com.geekyouup.android.ustopwatch.fragments.*;
 
-public class UltimateStopwatchActivity extends SherlockFragmentActivity {
+public class UltimateStopwatchActivity extends ActionBarActivity {
 
 	private PowerManager mPowerMan;
 	private PowerManager.WakeLock mWakeLock;
@@ -144,7 +145,7 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
 
-		MenuInflater inflater = getSupportMenuInflater();
+		MenuInflater inflater = getMenuInflater();
 
         final int currentTab = mTabsAdapter.getCurrentTabNum();
         switch(currentTab)
@@ -153,30 +154,35 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
                 inflater.inflate(R.menu.menu_laptimes, menu);
                 break;
             case 2:
+
                 inflater.inflate(R.menu.menu_countdown, menu);
-                if(mFlashResetIcon) //icon hint for set countdown time
-                {
-                    final MenuItem item = menu.findItem(R.id.menu_resettime);
-                    item.setActionView(R.layout.action_bar_settime_animation);
-                    ImageView iv = (ImageView) item.getActionView().findViewById(R.id.settime_imageview);
-                    ((AnimationDrawable) iv.getDrawable()).start();
+                if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                    if (mFlashResetIcon) //icon hint for set countdown time
+                    {
+                        final MenuItem item = menu.findItem(R.id.menu_resettime);
+                        item.setActionView(R.layout.action_bar_settime_animation);
+                        ImageView iv = (ImageView) item.getActionView().findViewById(R.id.settime_imageview);
+                        ((AnimationDrawable) iv.getDrawable()).start();
 
-                    //remove the action provider again after 1sec
-                    new AsyncTask<Void, Integer, Void>(){
-                        @Override
-                        protected Void doInBackground(Void... arg0) {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ignored) {}
-                            return null;
-                        }
+                        //remove the action provider again after 1sec
+                        new AsyncTask<Void, Integer, Void>() {
+                            @Override
+                            protected Void doInBackground(Void... arg0) {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException ignored) {
+                                }
+                                return null;
+                            }
 
-                        @Override
-                        protected void onPostExecute(Void result) {
-                            item.setActionView(null);
-                            mFlashResetIcon=false;
-                        }
-                    }.execute((Void)null);
+                            @SuppressLint("NewApi")
+                            @Override
+                            protected void onPostExecute(Void result) {
+                                item.setActionView(null);
+                                mFlashResetIcon = false;
+                            }
+                        }.execute((Void) null);
+                    }
                 }
                 break;
             case 0:
@@ -243,6 +249,6 @@ public class UltimateStopwatchActivity extends SherlockFragmentActivity {
     public void flashResetTimeIcon()
     {
         mFlashResetIcon=true;
-        invalidateOptionsMenu();
+        supportInvalidateOptionsMenu();
     }
 }

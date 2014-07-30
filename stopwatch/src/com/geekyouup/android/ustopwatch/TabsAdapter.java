@@ -1,17 +1,13 @@
 package com.geekyouup.android.ustopwatch;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import com.actionbarsherlock.app.ActionBar;
+import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-
 import java.util.ArrayList;
 
 /**
@@ -22,7 +18,7 @@ import java.util.ArrayList;
  */
 public class TabsAdapter extends FragmentPagerAdapter
         implements ActionBar.TabListener, ViewPager.OnPageChangeListener {
-    private final SherlockFragmentActivity mActivity;
+    private final ActionBarActivity mActivity;
     private final ActionBar mActionBar;
     private final ViewPager mViewPager;
     private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
@@ -38,7 +34,7 @@ public class TabsAdapter extends FragmentPagerAdapter
         }
     }
 
-    public TabsAdapter(SherlockFragmentActivity activity, ViewPager pager) {
+    public TabsAdapter(ActionBarActivity activity, ViewPager pager) {
         super(activity.getSupportFragmentManager());
         mActivity = activity;
         mActionBar = activity.getSupportActionBar();

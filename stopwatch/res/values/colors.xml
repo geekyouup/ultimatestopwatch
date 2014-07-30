@@ -7,7 +7,9 @@
     <color name="background">#ffffffff</color>
     <color name="stopwatch_background">#fff5f5f5</color>
     <color name="countdown_background">#ff090909</color>
-    <color name="actionbar_title_color">#000000</color>
+    <color name="actionbar_title_color">#b6b6b5</color>
+    <color name="actionbar_background">#262625</color>
+    <color name="counter_background">#262625</color>
     <color name="highlight_color">#82171D</color>
 
     <color name="red_button_bg">#ff82171D</color>

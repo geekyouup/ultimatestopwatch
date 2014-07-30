@@ -27,7 +27,4 @@ public class LapTimeBlock {
         return mLapTimes;
     }
 
-
-
-
 }

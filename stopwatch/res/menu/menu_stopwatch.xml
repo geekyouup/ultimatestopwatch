@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_rateapp"
           android:title="@string/rateapp"
           android:showAsAction="never" />
@@ -9,5 +10,6 @@
     <item android:id="@+id/menu_audiotoggle"
           android:title="Audio Toggle"
           android:showAsAction="always"
-          android:icon="@drawable/audio_on"/>
+          android:icon="@drawable/audio_on"
+          app:showAsAction="always"/>
 </menu>

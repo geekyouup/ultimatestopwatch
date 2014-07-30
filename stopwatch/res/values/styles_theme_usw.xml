@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- File created by the Android Action Bar Style Generator
 
+     Copyright (C) 2011 The Android Open Source Project
      Copyright (C) 2012 readyState Software Ltd
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,99 +19,66 @@
 
 <resources>
 
-    <style name="Theme.theme_usw" parent="@style/Theme.Sherlock.Light">
+    <style name="Theme.Theme_usw" parent="@style/Theme.AppCompat.Light">
         <item name="actionBarItemBackground">@drawable/selectable_background_theme_usw</item>
-        <item name="popupMenuStyle">@style/theme_usw_PopupMenu</item>
-        <item name="dropDownListViewStyle">@style/theme_usw_DropDownListView</item>
-        <item name="actionBarTabStyle">@style/theme_usw_ActionBarTabStyle</item>
-        <item name="actionBarTabTextStyle">@style/theme_usw_ActionBarTabTextStyle</item>
-        <item name="actionDropDownStyle">@style/theme_usw_DropDownNav</item>
-        <item name="actionBarStyle">@style/theme_usw_solid_ActionBar</item>
-
-        <item name="android:actionBarItemBackground">@drawable/selectable_background_theme_usw</item>
-        <item name="android:popupMenuStyle">@style/theme_usw_PopupMenu</item>
-        <item name="android:dropDownListViewStyle">@style/theme_usw_DropDownListView</item>
-        <item name="android:actionBarTabStyle">@style/theme_usw_ActionBarTabStyle</item>
-        <item name="android:actionBarTabTextStyle">@style/theme_usw_ActionBarTabTextStyle</item>
-        <item name="android:actionDropDownStyle">@style/theme_usw_DropDownNav</item>
-        <item name="android:actionBarStyle">@style/theme_usw_solid_ActionBar</item>
-        <item name="android:panelBackground">@drawable/menu_hardkey_panel_theme_usw</item>
-        
-        
+        <item name="popupMenuStyle">@style/PopupMenu.Theme_usw</item>
+        <item name="dropDownListViewStyle">@style/DropDownListView.Theme_usw</item>
+        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Theme_usw</item>
+        <item name="actionDropDownStyle">@style/DropDownNav.Theme_usw</item>
+        <item name="actionBarStyle">@style/ActionBar.Solid.Theme_usw</item>
+        <item name="actionModeBackground">@drawable/cab_background_top_theme_usw</item>
+        <item name="actionModeSplitBackground">@drawable/cab_background_bottom_theme_usw</item>
+        <item name="actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Theme_usw</item>
+        <!--item name="titleTextStyle">@style/CustomTitleColorBar</item-->
+        <!--item name="android:titleTextStyle">@style/CustomTitleColorBar</item-->
     </style>
 
-    <style name="theme_usw_solid_ActionBar" parent="@style/Widget.Sherlock.ActionBar.Solid">
+    <!--style name="CustomTitleColorBar" parent="@style/Widget.AppCompat.ActionBar.Title">
+        <item name="android:textColor">@color/actionbar_title_color</item>
+    </style-->
+
+    <!--style name="ActionBar.Solid.Theme_usw" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="background">@drawable/ab_solid_theme_usw</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_theme_usw</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_theme_usw</item>
-        <item name="progressBarStyle">@style/theme_usw_ProgressBar</item>
+        <item name="progressBarStyle">@style/ProgressBar.Theme_usw</item>
+    </style-->
 
-        <item name="android:background">@drawable/ab_solid_theme_usw</item>
-        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_theme_usw</item>
-        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_theme_usw</item>
-        <item name="android:progressBarStyle">@style/theme_usw_ProgressBar</item>
-
-        <item name="titleTextStyle">@style/CustomTitleColorBar</item>
-        <item name="android:titleTextStyle">@style/CustomTitleColorBar</item>
-    </style>
-
-    <style name="CustomTitleColorBar" parent="@style/TextAppearance.Sherlock.Widget.ActionBar.Title">
-        <item name="android:textColor">@android:color/black</item>
-    </style>
-
-    <style name="theme_usw_transparent_ActionBar" parent="@style/Widget.Sherlock.ActionBar">
+    <style name="ActionBar.Transparent.Theme_usw" parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@drawable/ab_transparent_theme_usw</item>
-        <item name="progressBarStyle">@style/theme_usw_ProgressBar</item>
-        
-        <item name="android:background">@drawable/ab_transparent_theme_usw</item>
-        <item name="android:progressBarStyle">@style/theme_usw_ProgressBar</item>
+        <item name="progressBarStyle">@style/ProgressBar.Theme_usw</item>
     </style>
-	
-    <style name="theme_usw_PopupMenu" parent="@style/Widget.Sherlock.ListPopupWindow">	
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_theme_usw</item>	
+
+    <style name="PopupMenu.Theme_usw" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_theme_usw</item>
     </style>
-	
-    <style name="theme_usw_DropDownListView" parent="@style/Widget.Sherlock.ListView.DropDown">
+
+    <style name="DropDownListView.Theme_usw" parent="@style/Widget.AppCompat.ListView.DropDown">
         <item name="android:listSelector">@drawable/selectable_background_theme_usw</item>
     </style>
 
-    <style name="theme_usw_ActionBarTabStyle" parent="@style/Widget.Sherlock.ActionBar.TabView">
-        <item name="background">@drawable/tab_indicator_ab_theme_usw</item>
-
+    <style name="ActionBarTabStyle.Theme_usw" parent="@style/Widget.AppCompat.ActionBar.TabView">
         <item name="android:background">@drawable/tab_indicator_ab_theme_usw</item>
     </style>
 
-    <style name="theme_usw_ActionBarTabTextStyle" parent="@style/Widget.Sherlock.ActionBar.TabText">
-        <item name="android:textColor">@color/black</item>
-    </style>
-
-    <style name="theme_usw_DropDownNav" parent="@style/Widget.Sherlock.Spinner.DropDown.ActionBar">
-        <item name="background">@drawable/spinner_background_ab_theme_usw</item>
-
+    <style name="DropDownNav.Theme_usw" parent="@style/Widget.AppCompat.Spinner.DropDown.ActionBar">
         <item name="android:background">@drawable/spinner_background_ab_theme_usw</item>
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_theme_usw</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_theme_usw</item>
     </style>
-    
-    <style name="theme_usw_ProgressBar" parent="@style/Widget.Sherlock.ProgressBar.Horizontal">
+
+    <style name="ProgressBar.Theme_usw" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_theme_usw</item>
     </style>
-    
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="Theme.theme_usw.widget" parent="@style/Theme.Sherlock">
-        <item name="popupMenuStyle">@style/theme_usw_PopupMenu</item>
-        <item name="dropDownListViewStyle">@style/theme_usw_DropDownListView</item>
-        
-        <item name="android:popupMenuStyle">@style/theme_usw_PopupMenu</item>
-        <item name="android:dropDownListViewStyle">@style/theme_usw_DropDownListView</item>
-    </style>    
-    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="theme_usw_DropDownItem" parent="@style/Widget.Sherlock.Light.DropDownItem.Spinner">
-        <item name="android:textAppearance">?android:attr/textAppearanceInverse</item>
+
+    <style name="ActionButton.CloseMode.Theme_usw" parent="@style/Widget.AppCompat.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_theme_usw</item>
     </style>
+
     <!-- this style is only referenced in a Light.DarkActionBar based theme -->
-    <style name="theme_usw_SpinnerItem" parent="@style/Widget.Sherlock.TextView.SpinnerItem">
-        <item name="android:textAppearance">?android:attr/textAppearanceInverse</item>
+    <style name="Theme.Theme_usw.Widget" parent="@style/Theme.AppCompat">
+        <item name="popupMenuStyle">@style/PopupMenu.Theme_usw</item>
+        <item name="dropDownListViewStyle">@style/DropDownListView.Theme_usw</item>
     </style>
 
 </resources>

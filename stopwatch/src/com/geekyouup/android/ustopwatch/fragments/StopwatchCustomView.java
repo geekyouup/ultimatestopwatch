@@ -1,5 +1,7 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -8,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +20,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import com.actionbarsherlock.internal.nineoldandroids.animation.ValueAnimator;
 import com.geekyouup.android.ustopwatch.*;
 
 public class StopwatchCustomView extends View {
@@ -62,6 +64,8 @@ public class StopwatchCustomView extends View {
     private Drawable mMinHand;
     //pass back messages to UI thread
     private Handler mHandler;
+
+    public static final boolean IS_HONEYCOMB_OR_ABOVE=android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
 
     public StopwatchCustomView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -179,8 +183,8 @@ public class StopwatchCustomView extends View {
     public void setTime(final int hours, final int minutes, final int seconds, boolean resetting) {
         mIsRunning = false;
         mLastTime = System.currentTimeMillis();
-        if (SettingsActivity.isAnimating()) {
-            animateWatchTo(hours, minutes, seconds, resetting);
+        if (SettingsActivity.isAnimating() && IS_HONEYCOMB_OR_ABOVE) {
+            animateWatchToAPI11(hours, minutes, seconds, resetting);
         } else {
             //to fix bug #42, now the hands reset even when paused
             removeCallbacks(animator);
@@ -198,7 +202,9 @@ public class StopwatchCustomView extends View {
         }
     }
 
-    private void animateWatchTo(final int hours, final int minutes, final int seconds, boolean resetting) {
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void animateWatchToAPI11(final int hours, final int minutes, final int seconds, boolean resetting) {
 
         mSecsAngle = mSecsAngle % twoPI; //avoids more than 1 rotation
         mMinsAngle = mMinsAngle % twoPI; //avoids more than 1 rotation

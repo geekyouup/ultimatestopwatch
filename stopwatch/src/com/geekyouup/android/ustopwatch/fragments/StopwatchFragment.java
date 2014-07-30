@@ -8,7 +8,7 @@ import android.os.Message;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.TextView;
-import com.actionbarsherlock.app.SherlockFragment;
+import android.support.v4.app.Fragment;
 import com.geekyouup.android.ustopwatch.*;
 
 import android.content.Context;
@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-public class StopwatchFragment extends SherlockFragment {
+public class StopwatchFragment extends Fragment {
 
     private StopwatchCustomView mStopwatchView;
     private Button mResetButton;
@@ -38,7 +38,7 @@ public class StopwatchFragment extends SherlockFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mSoundManager = SoundManager.getInstance(getSherlockActivity());
+        mSoundManager = SoundManager.getInstance(getActivity());
 
         View swView = inflater.inflate(R.layout.stopwatch_fragment, null);
         mTimerText = (TextView) swView.findViewById(R.id.counter_text);
@@ -70,7 +70,7 @@ public class StopwatchFragment extends SherlockFragment {
             @Override
             public void onClick(View v) {
                 if (isRunning()) {
-                    LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime(), (UltimateStopwatchActivity) getSherlockActivity());
+                    LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime(), (UltimateStopwatchActivity) getActivity());
                     mSoundManager.playSound(SoundManager.SOUND_LAPTIME);
                 }
             }
@@ -91,7 +91,7 @@ public class StopwatchFragment extends SherlockFragment {
 
         try {
             if (isRunning() && mCurrentTimeMillis > 0)
-                AlarmUpdater.showChronometerNotification(getSherlockActivity(), (long) mCurrentTimeMillis);
+                AlarmUpdater.showChronometerNotification(getActivity(), (long) mCurrentTimeMillis);
         } catch (Exception ignored) {}
 
         mStopwatchView.stop();
@@ -121,12 +121,12 @@ public class StopwatchFragment extends SherlockFragment {
         });
 
 
-        AlarmUpdater.cancelChronometerNotification(getSherlockActivity());
+        AlarmUpdater.cancelChronometerNotification(getActivity());
 
         SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         mRunningState = settings.getBoolean(PREF_IS_RUNNING, false);
         mStopwatchView.restoreState(settings);
-        ((UltimateStopwatchActivity) getSherlockActivity()).registerStopwatchFragment(this);
+        ((UltimateStopwatchActivity) getActivity()).registerStopwatchFragment(this);
 
         //center the timer text in a fixed position, stops wiggling numbers
         Paint paint = new Paint();
@@ -170,7 +170,7 @@ public class StopwatchFragment extends SherlockFragment {
 
     private void setTime(double millis) {
         if (mTimerText != null)
-            mTimerText.setText(TimeUtils.createStyledSpannableString(getSherlockActivity(), millis, true));
+            mTimerText.setText(TimeUtils.createStyledSpannableString(getActivity(), millis, true));
     }
 
     public boolean isRunning() {

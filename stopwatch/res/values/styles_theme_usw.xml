@@ -37,12 +37,12 @@
         <item name="android:textColor">@color/actionbar_title_color</item>
     </style-->
 
-    <!--style name="ActionBar.Solid.Theme_usw" parent="@style/Widget.AppCompat.ActionBar.Solid">
+    <style name="ActionBar.Solid.Theme_usw" parent="@style/Widget.AppCompat.ActionBar.Solid">
         <item name="background">@drawable/ab_solid_theme_usw</item>
         <item name="backgroundStacked">@drawable/ab_stacked_solid_theme_usw</item>
         <item name="backgroundSplit">@drawable/ab_bottom_solid_theme_usw</item>
         <item name="progressBarStyle">@style/ProgressBar.Theme_usw</item>
-    </style-->
+    </style>
 
     <style name="ActionBar.Transparent.Theme_usw" parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@drawable/ab_transparent_theme_usw</item>

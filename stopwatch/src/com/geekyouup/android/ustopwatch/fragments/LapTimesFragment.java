@@ -1,6 +1,8 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
 import java.util.ArrayList;
+
+import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,14 +39,26 @@ public class LapTimesFragment extends ListFragment implements LapTimeListener {
 	@Override
 	public void onStart() {
 		super.onStart();
-        final LapTimesFragment ltf = this;
         ListView listView = getListView();
         listView.setCacheColorHint(Color.WHITE);
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 
+        setupMultiChoiceSelect(listView);
+
+        mAdapter=new LapTimesBaseAdapter(getActivity(), mLapTimes);
+		setListAdapter(mAdapter);
+
+        ((UltimateStopwatchActivity)getActivity()).registerLapTimeFragment(this);
+
+	}
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void setupMultiChoiceSelect(ListView listView)
+    {
         //MultiMode Choice is only available in Honeycomb+
         if(android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
         {
+            final LapTimesFragment ltf = this;
             listView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
 
                 @Override
@@ -91,27 +105,22 @@ public class LapTimesFragment extends ListFragment implements LapTimeListener {
                 public void onDestroyActionMode(android.view.ActionMode actionMode) {
                 }
             });
+
+            //on long touch start the contextual actionbar
+            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> arg0, View view, int position, long id) {
+                    getActivity().startActionMode(new ActionMode.Callback(){
+                        @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {return false;}
+                        @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+                        @Override public void onDestroyActionMode(ActionMode mode) {}
+                        @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {return false;}
+                    });
+                    return true;
+                }
+            });
         }
-
-        mAdapter=new LapTimesBaseAdapter(getActivity(), mLapTimes);
-		setListAdapter(mAdapter);
-
-        ((UltimateStopwatchActivity)getActivity()).registerLapTimeFragment(this);
-
-        //on long touch start the contextual actionbar
-        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View view, int position, long id) {
-                getActivity().startActionMode(new ActionMode.Callback(){
-                    @Override public boolean onCreateActionMode(ActionMode mode, Menu menu) {return false;}
-                    @Override public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
-                    @Override public void onDestroyActionMode(ActionMode mode) {}
-                    @Override public boolean onActionItemClicked(ActionMode mode, MenuItem item) {return false;}
-                });
-                return true;
-            }
-        });
-	}
+    }
 
     @Override
 	public void onPause() {

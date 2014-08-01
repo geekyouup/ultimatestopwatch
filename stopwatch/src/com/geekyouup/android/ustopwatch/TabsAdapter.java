@@ -110,7 +110,7 @@ public class TabsAdapter extends FragmentPagerAdapter
             }
         }
 
-        mActivity.invalidateOptionsMenu();
+        mActivity.supportInvalidateOptionsMenu();
     }
 
     @Override

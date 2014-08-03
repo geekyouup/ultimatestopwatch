@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/countdown_background"
+    android:id="@+id/countdown_layout"
+    android:orientation="vertical">
+
+    <TextView android:id="@+id/time_counter" android:textSize="@dimen/counter_font"
+              android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:text="@string/default_time" android:textColor="@color/white"
+              android:fontFamily="sans-serif-light"
+              android:layout_marginTop="5dp"
+            />
+
+<com.geekyouup.android.ustopwatch.fragments.StopwatchCustomView
+            android:id="@+id/cdview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="45dp"
+            android:layout_below="@id/time_counter"
+            custom:watchType="type_countdown"/>
+
+<LinearLayout android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_alignParentBottom="true"
+               android:divider="@drawable/divider_vertical_blue"
+               android:showDividers="middle"
+               android:background="@color/blue_button_bg"
+               android:orientation="horizontal">
+
+    <Button android:id="@+id/startButton"
+                  android:layout_width="match_parent"
+                  android:layout_height="45dp"
+                  android:background="@drawable/blue_button_bg_color"
+                  android:text="@string/start"
+                  android:textSize="@dimen/bottom_bar_portrait_button_font_size"
+                  android:textColor="@drawable/blue_button_text_color"
+                  android:fontFamily="sans-serif"
+                  android:layout_weight="1"
+                  android:contentDescription="@string/contentdesc_start_cd"
+            />
+
+    <Button android:id="@+id/resetButton"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@drawable/blue_button_bg_color"
+            android:text="@string/reset"
+            android:textSize="@dimen/bottom_bar_portrait_button_font_size"
+            android:textColor="@drawable/blue_button_text_color"
+            android:fontFamily="sans-serif"
+            android:layout_weight="1"
+            android:contentDescription="@string/contentdesc_reset"
+            />
+</LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="horizontal"
+              android:layout_alignParentTop="true"
+              android:background="@color/countdown_background">
+
+    <RelativeLayout android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="1"
+                android:gravity="center"
+                android:background="@color/countdown_background">
+
+    <TextView android:id="@+id/time_counter" android:textSize="@dimen/counter_font"
+              android:layout_width="match_parent" android:layout_height="wrap_content"
+              android:text="@string/default_time" android:textColor="@color/text_grey"
+              android:fontFamily="sans-serif-light"
+              android:background="@color/countdown_background"
+              />
+
+        <LinearLayout
+                android:id="@+id/buttonbar"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/time_counter"
+                android:divider="@drawable/divider_vertical_grey"
+                android:showDividers="middle"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:layout_marginTop="10dp"
+                >
+
+            <Button android:id="@+id/startButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/blue_button_landscape_bg_color"
+                    android:textColor="@drawable/blue_button_landscape_text_color"
+                    android:text="@string/start"
+                    android:textSize="18dp"
+                    android:fontFamily="sans-serif"
+                    />
+
+            <Button android:id="@+id/resetButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/reset"
+                    android:textSize="18dp"
+                    android:background="@drawable/blue_button_landscape_bg_color"
+                    android:textColor="@drawable/blue_button_landscape_text_color"
+                    android:fontFamily="sans-serif"
+                    />
+        </LinearLayout>
+        </RelativeLayout>
+
+    <com.geekyouup.android.ustopwatch.fragments.StopwatchCustomView
+            android:id="@+id/cdview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            custom:watchType="type_countdown"/>
+</LinearLayout>

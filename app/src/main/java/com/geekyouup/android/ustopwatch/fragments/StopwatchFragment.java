@@ -22,7 +22,7 @@ import android.view.ViewGroup;
 
 public class StopwatchFragment extends Fragment {
 
-    private StopwatchCustomView mStopwatchView;
+    private StopwatchCustomVectorView mStopwatchView;
     private Button mResetButton;
     private Button mStartButton;
     private View mSaveLapTimeButton;
@@ -42,7 +42,7 @@ public class StopwatchFragment extends Fragment {
 
         View swView = inflater.inflate(R.layout.stopwatch_fragment, null);
         mTimerText = (TextView) swView.findViewById(R.id.counter_text);
-        mStopwatchView = (StopwatchCustomView) swView.findViewById(R.id.swview);
+        mStopwatchView = (StopwatchCustomVectorView) swView.findViewById(R.id.swview);
 
         mStartButton = (Button) swView.findViewById(R.id.startButton);
         mStartButton.setOnTouchListener(new View.OnTouchListener() {

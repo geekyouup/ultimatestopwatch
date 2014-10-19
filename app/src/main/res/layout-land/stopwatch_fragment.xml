@@ -8,7 +8,7 @@
               android:background="@color/stopwatch_background">
 
 
-<com.geekyouup.android.ustopwatch.fragments.StopwatchCustomView
+<com.geekyouup.android.ustopwatch.fragments.StopwatchCustomVectorView
             android:id="@+id/swview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

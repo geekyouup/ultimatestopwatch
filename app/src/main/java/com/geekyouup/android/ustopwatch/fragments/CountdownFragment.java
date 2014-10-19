@@ -22,7 +22,7 @@ import android.graphics.Rect;
 
 public class CountdownFragment extends Fragment {
 
-	private StopwatchCustomView mCountdownView;
+	private StopwatchCustomVectorView mCountdownView;
     private double mCurrentTimeMillis;
 
     private Button mResetButton;
@@ -59,7 +59,7 @@ public class CountdownFragment extends Fragment {
         mSoundManager = SoundManager.getInstance(getActivity());
 
 		View cdView = inflater.inflate(R.layout.countdown_fragment, null);
-        mCountdownView = (StopwatchCustomView) cdView.findViewById(R.id.cdview);
+        mCountdownView = (StopwatchCustomVectorView) cdView.findViewById(R.id.cdview);
         mTimerText = (TextView) cdView.findViewById(R.id.time_counter);
         mTimerText.setOnTouchListener(new View.OnTouchListener(){
             @Override

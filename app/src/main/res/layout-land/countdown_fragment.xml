@@ -57,7 +57,7 @@
         </LinearLayout>
         </RelativeLayout>
 
-    <com.geekyouup.android.ustopwatch.fragments.StopwatchCustomView
+    <com.geekyouup.android.ustopwatch.fragments.StopwatchCustomVectorView
             android:id="@+id/cdview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

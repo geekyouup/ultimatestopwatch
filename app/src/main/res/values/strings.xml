@@ -42,6 +42,7 @@
     <string name="settings_settings">SETTINGS</string>
     <string name="settings_about">ABOUT</string>
     <string name="settings_libraries">LIBRARIES</string>
+    <string name="settings_laptimer">Enable Lap Times</string>
     <string name="settings_sound_secs">Sound for Seconds</string>
     <string name="settings_vibrate">Vibrations</string>
     <string name="settings_endless_alert">Extra Long Alert</string>

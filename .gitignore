@@ -17,6 +17,9 @@
 bin/
 gen/
 
+# Memory dumps
+captures/
+
 # Ignore gradle files
 .gradle/
 build/

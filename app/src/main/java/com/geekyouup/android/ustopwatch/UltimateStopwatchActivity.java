@@ -1,14 +1,12 @@
 package com.geekyouup.android.ustopwatch;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioManager;
-import android.os.AsyncTask;
+import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.design.widget.TabLayout;
@@ -16,8 +14,6 @@ import android.support.v4.view.ViewPager;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.widget.ImageView;
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -36,8 +32,8 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
     private static final String KEY_JUMP_TO_PAGE = "key_start_page";
     private static final String WAKE_LOCK_KEY = "ustopwatch";
     public static final String PREFS_NAME = "USW_PREFS";
+    private static final int INTENT_SETTINGS = 0;
 
-    //public static final boolean IS_HONEYCOMB_OR_ABOVE=android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB;
     private LapTimesFragment mLapTimesFragment;
     private CountdownFragment mCountdownFragment;
     private StopwatchFragment mStopwatchFragment;
@@ -45,8 +41,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private TabsAdapter mTabsAdapter;
     private Menu mMenu;
-    private boolean mFlashResetIcon = false;
-
+    private boolean isLapTimesEnabled = false;
     /**
      * Called when the activity is first created.
      */
@@ -86,11 +81,17 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
     }
 
     private void setupTabs() {
+
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SettingsActivity.loadSettings(settings);
+
         TabLayout tl = (TabLayout) findViewById(R.id.tablayout);//new TabLayout(this);
 
         mTabsAdapter = new TabsAdapter(this);
         mTabsAdapter.addTab(getString(R.string.stopwatch), StopwatchFragment.class, null);
-        mTabsAdapter.addTab(getString(R.string.laptimes), LapTimesFragment.class, null);
+        if(SettingsActivity.isLaptimerEnabled()) {
+            mTabsAdapter.addTab(getString(R.string.laptimes), LapTimesFragment.class, null);
+        }
         mTabsAdapter.addTab(getString(R.string.countdown), CountdownFragment.class, null);
 
         mViewPager.setAdapter(mTabsAdapter);
@@ -102,7 +103,6 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                Log.d("USW", "Tab Selected " + position);
                 supportInvalidateOptionsMenu();
             }
 
@@ -140,8 +140,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        LapTimeRecorder.getInstance().loadTimes(this);
-
+        //WindowManager.LayoutParams#FLAG_KEEP_SCREEN_ON
         mWakeLock = mPowerMan.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,
                 WAKE_LOCK_KEY);
         mWakeLock.acquire();
@@ -149,6 +148,9 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         mSoundManager.setAudioState(settings.getBoolean(KEY_AUDIO_STATE, true));
         SettingsActivity.loadSettings(settings);
+
+        isLapTimesEnabled = SettingsActivity.isLaptimerEnabled();
+        if(isLapTimesEnabled) LapTimeRecorder.getInstance().loadTimes(this);
 
         if (mMenu != null) {
             MenuItem audioButton = mMenu.findItem(R.id.menu_audiotoggle);
@@ -167,18 +169,30 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
 
         final int currentTab = mViewPager.getCurrentItem();
-        Log.d("USW", "Init Menus for tab " + currentTab);
-        switch (currentTab) {
-            case 1:
-                inflater.inflate(R.menu.menu_laptimes, menu);
-                break;
-            case 2:
-                inflater.inflate(R.menu.menu_countdown, menu);
-                break;
-            case 0:
-            default:
-                inflater.inflate(R.menu.menu_stopwatch, menu);
-                break;
+        if(SettingsActivity.isLaptimerEnabled()){
+            switch (currentTab) {
+                case 1:
+                    inflater.inflate(R.menu.menu_laptimes, menu);
+                    break;
+                case 2:
+                    inflater.inflate(R.menu.menu_countdown, menu);
+                    break;
+                case 0:
+                default:
+                    inflater.inflate(R.menu.menu_stopwatch, menu);
+                    break;
+            }
+        }else
+        {
+            switch (currentTab) {
+                case 1:
+                    inflater.inflate(R.menu.menu_countdown, menu);
+                    break;
+                case 0:
+                default:
+                    inflater.inflate(R.menu.menu_stopwatch, menu);
+                    break;
+            }
         }
 
         //get audio icon and set correct variant
@@ -201,10 +215,20 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
             item.setIcon(mSoundManager.isAudioOn() ? R.drawable.audio_on : R.drawable.audio_off);
         } else if (item.getItemId() == R.id.menu_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, INTENT_SETTINGS);
         }
 
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==INTENT_SETTINGS && isLapTimesEnabled!=SettingsActivity.isLaptimerEnabled()){
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        }
     }
 
     public void registerLapTimeFragment(LapTimesFragment ltf) {

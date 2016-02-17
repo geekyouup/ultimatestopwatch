@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -65,9 +66,8 @@ public class StopwatchCustomVectorView extends View {
     private Paint mMinsCirclePaint;
     private Paint mMinsNumeralsPaint;
     private Paint mWatchhandsPaint;
-    private Paint mLogoTextPaint;
-
-    private Path mLogoTextPath;
+    //private Paint mLogoTextPaint;
+    //private Path mLogoTextPath;
 
     //bitmaps
     private Bitmap mWatchBackground;
@@ -93,7 +93,10 @@ public class StopwatchCustomVectorView extends View {
     private static final float FULL_60TH_NUMERALS_RADIUS = FULL_WATCHFACE_OUTER_RADIUS+FULL_60th_NUMERALS_SIZE-10; //-10 for kerning
     private static final float FULL_100th_NUMERALS_SIZE = 30;
     private static final float FULL_100TH_NUMERALS_RADIUS = FULL_100TH_OUTER_RADIUS-FULL_100th_1_DASH_HEIGHT-FULL_100th_NUMERALS_SIZE;
-    private static final float FULL_NAMEPLATE_Y = 580;
+    private static final float FULL_NAMEPLATE_Y = 600;
+    private static final float FULL_NAMEPLATE_X = 451;
+    private static final float FULL_NAMEPLATE_WIDTH=98;//114;
+    private static final float FULL_NAMEPLATE_HEIGHT=116;//135;
     private static final float FULL_MINS_CENTER_Y=345;
     private static final float FULL_MINS_CIRCLE_RADIUS = 94;
     private static final float FULL_MINS_DASH_HEIGHT=10;
@@ -253,10 +256,10 @@ public class StopwatchCustomVectorView extends View {
         mWatchhandsPaint.setColor(COLOR_HANDS);
         mWatchhandsPaint.setAntiAlias(true);
 
-        mLogoTextPaint = new Paint();
+        /*mLogoTextPaint = new Paint();
         mLogoTextPaint.setColor(COLOR_60TH_NUMERALS);
-        mLogoTextPaint.setTextSize(FULL_100th_NUMERALS_SIZE*mScaleFactor);
-        mLogoTextPaint.setTextAlign(Paint.Align.CENTER);
+        mLogoTextPaint.setTextSize(FULL_100th_NUMERALS_SIZE * mScaleFactor);
+        mLogoTextPaint.setTextAlign(Paint.Align.CENTER);*/
 
         mSecHandVerticies = new float[6];
         mSecHandVerticies [0] = mWatchfaceCenterX-FULL_SECHAND_HALFBASEWIDTH*mScaleFactor;
@@ -276,6 +279,7 @@ public class StopwatchCustomVectorView extends View {
 
         //draw the watchface
         mWatchBackground = Bitmap.createBitmap((int)minDim,(int)minDim,Bitmap.Config.ARGB_8888);
+
         Canvas canvas = new Canvas(mWatchBackground);
         drawWatchface(canvas);
     }
@@ -308,6 +312,7 @@ public class StopwatchCustomVectorView extends View {
         float textMinsRadius = FULL_MINS_NUMERALS_RADIUS*mScaleFactor;
         float textMinsHalfHeigh = FULL_MINS_NUMERALS_SIZE*mScaleFactor/3;
 
+        /*
         float logoTextY = FULL_NAMEPLATE_Y*mScaleFactor;
         mLogoTextPath = new Path();
         mLogoTextPath.moveTo(canvasCenter / 2, logoTextY);
@@ -315,6 +320,17 @@ public class StopwatchCustomVectorView extends View {
 
         //Draw the Ultimate Stopwatch Text on a curve
         canvas.drawTextOnPath("Ultimate Stopwatch",mLogoTextPath,0,0,mLogoTextPaint);
+        */
+
+        //draw the logo
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.outHeight=(int) (FULL_NAMEPLATE_HEIGHT*mScaleFactor);
+        options.outWidth= (int) (FULL_NAMEPLATE_WIDTH*mScaleFactor);
+
+        Bitmap watchLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo, null);
+        watchLogo = Bitmap.createScaledBitmap(watchLogo,(int) (FULL_NAMEPLATE_WIDTH*mScaleFactor),(int) (FULL_NAMEPLATE_HEIGHT*mScaleFactor), true);
+
+        canvas.drawBitmap( watchLogo, FULL_NAMEPLATE_X*mScaleFactor,FULL_NAMEPLATE_Y*mScaleFactor, null);
 
         //draw the minutes
         canvas.drawCircle(canvasCenter,minsCenterY,minsCircleRadius,mMinsCirclePaint);

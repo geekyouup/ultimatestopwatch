@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -493,23 +494,21 @@ public class StopwatchCustomVectorView extends View {
         final float toMinsAngle = shortestAngleToDestination(mMinsAngle, twoPI * ((minutes > 30 ? minutes - 30 : minutes) / 30f + seconds / 1800f), resetting);
 
         float maxAngleChange = Math.max(Math.abs(mSecsAngle - toSecsAngle), Math.abs(toMinsAngle - mMinsAngle));
-        int duration;
-        if (maxAngleChange < Math.PI / 2) duration = 300;
-        else if (maxAngleChange < Math.PI) duration = 750;
-        else duration = 1250;
+        long duration = (long) (maxAngleChange/twoPI * 1000)+250;
 
+        FastOutSlowInInterpolator fosiInterp = new FastOutSlowInInterpolator();
         final ValueAnimator secsAnimation = ValueAnimator.ofFloat(mSecsAngle, toSecsAngle);
-        secsAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        secsAnimation.setInterpolator(fosiInterp);
         secsAnimation.setDuration(duration);
         secsAnimation.start();
 
         final ValueAnimator minsAnimation = ValueAnimator.ofFloat(mMinsAngle, toMinsAngle);
-        minsAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        minsAnimation.setInterpolator(fosiInterp);
         minsAnimation.setDuration(duration);
         minsAnimation.start();
 
         final ValueAnimator clockAnimation = ValueAnimator.ofInt(mDisplayTimeMillis, (hours * 3600000 + minutes * 60000 + seconds * 1000));
-        clockAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        clockAnimation.setInterpolator(fosiInterp);
         clockAnimation.setDuration(duration);
         clockAnimation.start();
 
@@ -618,7 +617,7 @@ public class StopwatchCustomVectorView extends View {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             mTouching = System.currentTimeMillis();
         }else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if(System.currentTimeMillis() - mTouching > 1000) notifyReset();
+            if(System.currentTimeMillis() - mTouching > 750) notifyReset();
             if (mTouching > 0) startStop();
             mTouching = 0L;
         }

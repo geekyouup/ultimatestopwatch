@@ -207,9 +207,6 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_clearlaps) {
             LapTimeRecorder.getInstance().reset(this);
-        } else if (item.getItemId() == R.id.menu_resettime) {
-            //get hold of countdown fragment and call reset, call back to here?
-            if (mCountdownFragment != null) mCountdownFragment.requestTimeDialog();
         } else if (item.getItemId() == R.id.menu_audiotoggle) {
             mSoundManager.setAudioState(!(mSoundManager.isAudioOn()));
             item.setIcon(mSoundManager.isAudioOn() ? R.drawable.audio_on : R.drawable.audio_off);

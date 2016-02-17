@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/stopwatch_background">
@@ -21,53 +21,30 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/counter_text"
         android:layout_marginBottom="45dp"
-        custom:watchType="type_stopwatch" />
+        app:watchType="type_stopwatch" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <android.support.design.widget.FloatingActionButton android:id="@+id/resetfab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="24dp"
+        android:padding="12dp"
+        app:backgroundTint="@color/red_button_bg"
+        android:src="@drawable/ic_restore_white_48dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        />
+
+    <android.support.design.widget.FloatingActionButton android:id="@+id/laptimefab"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/highlight_color"
-        android:divider="@drawable/divider_vertical"
-        android:orientation="horizontal"
-        android:showDividers="middle">
-
-        <Button
-            android:id="@+id/startButton"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_weight="3"
-            android:background="@drawable/red_button_bg_color"
-            android:contentDescription="@string/contentdesc_start_sw"
-            android:fontFamily="sans-serif"
-            android:text="@string/start"
-            android:textColor="@drawable/red_button_text_color"
-            android:textSize="@dimen/bottom_bar_portrait_button_font_size" />
-
-        <Button
-            android:id="@+id/resetButton"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_weight="3"
-            android:background="@drawable/red_button_bg_color"
-            android:contentDescription="@string/contentdesc_reset"
-            android:fontFamily="sans-serif"
-            android:text="@string/reset"
-            android:textColor="@drawable/red_button_text_color"
-            android:textSize="@dimen/bottom_bar_portrait_button_font_size" />
-
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_weight="4"
-            android:background="@drawable/red_button_bg_color"
-            android:contentDescription="@string/contentdesc_laptime"
-            android:fontFamily="sans-serif"
-            android:text="@string/lap"
-            android:textColor="@drawable/red_button_text_color"
-            android:textSize="@dimen/bottom_bar_portrait_button_font_size" />
-
-    </LinearLayout>
+        android:layout_alignParentLeft="true"
+        android:layout_margin="24dp"
+        android:padding="12dp"
+        app:backgroundTint="@color/background"
+        android:src="@drawable/ic_add_circle_outline_black_48dp"
+        android:clickable="true"/>
 
 </RelativeLayout>

@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,9 +25,6 @@ import android.view.ViewGroup;
 public class StopwatchFragment extends Fragment {
 
     private StopwatchCustomVectorView mStopwatchView;
-    private Button mResetButton;
-    private Button mStartButton;
-    private View mSaveLapTimeButton;
     private TextView mTimerText;
     private double mCurrentTimeMillis = 0;
     private SoundManager mSoundManager;
@@ -35,6 +33,8 @@ public class StopwatchFragment extends Fragment {
     private static final String PREFS_NAME = "USW_SWFRAG_PREFS";
     private static final String PREF_IS_RUNNING = "key_stopwatch_is_running";
     private int mLastSecond = 0;
+    private FloatingActionButton mResetFAB;
+    private FloatingActionButton mLaptimeFAB;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,20 +45,8 @@ public class StopwatchFragment extends Fragment {
         mTimerText = (TextView) swView.findViewById(R.id.counter_text);
         mStopwatchView = (StopwatchCustomVectorView) swView.findViewById(R.id.swview);
 
-        mStartButton = (Button) swView.findViewById(R.id.startButton);
-        mStartButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    startStop();
-                    return false;
-                }
-                return false;
-            }
-        });
-
-        mResetButton = (Button) swView.findViewById(R.id.resetButton);
-        mResetButton.setOnClickListener(new View.OnClickListener() {
+        mResetFAB = (FloatingActionButton) swView.findViewById(R.id.resetfab);
+        mResetFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LapTimeRecorder.getInstance().stopwatchReset();
@@ -66,17 +54,21 @@ public class StopwatchFragment extends Fragment {
             }
         });
 
-        mSaveLapTimeButton = swView.findViewById(R.id.saveButton);
-        mSaveLapTimeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isRunning()) {
-                    LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime(), (UltimateStopwatchActivity) getActivity());
-                    mSoundManager.playSound(SoundManager.SOUND_LAPTIME);
+        //show/hide the Lap Time button depending on state
+        mLaptimeFAB = (FloatingActionButton) swView.findViewById(R.id.laptimefab);
+        if(!SettingsActivity.isLaptimerEnabled()) mLaptimeFAB.setVisibility(View.INVISIBLE);
+        else {
+            mLaptimeFAB.setVisibility(View.VISIBLE);
+            mLaptimeFAB.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isRunning()) {
+                        LapTimeRecorder.getInstance().recordLapTime(mStopwatchView.getWatchTime(), (UltimateStopwatchActivity) getActivity());
+                        mSoundManager.playSound(SoundManager.SOUND_LAPTIME);
+                    }
                 }
-            }
-        });
-
+            });
+        }
 
         return swView;
     }
@@ -151,11 +143,11 @@ public class StopwatchFragment extends Fragment {
     private void setUIState() {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
-        mResetButton.setEnabled(mRunningState || (mCurrentTimeMillis != 0));
+       /* mResetButton.setEnabled(mRunningState || (mCurrentTimeMillis != 0));
         mSaveLapTimeButton.setEnabled(mRunningState || (mCurrentTimeMillis != 0));
 
         if (isAdded()) mStartButton.setText(mRunningState ? getString(R.string.pause) : getString(R.string.start));
-
+*/
         if (stateChanged)
             mSoundManager.playSound(mRunningState ? SoundManager.SOUND_START : SoundManager.SOUND_STOP);
     }
@@ -164,9 +156,9 @@ public class StopwatchFragment extends Fragment {
         mStopwatchView.setTime(0,0,0,true);
         mSoundManager.playSound(SoundManager.SOUND_RESET);
 
-        mResetButton.setEnabled(false);
+      /*  mResetButton.setEnabled(false);
         mSaveLapTimeButton.setEnabled(false);
-        mStartButton.setText(getString(R.string.start));
+        mStartButton.setText(getString(R.string.start));*/
     }
 
     private void setTime(double millis) {

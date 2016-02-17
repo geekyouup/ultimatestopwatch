@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:custom="http://schemas.android.com/apk/res-auto"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:orientation="horizontal"
@@ -15,7 +15,7 @@
             android:layout_weight="1"
             android:layout_marginTop="5dp"
             android:layout_below="@id/counter_text"
-            custom:watchType="type_stopwatch"/>
+            app:watchType="type_stopwatch"/>
 
 
     <RelativeLayout android:layout_width="match_parent"
@@ -23,55 +23,36 @@
                   android:layout_weight="1"
                   android:gravity="center">
 
-    <TextView android:id="@+id/counter_text" android:textSize="@dimen/counter_font"
+        <TextView android:id="@+id/counter_text" android:textSize="@dimen/counter_font"
               android:layout_width="match_parent" android:layout_height="wrap_content"
               android:text="@string/default_time" android:textColor="@color/text_grey"
               android:fontFamily="sans-serif-light"
               />
 
-        <LinearLayout
-                android:id="@+id/buttonbar"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:layout_centerInParent="true"
-                android:layout_below="@id/counter_text"
-                android:divider="@drawable/divider_vertical_lightgrey"
-                android:showDividers="middle"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:layout_marginTop="10dp">
+        <android.support.design.widget.FloatingActionButton android:id="@+id/resetfab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:layout_below="@id/counter_text"
+            android:layout_alignParentRight="true"
+            android:layout_margin="24dp"
+            android:padding="12dp"
+            app:backgroundTint="@color/red_button_bg"
+            android:src="@drawable/ic_restore_white_48dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            />
 
-            <Button android:id="@+id/startButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="@drawable/red_button_landscape_bg_color"
-                    android:textColor="@drawable/red_button_landscape_text_color"
-                    android:text="@string/start"
-                    android:textSize="18dp"
-                    android:fontFamily="sans-serif"
-                    />
+        <android.support.design.widget.FloatingActionButton android:id="@+id/laptimefab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/counter_text"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="24dp"
+            android:padding="12dp"
+            app:backgroundTint="@color/background"
+            android:src="@drawable/ic_add_circle_outline_black_48dp"
+            android:clickable="true"/>
 
-            <Button android:id="@+id/resetButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/reset"
-                    android:textSize="18dp"
-                    android:background="@drawable/red_button_landscape_bg_color"
-                    android:textColor="@drawable/red_button_landscape_text_color"
-                    android:fontFamily="sans-serif"
-                    />
-            <Button android:id="@+id/saveButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/lap"
-                    android:textSize="18dp"
-                    android:background="@drawable/red_button_landscape_bg_color"
-                    android:textColor="@drawable/red_button_landscape_text_color"
-                    android:fontFamily="sans-serif"
-                    />
-        </LinearLayout>
+
         </RelativeLayout>
 </LinearLayout>

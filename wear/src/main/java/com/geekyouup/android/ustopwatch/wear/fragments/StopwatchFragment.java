@@ -34,28 +34,6 @@ public class StopwatchFragment extends Fragment {
         View swView = inflater.inflate(R.layout.stopwatch_fragment, null);
         //mTimerText = (TextView) swView.findViewById(R.id.counter_text);
         mStopwatchView = (StopwatchCustomVectorView) swView.findViewById(R.id.swview);
-/*
-        mStartButton = (Button) swView.findViewById(R.id.startButton);
-        mStartButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    startStop();
-                    return false;
-                }
-                return false;
-            }
-        });
-
-        mResetButton = (Button) swView.findViewById(R.id.resetButton);
-        mResetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LapTimeRecorder.getInstance().stopwatchReset();
-                reset();
-            }
-        });*/
-
         return swView;
     }
 
@@ -92,6 +70,8 @@ public class StopwatchFragment extends Fragment {
 
                 } else if (m.getData().getBoolean(WearActivity.MSG_STATE_CHANGE, false)) {
                     setUIState();
+                }else if (m.getData().getBoolean(WearActivity.MSG_RESET, false)) {
+                    reset();
                 }
             }
         });

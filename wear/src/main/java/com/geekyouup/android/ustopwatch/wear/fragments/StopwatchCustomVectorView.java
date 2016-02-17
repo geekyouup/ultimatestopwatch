@@ -1,5 +1,7 @@
 package com.geekyouup.android.ustopwatch.wear.fragments;
 
+import android.animation.ValueAnimator;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -22,6 +24,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.geekyouup.android.ustopwatch.R;
 import com.geekyouup.android.ustopwatch.WearActivity;
@@ -459,9 +462,9 @@ public class StopwatchCustomVectorView extends View {
     public void setTime(final int hours, final int minutes, final int seconds, boolean resetting) {
         mIsRunning = false;
         mLastTime = System.currentTimeMillis();
-        //if (SettingsActivity.isAnimating() && IS_HONEYCOMB_OR_ABOVE) {
-        //    animateWatchToAPI11(hours, minutes, seconds, resetting);
-        //} else {
+        if (IS_HONEYCOMB_OR_ABOVE) {
+            animateWatchToAPI11(hours, minutes, seconds, resetting);
+        } else {
             //to fix bug #42, now the hands reset even when paused
             removeCallbacks(animator);
             post(new Runnable() {
@@ -475,7 +478,64 @@ public class StopwatchCustomVectorView extends View {
                     invalidate();
                 }
             });
-        //}
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void animateWatchToAPI11(final int hours, final int minutes, final int seconds, boolean resetting) {
+
+        mSecsAngle = mSecsAngle % twoPI; //avoids more than 1 rotation
+        mMinsAngle = mMinsAngle % twoPI; //avoids more than 1 rotation
+
+        //forces hands to go back to 0 not forwards
+        final float toSecsAngle = shortestAngleToDestination(mSecsAngle, twoPI * seconds / 60f, resetting);
+        //avoid multiple minutes hands rotates as face is 0-29 not 0-59
+        final float toMinsAngle = shortestAngleToDestination(mMinsAngle, twoPI * ((minutes > 30 ? minutes - 30 : minutes) / 30f + seconds / 1800f), resetting);
+
+        float maxAngleChange = Math.max(Math.abs(mSecsAngle - toSecsAngle), Math.abs(toMinsAngle - mMinsAngle));
+        int duration;
+        if (maxAngleChange < Math.PI / 2) duration = 300;
+        else if (maxAngleChange < Math.PI) duration = 750;
+        else duration = 1250;
+
+        final ValueAnimator secsAnimation = ValueAnimator.ofFloat(mSecsAngle, toSecsAngle);
+        secsAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        secsAnimation.setDuration(duration);
+        secsAnimation.start();
+
+        final ValueAnimator minsAnimation = ValueAnimator.ofFloat(mMinsAngle, toMinsAngle);
+        minsAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        minsAnimation.setDuration(duration);
+        minsAnimation.start();
+
+        final ValueAnimator clockAnimation = ValueAnimator.ofInt(mDisplayTimeMillis, (hours * 3600000 + minutes * 60000 + seconds * 1000));
+        clockAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+        clockAnimation.setDuration(duration);
+        clockAnimation.start();
+
+        //approach is to go from xMs to yMs
+        removeCallbacks(animator);
+        post(new Runnable() {
+            @Override
+            public void run() {
+
+                //during the animation also roll back the clock time to the current hand times.
+                if (secsAnimation.isRunning() || minsAnimation.isRunning() || clockAnimation.isRunning()) {
+                    mSecsAngle = (Float) secsAnimation.getAnimatedValue();
+                    mMinsAngle = (Float) minsAnimation.getAnimatedValue();
+                    broadcastClockTime(mIsStopwatch ? (Integer) clockAnimation.getAnimatedValue() : -(Integer) clockAnimation.getAnimatedValue());
+                    invalidate();
+                    postDelayed(this, 15);
+                } else {
+                    mSecsAngle = toSecsAngle; //ensure the hands have ended at correct position
+                    mMinsAngle = toMinsAngle;
+                    mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
+                    broadcastClockTime(mIsStopwatch ? mDisplayTimeMillis : -mDisplayTimeMillis);
+                    invalidate();
+                }
+
+            }
+        });
     }
 
     //This method returns the angle in rads closest to fromAngle that is equivalent to toAngle
@@ -557,10 +617,8 @@ public class StopwatchCustomVectorView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             mTouching = System.currentTimeMillis();
-        } else if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            if (mTouching > 0 && System.currentTimeMillis() - mTouching > 1000)
-                mTouching = 0L;   //reset touch if user is swiping
-        } else if (event.getAction() == MotionEvent.ACTION_UP) {
+        }else if (event.getAction() == MotionEvent.ACTION_UP) {
+            if(System.currentTimeMillis() - mTouching > 1000) notifyReset();
             if (mTouching > 0) startStop();
             mTouching = 0L;
         }
@@ -660,6 +718,13 @@ public class StopwatchCustomVectorView extends View {
     private void notifyStateChanged() {
         Bundle b = new Bundle();
         b.putBoolean(WearActivity.MSG_STATE_CHANGE, true);
+        sendMessageToHandler(b);
+    }
+
+    private void notifyReset() {
+        stop();
+        Bundle b = new Bundle();
+        b.putBoolean(WearActivity.MSG_RESET, true);
         sendMessageToHandler(b);
     }
 

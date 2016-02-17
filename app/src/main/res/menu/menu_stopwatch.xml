@@ -6,6 +6,6 @@
           app:showAsAction="never" />
     <item android:id="@+id/menu_audiotoggle"
           android:title="Audio Toggle"
-          android:icon="@drawable/audio_on"
+          android:icon="@drawable/ic_volume_black_24dp"
           app:showAsAction="always"/>
 </menu>

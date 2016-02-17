@@ -10,7 +10,6 @@
     <RelativeLayout android:layout_width="match_parent"
                   android:layout_height="match_parent"
                   android:layout_weight="1"
-                android:gravity="center"
                 android:background="@color/countdown_background">
 
     <TextView android:id="@+id/time_counter" android:textSize="@dimen/counter_font"
@@ -18,18 +17,18 @@
               android:text="@string/default_time" android:textColor="@color/text_grey"
               android:fontFamily="sans-serif-light"
               android:background="@color/countdown_background"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="50dp"
               />
 
         <android.support.design.widget.FloatingActionButton android:id="@+id/resetfab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:layout_below="@id/time_counter"
             android:layout_alignParentLeft="true"
-            android:layout_margin="24dp"
-            android:padding="12dp"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="16dp"
             app:backgroundTint="@color/blue_button_bg"
-            android:src="@drawable/ic_set_time_white_48dp"
+            android:src="@drawable/ic_set_countdown_time_24dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
             />
         </RelativeLayout>

@@ -143,11 +143,7 @@ public class StopwatchFragment extends Fragment {
     private void setUIState() {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
-       /* mResetButton.setEnabled(mRunningState || (mCurrentTimeMillis != 0));
-        mSaveLapTimeButton.setEnabled(mRunningState || (mCurrentTimeMillis != 0));
 
-        if (isAdded()) mStartButton.setText(mRunningState ? getString(R.string.pause) : getString(R.string.start));
-*/
         if (stateChanged)
             mSoundManager.playSound(mRunningState ? SoundManager.SOUND_START : SoundManager.SOUND_STOP);
     }
@@ -155,10 +151,6 @@ public class StopwatchFragment extends Fragment {
     public void reset() {
         mStopwatchView.setTime(0,0,0,true);
         mSoundManager.playSound(SoundManager.SOUND_RESET);
-
-      /*  mResetButton.setEnabled(false);
-        mSaveLapTimeButton.setEnabled(false);
-        mStartButton.setText(getString(R.string.start));*/
     }
 
     private void setTime(double millis) {

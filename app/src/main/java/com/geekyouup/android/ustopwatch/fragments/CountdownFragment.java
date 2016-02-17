@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.view.*;
 import android.widget.*;
 import android.support.v4.app.Fragment;
@@ -35,6 +34,7 @@ public class CountdownFragment extends Fragment {
     private int mLastSec = 0;
 
     private boolean mRunningState = false;
+    private boolean isReset = false;
 
     private static final String COUNTDOWN_PREFS = "USW_CDFRAG_PREFS";
     private static final String PREF_IS_RUNNING = "key_countdown_is_running";
@@ -56,7 +56,7 @@ public class CountdownFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        mSoundManager = SoundManager.getInstance(getActivity());
+        mSoundManager = SoundManager.getInstance(getContext());
 
 		View cdView = inflater.inflate(R.layout.countdown_fragment, null);
         mCountdownView = (StopwatchCustomVectorView) cdView.findViewById(R.id.cdview);
@@ -71,16 +71,15 @@ public class CountdownFragment extends Fragment {
 
         //resetFAB has 2 states, if stopped it is a time picker, else it is reset
         mResetFAB = (FloatingActionButton) cdView.findViewById(R.id.resetfab);
-        if(isRunning())
-            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_update_white_48dp));
+        if(!isRunning() && isReset)
+            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_set_countdown_time_24dp));
         else
-            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_set_time_white_48dp));
-
+            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_countdown_reset_24dp));
 
         mResetFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isRunning()) reset();
+                if(!isReset) reset();
                 else requestTimeDialog();
 
                 mSoundManager.stopEndlessAlarm();
@@ -94,7 +93,7 @@ public class CountdownFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
-		SharedPreferences settings = getActivity().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
+		SharedPreferences settings = getContext().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(PREF_IS_RUNNING, mRunningState);
 		mCountdownView.saveState(editor);
@@ -110,7 +109,7 @@ public class CountdownFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
         // cancel next alarm if there is one, and clear notification bar
-        AlarmUpdater.cancelCountdownAlarm(getActivity());
+        AlarmUpdater.cancelCountdownAlarm(getContext());
 
         mCountdownView.setHandler(new Handler() {
             @Override
@@ -125,7 +124,7 @@ public class CountdownFragment extends Fragment {
                         mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM, SettingsActivity.isEndlessAlarm());
 
                         if(SettingsActivity.isVibrate() && getActivity()!=null){
-                            Vibrator vibrator = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                            Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                             vibrator.vibrate(1000);
                         }
                     }
@@ -147,12 +146,13 @@ public class CountdownFragment extends Fragment {
                     setTime(mCurrentTimeMillis);
                 } else if(m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE,false))
                 {
+                    if(isRunning()) isReset=false;
                     setUIState();
                 }
             }
         });
 
-		SharedPreferences settings = getActivity().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
+		SharedPreferences settings = getContext().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
         mLastHour=settings.getInt(KEY_LAST_HOUR,0);
         mLastMin=settings.getInt(KEY_LAST_MIN,0);
         mLastSec=settings.getInt(KEY_LAST_SEC,0);
@@ -176,9 +176,8 @@ public class CountdownFragment extends Fragment {
 	}
 
     public void reset(boolean endlessAlarmSounding) {
-        //mResetButton.setEnabled(endlessAlarmSounding);
-        //mStartButton.setText(isAdded()?getString(R.string.start):"START");
         mCountdownView.setTime(mLastHour, mLastMin, mLastSec, true);
+        isReset=true;
         setUIState();
     }
 
@@ -195,9 +194,8 @@ public class CountdownFragment extends Fragment {
     }
 
     private void setTime(double millis) {
-        if(mTimerText!=null)
-        {
-             mTimerText.setText(TimeUtils.createStyledSpannableString(getActivity(), millis,false));
+        if(mTimerText!=null) {
+             mTimerText.setText(TimeUtils.createStyledSpannableString(getContext(), millis,false));
         }
     }
 
@@ -209,21 +207,13 @@ public class CountdownFragment extends Fragment {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
 
-        if(isRunning())
-            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_update_white_48dp));
-        else
-            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_set_time_white_48dp));
-
-        /*mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || !disableReset);
-        if(!mRunningState && mCurrentTimeMillis==0 && mHoursValue==0 && mMinsValue==0 && mSecsValue==0 && isAdded())
-        {
-            mStartButton.setText(getString(R.string.start));
-        }else
-        {
-            if(isAdded()) mStartButton.setText(mRunningState?getString(R.string.pause):getString(R.string.start));
+        if(!isRunning() && isReset){
+            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_set_countdown_time_24dp));
+        }else {
+            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_countdown_reset_24dp));
             if(stateChanged)
-                    mSoundManager.playSound(isRunning()?SoundManager.SOUND_START:SoundManager.SOUND_STOP);
-        }*/
+                mSoundManager.playSound(isRunning() ? SoundManager.SOUND_START : SoundManager.SOUND_STOP);
+        }
     }
 
     public void requestTimeDialog() {
@@ -247,7 +237,7 @@ public class CountdownFragment extends Fragment {
         if (mDialogOnScreen)
             return;
 
-        ContextThemeWrapper wrapper = new ContextThemeWrapper(getActivity(), R.style.Theme_AppCompat);
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(getContext(), R.style.Theme_AppCompat);
         final LayoutInflater inflater = (LayoutInflater) wrapper.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View ll = inflater.inflate(R.layout.countdown_picker,null);
 
@@ -294,14 +284,14 @@ public class CountdownFragment extends Fragment {
     }
 
     private void requestPreAPI11TimeDialog() {
-        FragmentActivity activity = getActivity();
+        Context context = getContext();
         //stop stacking of dialogs
         if(mDialogOnScreen) return;
 
-        LayoutInflater inflator = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View ll = TimeUtils.createTimeSelectDialogLayout(activity, inflator,mHoursValue,mMinsValue,mSecsValue);
+        LayoutInflater inflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View ll = TimeUtils.createTimeSelectDialogLayout(context, inflator,mHoursValue,mMinsValue,mSecsValue);
 
-        AlertDialog mSelectTime = new AlertDialog.Builder(activity).create();
+        AlertDialog mSelectTime = new AlertDialog.Builder(context).create();
         mSelectTime.setView(ll);
         mSelectTime.setTitle(getString(R.string.timer_title));
         mSelectTime.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.timer_start), new DialogInterface.OnClickListener(){

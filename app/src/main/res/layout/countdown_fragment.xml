@@ -34,7 +34,7 @@
         android:layout_margin="24dp"
         android:padding="12dp"
         app:backgroundTint="@color/blue_button_bg"
-        android:src="@drawable/ic_set_time_white_48dp"
+        android:src="@drawable/ic_set_countdown_time_24dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         />
 

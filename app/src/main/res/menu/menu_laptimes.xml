@@ -10,5 +10,5 @@
     <item android:id="@+id/menu_audiotoggle"
           android:title="Audio Toggle"
           app:showAsAction="always"
-          app:icon="@drawable/audio_on"/>
+          app:icon="@drawable/ic_volume_black_24dp"/>
 </menu>

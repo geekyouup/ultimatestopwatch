@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:orientation="horizontal"
-              android:layout_alignParentTop="true"
               android:background="@color/stopwatch_background">
 
 
@@ -20,37 +19,36 @@
 
     <RelativeLayout android:layout_width="match_parent"
                   android:layout_height="match_parent"
-                  android:layout_weight="1"
-                  android:gravity="center">
+                  android:layout_weight="1">
 
         <TextView android:id="@+id/counter_text" android:textSize="@dimen/counter_font"
               android:layout_width="match_parent" android:layout_height="wrap_content"
               android:text="@string/default_time" android:textColor="@color/text_grey"
               android:fontFamily="sans-serif-light"
+              android:layout_alignParentTop="true"
+            android:layout_marginTop="50dp"
               />
 
         <android.support.design.widget.FloatingActionButton android:id="@+id/resetfab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="4dp"
-            android:layout_below="@id/counter_text"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_margin="24dp"
-            android:padding="12dp"
+            android:layout_margin="16dp"
             app:backgroundTint="@color/red_button_bg"
-            android:src="@drawable/ic_restore_white_48dp"
+            android:src="@drawable/ic_reset_stopwatch_24dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
             />
 
         <android.support.design.widget.FloatingActionButton android:id="@+id/laptimefab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/counter_text"
-            android:layout_alignParentLeft="true"
-            android:layout_margin="24dp"
-            android:padding="12dp"
+            android:layout_alignParentRight="true"
+            android:layout_above="@id/resetfab"
+            android:layout_margin="16dp"
             app:backgroundTint="@color/background"
-            android:src="@drawable/ic_add_circle_outline_black_48dp"
+            android:src="@drawable/ic_add_lap_24dp"
             android:clickable="true"/>
 
 

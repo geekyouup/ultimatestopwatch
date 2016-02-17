@@ -155,7 +155,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
         if (mMenu != null) {
             MenuItem audioButton = mMenu.findItem(R.id.menu_audiotoggle);
             if (audioButton != null)
-                audioButton.setIcon(mSoundManager.isAudioOn() ? R.drawable.audio_on : R.drawable.audio_off);
+                audioButton.setIcon(mSoundManager.isAudioOn() ? R.drawable.ic_volume_black_24dp : R.drawable.ic_volume_mute_24dp);
         }
 
         //jump straight to countdown if it was only item left running
@@ -198,7 +198,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
         //get audio icon and set correct variant
         MenuItem audioButton = menu.findItem(R.id.menu_audiotoggle);
         if (audioButton != null)
-            audioButton.setIcon(mSoundManager.isAudioOn() ? R.drawable.audio_on : R.drawable.audio_off);
+            audioButton.setIcon(mSoundManager.isAudioOn() ? R.drawable.ic_volume_black_24dp : R.drawable.ic_volume_mute_24dp);
         mMenu = menu;
         return true;
     }
@@ -209,7 +209,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
             LapTimeRecorder.getInstance().reset(this);
         } else if (item.getItemId() == R.id.menu_audiotoggle) {
             mSoundManager.setAudioState(!(mSoundManager.isAudioOn()));
-            item.setIcon(mSoundManager.isAudioOn() ? R.drawable.audio_on : R.drawable.audio_off);
+            item.setIcon(mSoundManager.isAudioOn() ? R.drawable.ic_volume_black_24dp : R.drawable.ic_volume_mute_24dp);
         } else if (item.getItemId() == R.id.menu_settings) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivityForResult(intent, INTENT_SETTINGS);

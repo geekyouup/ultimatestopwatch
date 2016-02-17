@@ -1,10 +1,12 @@
-package com.geekyouup.android.ustopwatch.wear;
+package com.geekyouup.android.ustopwatch;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
+
+import com.geekyouup.android.ustopwatch.wear.R;
 
 public class WearActivity extends FragmentActivity {
 
@@ -17,12 +19,5 @@ public class WearActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wear);
-        /*final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
-        stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
-            @Override
-            public void onLayoutInflated(WatchViewStub stub) {
-                mTextView = (TextView) stub.findViewById(R.id.text);
-            }
-        });*/
     }
 }

@@ -12,7 +12,6 @@ import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,9 +65,11 @@ public class StopwatchCustomVectorView extends View {
     private Paint mMinsCirclePaint;
     private Paint mMinsNumeralsPaint;
     private Paint mWatchhandsPaint;
+    private Paint mLogoTextPaint;
+
+    private Path mLogoTextPath;
 
     //bitmaps
-    private Drawable mBmpNameplate;
     private Bitmap mWatchBackground;
     private float mWatchBMPMarginTop=0;
     private float mWatchBMPMarginLeft=0;
@@ -92,7 +93,7 @@ public class StopwatchCustomVectorView extends View {
     private static final float FULL_60TH_NUMERALS_RADIUS = FULL_WATCHFACE_OUTER_RADIUS+FULL_60th_NUMERALS_SIZE-10; //-10 for kerning
     private static final float FULL_100th_NUMERALS_SIZE = 30;
     private static final float FULL_100TH_NUMERALS_RADIUS = FULL_100TH_OUTER_RADIUS-FULL_100th_1_DASH_HEIGHT-FULL_100th_NUMERALS_SIZE;
-    private static final float FULL_NAMEPLATE_Y = 640;
+    private static final float FULL_NAMEPLATE_Y = 580;
     private static final float FULL_MINS_CENTER_Y=345;
     private static final float FULL_MINS_CIRCLE_RADIUS = 94;
     private static final float FULL_MINS_DASH_HEIGHT=10;
@@ -141,7 +142,16 @@ public class StopwatchCustomVectorView extends View {
             a.recycle();
         }
 
+        init();
+
         Resources res = getResources();
+
+        //for Lollipop+ add in the Ripple effect on touch
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setBackground(res.getDrawable(mIsStopwatch ? R.drawable.ripple_touch : R.drawable.ripple_touch_countdown, context.getTheme()));
+            setClickable(true);
+        }
+
         COLOR_BACKGROUND = res.getColor(mIsStopwatch?R.color.stopwatch_background:R.color.countdown_background);
         COLOR_HANDS = mIsStopwatch?Color.BLACK:Color.WHITE;
         COLOR_60TH_NUMERALS = mIsStopwatch?Color.rgb(52,52,52):Color.rgb(238,238,238);
@@ -155,7 +165,7 @@ public class StopwatchCustomVectorView extends View {
 
         COLOR_PATTERN_CIRCLE_SOLID = mIsStopwatch?Color.rgb(52,52,52):Color.rgb(112,112,112);
         COLOR_PATTERN_CIRCLE_DASHED = COLOR_BACKGROUND;
-        init();
+
     }
 
     private void init() {
@@ -194,7 +204,7 @@ public class StopwatchCustomVectorView extends View {
 
         mClockNumeralsPaint = new Paint();
         mClockNumeralsPaint.setColor(COLOR_60TH_NUMERALS);
-        mClockNumeralsPaint.setTextSize(FULL_60th_NUMERALS_SIZE*mScaleFactor);
+        mClockNumeralsPaint.setTextSize(FULL_60th_NUMERALS_SIZE * mScaleFactor);
         mClockNumeralsPaint.setAntiAlias(true);
         mClockNumeralsPaint.setTextAlign(Paint.Align.CENTER);
 
@@ -209,7 +219,7 @@ public class StopwatchCustomVectorView extends View {
         mPatternCircleDashPaint.setStrokeWidth(FULL_PATTERN_CIRCLE_DASH_THICKNESS * mScaleFactor);
         mPatternCircleDashPaint.setStyle(Paint.Style.STROKE);
         mPatternCircleDashPaint.setAntiAlias(true);
-        mPatternCircleDashPaint.setPathEffect(new DashPathEffect(new float[]{25, 35}, 0));
+        mPatternCircleDashPaint.setPathEffect(new DashPathEffect(new float[]{20 * mScaleFactor, 30 * mScaleFactor}, 0));
 
         m100thsPrimaryDashPaint = new Paint();
         m100thsPrimaryDashPaint.setColor(COLOR_100TH_PRI_DASH);
@@ -223,7 +233,7 @@ public class StopwatchCustomVectorView extends View {
 
         m100thsNumeralsPaint = new Paint();
         m100thsNumeralsPaint.setColor(COLOR_100TH_NUMERALS);
-        m100thsNumeralsPaint.setTextSize(FULL_100th_NUMERALS_SIZE*mScaleFactor);
+        m100thsNumeralsPaint.setTextSize(FULL_100th_NUMERALS_SIZE * mScaleFactor);
         m100thsNumeralsPaint.setAntiAlias(true);
         m100thsNumeralsPaint.setTextAlign(Paint.Align.CENTER);
 
@@ -235,13 +245,18 @@ public class StopwatchCustomVectorView extends View {
 
         mMinsNumeralsPaint = new Paint();
         mMinsNumeralsPaint.setColor(COLOR_MINS);
-        mMinsNumeralsPaint.setTextSize(FULL_MINS_NUMERALS_SIZE*mScaleFactor);
+        mMinsNumeralsPaint.setTextSize(FULL_MINS_NUMERALS_SIZE * mScaleFactor);
         mMinsNumeralsPaint.setAntiAlias(true);
         mMinsNumeralsPaint.setTextAlign(Paint.Align.CENTER);
 
         mWatchhandsPaint = new Paint();
         mWatchhandsPaint.setColor(COLOR_HANDS);
         mWatchhandsPaint.setAntiAlias(true);
+
+        mLogoTextPaint = new Paint();
+        mLogoTextPaint.setColor(COLOR_60TH_NUMERALS);
+        mLogoTextPaint.setTextSize(FULL_100th_NUMERALS_SIZE*mScaleFactor);
+        mLogoTextPaint.setTextAlign(Paint.Align.CENTER);
 
         mSecHandVerticies = new float[6];
         mSecHandVerticies [0] = mWatchfaceCenterX-FULL_SECHAND_HALFBASEWIDTH*mScaleFactor;
@@ -258,9 +273,6 @@ public class StopwatchCustomVectorView extends View {
         mMinHandVerticies [3] = mMinsCenterY;
         mMinHandVerticies [4] = mWatchfaceCenterX;
         mMinHandVerticies [5] = mMinsCenterY-(FULL_MINS_CIRCLE_RADIUS)*mScaleFactor;
-
-        //load the USW logo
-        mBmpNameplate = res.getDrawable(mIsStopwatch?R.drawable.nameplate:R.drawable.nameplate_cw);
 
         //draw the watchface
         mWatchBackground = Bitmap.createBitmap((int)minDim,(int)minDim,Bitmap.Config.ARGB_8888);
@@ -296,18 +308,13 @@ public class StopwatchCustomVectorView extends View {
         float textMinsRadius = FULL_MINS_NUMERALS_RADIUS*mScaleFactor;
         float textMinsHalfHeigh = FULL_MINS_NUMERALS_SIZE*mScaleFactor/3;
 
-        canvas.drawColor(COLOR_BACKGROUND);
+        float logoTextY = FULL_NAMEPLATE_Y*mScaleFactor;
+        mLogoTextPath = new Path();
+        mLogoTextPath.moveTo(canvasCenter / 2, logoTextY);
+        mLogoTextPath.cubicTo(canvasCenter / 2, logoTextY, canvasCenter, logoTextY + watchfaceOuterRadius / 2, 3 * canvasCenter / 2, logoTextY);
 
-        //usw name plate
-        if(mBmpNameplate != null) {
-            int plateWidth = (int) (mBmpNameplate.getIntrinsicWidth()*mScaleFactor);
-            int plateHeight = (int) (mBmpNameplate.getIntrinsicHeight()*mScaleFactor);
-            int namePlateX = (int) (canvasWidth-plateWidth)/2;
-            int namePlateY = (int) (FULL_NAMEPLATE_Y*mScaleFactor);
-
-            mBmpNameplate.setBounds(namePlateX,namePlateY,namePlateX+plateWidth,namePlateY+plateHeight);
-            mBmpNameplate.draw(canvas);
-        }
+        //Draw the Ultimate Stopwatch Text on a curve
+        canvas.drawTextOnPath("Ultimate Stopwatch",mLogoTextPath,0,0,mLogoTextPaint);
 
         //draw the minutes
         canvas.drawCircle(canvasCenter,minsCenterY,minsCircleRadius,mMinsCirclePaint);
@@ -582,6 +589,8 @@ public class StopwatchCustomVectorView extends View {
     // Deal with touch events, either start/stop or swipe
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             SoundManager sm = SoundManager.getInstance(getContext());
             if (sm.isEndlessAlarmSounding()) {
@@ -593,7 +602,9 @@ public class StopwatchCustomVectorView extends View {
             if (mTouching > 0 && System.currentTimeMillis() - mTouching > 1000)
                 mTouching = 0L;   //reset touch if user is swiping
         } else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if (mTouching > 0) startStop();
+            if (mTouching > 0) {
+                startStop();
+            }
             mTouching = 0L;
         }
         return true;
@@ -607,7 +618,7 @@ public class StopwatchCustomVectorView extends View {
             start();
             notifyStateChanged();
         } else { //mDisplayTimeMillis == 0
-            notifyIconHint();
+            notifyRequestTimePicker();
             return false;
         }
         return (mIsRunning);
@@ -703,9 +714,9 @@ public class StopwatchCustomVectorView extends View {
         sendMessageToHandler(b);
     }
 
-    private void notifyIconHint() {
+    private void notifyRequestTimePicker() {
         Bundle b = new Bundle();
-        b.putBoolean(CountdownFragment.MSG_REQUEST_ICON_FLASH, true);
+        b.putBoolean(CountdownFragment.MSG_REQUEST_TIME_PICKER, true);
         sendMessageToHandler(b);
     }
 

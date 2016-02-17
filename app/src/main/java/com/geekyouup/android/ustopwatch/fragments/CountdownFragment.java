@@ -42,7 +42,7 @@ public class CountdownFragment extends Fragment {
     private static final String KEY_LAST_MIN = "key_last_min";
     private static final String KEY_LAST_SEC = "key_last_sec";
 
-    public static final String MSG_REQUEST_ICON_FLASH = "msg_flash_icon";
+    public static final String MSG_REQUEST_TIME_PICKER = "msg_request_time_picker";
     public static final String MSG_COUNTDOWN_COMPLETE = "msg_countdown_complete";
     public static final String MSG_APP_RESUMING = "msg_app_resuming";
     private int mLastSecondTicked =0;
@@ -61,11 +61,11 @@ public class CountdownFragment extends Fragment {
 		View cdView = inflater.inflate(R.layout.countdown_fragment, null);
         mCountdownView = (StopwatchCustomVectorView) cdView.findViewById(R.id.cdview);
         mTimerText = (TextView) cdView.findViewById(R.id.time_counter);
-        mTimerText.setOnTouchListener(new View.OnTouchListener(){
+        mTimerText.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent m){
-               if(mCurrentTimeMillis == 0) requestTimeDialog();
-               return true;
+            public boolean onTouch(View v, MotionEvent m) {
+                if (!isRunning()) requestTimeDialog();
+                return true;
             }
         });
 
@@ -118,8 +118,8 @@ public class CountdownFragment extends Fragment {
         mCountdownView.setHandler(new Handler() {
             @Override
             public void handleMessage(Message m) {
-                if (m.getData().getBoolean(MSG_REQUEST_ICON_FLASH, false)) {
-                    ((UltimateStopwatchActivity)getActivity()).flashResetTimeIcon();
+                if (m.getData().getBoolean(MSG_REQUEST_TIME_PICKER, false)) {
+                    requestTimeDialog();
                 } else if(m.getData().getBoolean(MSG_COUNTDOWN_COMPLETE, false))
                 {
                     boolean appResuming = m.getData().getBoolean(MSG_APP_RESUMING, false);
@@ -178,34 +178,27 @@ public class CountdownFragment extends Fragment {
         mTimerText.setPadding((width-text_width)/2,0,0,0);
 	}
 	
-	public void startStop()
-	{
-        if(!isRunning() && mCurrentTimeMillis == 0)
-        {
-            //flash the choose time button in the action bar
-            ((UltimateStopwatchActivity)getActivity()).flashResetTimeIcon();
-        }else
-        {
+	public void startStop() {
+        if(!isRunning() && mCurrentTimeMillis == 0) {
+            requestTimeDialog();
+        }else {
             mCountdownView.startStop();
             mResetButton.setEnabled(true);
             mStartButton.setText(isRunning()?getString(R.string.pause):getString(R.string.start));
         }
 	}
 
-    public void reset(boolean endlessAlarmSounding)
-    {
+    public void reset(boolean endlessAlarmSounding) {
         mResetButton.setEnabled(endlessAlarmSounding);
         mStartButton.setText(isAdded()?getString(R.string.start):"START");
-        mCountdownView.setTime(mLastHour,mLastMin,mLastSec,true);
+        mCountdownView.setTime(mLastHour, mLastMin, mLastSec, true);
     }
 
-	public void reset()
-	{
+	public void reset() {
 		reset(false);
 	}
 
-    public void setTime(int hour, int minute, int seconds, boolean disableReset)
-    {
+    public void setTime(int hour, int minute, int seconds, boolean disableReset) {
         mLastHour=hour;
         mLastMin=minute;
         mLastSec=seconds;
@@ -213,21 +206,18 @@ public class CountdownFragment extends Fragment {
         setUIState(disableReset);
     }
 
-    private void setTime(double millis)
-    {
+    private void setTime(double millis) {
         if(mTimerText!=null)
         {
              mTimerText.setText(TimeUtils.createStyledSpannableString(getActivity(), millis,false));
         }
     }
 
-    public boolean isRunning()
-    {
+    public boolean isRunning() {
         return (mCountdownView!=null && mCountdownView.isRunning());
     }
 
-    private void setUIState(boolean disableReset)
-    {
+    private void setUIState(boolean disableReset) {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
         mResetButton.setEnabled(mSoundManager.isEndlessAlarmSounding() || !disableReset);
@@ -242,8 +232,9 @@ public class CountdownFragment extends Fragment {
         }
     }
 
-    public void requestTimeDialog()
-    {
+    public void requestTimeDialog() {
+        if(mDialogOnScreen) return;
+
         if(mHoursValue==0) mHoursValue=mLastHour;
         if(mMinsValue==0) mMinsValue=mLastMin;
         if(mSecsValue==0) mSecsValue=mLastSec;
@@ -309,8 +300,7 @@ public class CountdownFragment extends Fragment {
         mDialogOnScreen = true;
     }
 
-    private void requestPreAPI11TimeDialog()
-    {
+    private void requestPreAPI11TimeDialog() {
         FragmentActivity activity = getActivity();
         //stop stacking of dialogs
         if(mDialogOnScreen) return;

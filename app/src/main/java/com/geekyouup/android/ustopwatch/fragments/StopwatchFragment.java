@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.os.Message;
 import android.view.MotionEvent;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
 import com.geekyouup.android.ustopwatch.*;

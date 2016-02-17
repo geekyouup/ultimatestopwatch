@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="com.geekyouup.android.ustopwatch" android:versionCode="41"
-	android:versionName="6.1.0" android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="17" />
+	package="com.geekyouup.android.ustopwatch" android:versionCode="42"
+	android:versionName="7.0.0" android:installLocation="auto">
+	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="17" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<uses-permission android:name="android.permission.VIBRATE" />
+
+  <!-- MAPS API PERMISSIONS -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 	<supports-screens android:smallScreens="true"
 		android:normalScreens="true" android:largeScreens="true"
 		android:xlargeScreens="true" />
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
-		android:debuggable="false" android:hardwareAccelerated="true" android:theme="@style/Theme.Theme_usw">
+		android:hardwareAccelerated="true" android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
 		<activity android:name=".UltimateStopwatchActivity"
 			android:label="@string/app_name" android:windowSoftInputMode="adjustNothing" >

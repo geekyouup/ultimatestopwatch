@@ -25,4 +25,7 @@
     <color name="button_text_grey">#999999</color>
 	<color name="pressed_uswred">#CC82171c</color>
     <color name="pressed_theme_usw">#CC3f3f3e</color>
+
+    <color name="ripple_stopwatch">#cccccc</color>
+    <color name="ripple_countdown">#555555</color>
 </resources>

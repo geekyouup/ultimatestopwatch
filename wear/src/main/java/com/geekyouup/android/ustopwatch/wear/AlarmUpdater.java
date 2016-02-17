@@ -1,23 +1,22 @@
 package com.geekyouup.android.ustopwatch.wear;
 
 
-import android.app.AlarmManager;
-import android.app.NotificationManager;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.os.Build;
-import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+
+import com.geekyouup.android.ustopwatch.R;
+import com.geekyouup.android.ustopwatch.WearActivity;
 
 public class AlarmUpdater {
 
     public static final String INTENT_EXTRA_LAUNCH_COUNTDOWN = "launch_countdown";
 
-	public static void cancelCountdownAlarm(Context context)
+	/*public static void cancelCountdownAlarm(Context context)
 	{
 		try
 		{
@@ -46,9 +45,9 @@ public class AlarmUpdater {
         //alarmMan.cancel(piWakeUp);
         
 		if(inMillis != -1) alarmMan.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis()+inMillis, piWakeUp);
-	}
+	}*/
 	
-    public static class UpdateService extends Service {
+    /*public static class UpdateService extends Service {
     	
         @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
@@ -63,7 +62,7 @@ public class AlarmUpdater {
         //show Countdown Complete notification
         private void notifyStatusBar() {
             // The PendingIntent to launch our activity if the user selects this notification
-            Intent launcher = new Intent(this,UltimateStopwatchActivity.class);
+            Intent launcher = new Intent(this,WearActivity.class);
             launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             launcher.putExtra(INTENT_EXTRA_LAUNCH_COUNTDOWN, true);
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
@@ -97,14 +96,14 @@ public class AlarmUpdater {
         
 		@Override
 		public IBinder onBind(Intent arg0) {return null;}
-    }
+    }*/
 
     public static void showChronometerNotification(Context context, long startTime)
     {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
         {
             // The PendingIntent to launch our activity if the user selects this notification
-            Intent launcher = new Intent(context,UltimateStopwatchActivity.class);
+            Intent launcher = new Intent(context,WearActivity.class);
             launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
 

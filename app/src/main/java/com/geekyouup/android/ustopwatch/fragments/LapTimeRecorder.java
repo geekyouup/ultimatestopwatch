@@ -133,7 +133,7 @@ public class LapTimeRecorder {
                 timeNumber++;
             }
 
-            if(!positions.contains(new Integer(timeNumber)))
+            if(!positions.contains(Integer.valueOf(timeNumber)))
             {
                 newLapTimes.add(laptime);
             }

@@ -4,14 +4,11 @@
     <item android:id="@+id/menu_clearlaps"
           android:title="@string/clearlaps"
           app:showAsAction="never"/>
-    <item android:id="@+id/menu_rateapp"
-          android:title="@string/rateapp"
-          app:showAsAction="never" />
     <item android:id="@+id/menu_settings"
           android:title="@string/settings"
           app:showAsAction="never" />
     <item android:id="@+id/menu_audiotoggle"
           android:title="Audio Toggle"
-          android:showAsAction="always"
+          app:showAsAction="always"
           app:icon="@drawable/audio_on"/>
 </menu>

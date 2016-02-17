@@ -14,8 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.geekyouup.android.ustopwatch.wear.R;
-import com.geekyouup.android.ustopwatch.wear.WearActivity;
+import com.geekyouup.android.ustopwatch.wear.AlarmUpdater;
+import com.geekyouup.android.ustopwatch.R;
+import com.geekyouup.android.ustopwatch.WearActivity;
 
 public class StopwatchFragment extends Fragment {
 
@@ -67,11 +68,11 @@ public class StopwatchFragment extends Fragment {
         mStopwatchView.saveState(editor);
         editor.commit();
 
-        /*try {
+        try {
             if (isRunning() && mCurrentTimeMillis > 0)
                 AlarmUpdater.showChronometerNotification(getActivity(), (long) mCurrentTimeMillis);
         } catch (Exception ignored) {}
-        */
+
         mStopwatchView.stop();
     }
 
@@ -87,9 +88,6 @@ public class StopwatchFragment extends Fragment {
                     setTime(mCurrentTimeMillis);
 
                     int currentSecond = (int) mCurrentTimeMillis / 1000;
-                    /*if (currentSecond > mLastSecond) {
-                        mSoundManager.doTick();
-                    }*/
                     mLastSecond = currentSecond;
 
                 } else if (m.getData().getBoolean(WearActivity.MSG_STATE_CHANGE, false)) {
@@ -99,7 +97,7 @@ public class StopwatchFragment extends Fragment {
         });
 
 
-        //AlarmUpdater.cancelChronometerNotification(getActivity());
+        AlarmUpdater.cancelChronometerNotification(getActivity());
 
         SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         mRunningState = settings.getBoolean(PREF_IS_RUNNING, false);

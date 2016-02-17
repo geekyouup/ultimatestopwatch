@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Ultimate Stopwatch</string>
-    <string name="app_name_caps">USW</string>
+    <string name="app_name_caps">Stopwatch</string>
 	<string name="message_stopped">Stopped</string>
 	<string name="timer_title">Set Countdown Timer</string>
 	<string name="timer_start">OK</string>
@@ -26,7 +26,7 @@
 	<string name="times">Times</string>
 	<string name="reset_button">Reset Button</string>
 	<string name="clear_laps">Clear Laps</string>
-    <string name="rateapp">Rate app</string>
+    <string name="info">Info</string>
     <string name="settings">Settings</string>
     <string name="clearlaps">Clear all laps</string>
     <string name="start">START</string>

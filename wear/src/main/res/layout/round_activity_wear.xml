@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-
-
-    <!--com.geekyouup.android.stoptheclock.fragments.StopwatchCustomView
-        android:id="@+id/swview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        custom:watchType="type_stopwatch"/-->
 
     <fragment android:name="com.geekyouup.android.ustopwatch.wear.fragments.StopwatchFragment"
         android:id="@+id/stopwatch_fragment_round"

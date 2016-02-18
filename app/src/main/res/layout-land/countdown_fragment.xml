@@ -28,7 +28,7 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
             app:backgroundTint="@color/blue_button_bg"
-            android:src="@drawable/ic_set_countdown_time_24dp"
+            app:srcCompat="@drawable/ic_set_countdown_time_24dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
             />
         </RelativeLayout>

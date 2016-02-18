@@ -72,9 +72,9 @@ public class CountdownFragment extends Fragment {
         //resetFAB has 2 states, if stopped it is a time picker, else it is reset
         mResetFAB = (FloatingActionButton) cdView.findViewById(R.id.resetfab);
         if(!isRunning() && isReset)
-            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_set_countdown_time_24dp));
+            mResetFAB.setImageResource(R.drawable.ic_set_countdown_time_24dp);
         else
-            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_countdown_reset_24dp));
+            mResetFAB.setImageResource(R.drawable.ic_countdown_reset_24dp);
 
         mResetFAB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,9 +208,9 @@ public class CountdownFragment extends Fragment {
         mRunningState = isRunning();
 
         if(!isRunning() && isReset){
-            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_set_countdown_time_24dp));
+            mResetFAB.setImageResource(R.drawable.ic_set_countdown_time_24dp);
         }else {
-            mResetFAB.setImageDrawable(getResources().getDrawable(R.drawable.ic_countdown_reset_24dp));
+            mResetFAB.setImageResource(R.drawable.ic_countdown_reset_24dp);
             if(stateChanged)
                 mSoundManager.playSound(isRunning() ? SoundManager.SOUND_START : SoundManager.SOUND_STOP);
         }

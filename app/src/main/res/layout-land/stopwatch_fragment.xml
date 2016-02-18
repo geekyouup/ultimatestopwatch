@@ -37,7 +37,7 @@
             android:layout_alignParentRight="true"
             android:layout_margin="16dp"
             app:backgroundTint="@color/red_button_bg"
-            android:src="@drawable/ic_reset_stopwatch_24dp"
+            app:srcCompat="@drawable/ic_reset_stopwatch_24dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
             />
 
@@ -48,7 +48,7 @@
             android:layout_above="@id/resetfab"
             android:layout_margin="16dp"
             app:backgroundTint="@color/background"
-            android:src="@drawable/ic_add_lap_24dp"
+            app:srcCompat="@drawable/ic_add_lap_24dp"
             android:clickable="true"/>
 
 

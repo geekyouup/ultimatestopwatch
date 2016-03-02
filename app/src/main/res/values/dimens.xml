@@ -3,9 +3,5 @@
 	<dimen name="frame_padding">1dip</dimen>
 	<dimen name="small_font">14sp</dimen>
 	<dimen name="med_font">22sp</dimen>
-	<dimen name="large_font">36dp</dimen>
 	<dimen name="counter_font">50sp</dimen>
-	<dimen name="launchtext_size">32sp</dimen>
-	<dimen name="reset_btn_size">72dp</dimen>
-    <dimen name="bottom_bar_portrait_button_font_size">16dp</dimen>
 </resources>

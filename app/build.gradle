@@ -8,15 +8,16 @@ android {
         applicationId "com.geekyouup.android.ustopwatch"
         minSdkVersion 9
         targetSdkVersion 21
-        versionCode 50
+        versionCode 51
         versionName "8.0.0"
         vectorDrawables.useSupportLibrary = true
     }
+
     buildTypes {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }

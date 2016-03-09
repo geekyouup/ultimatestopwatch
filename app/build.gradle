@@ -8,7 +8,7 @@ android {
         applicationId "com.geekyouup.android.ustopwatch"
         minSdkVersion 9
         targetSdkVersion 21
-        versionCode 51
+        versionCode 52
         versionName "8.0.0"
         vectorDrawables.useSupportLibrary = true
     }

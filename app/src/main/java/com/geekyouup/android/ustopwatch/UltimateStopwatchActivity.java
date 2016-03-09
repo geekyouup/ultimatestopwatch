@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
-import android.media.audiofx.BassBoost;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.design.widget.TabLayout;

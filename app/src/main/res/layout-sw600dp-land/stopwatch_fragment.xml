@@ -6,32 +6,18 @@
     android:background="@color/stopwatch_background"
     android:orientation="horizontal">
 
-
-    <com.geekyouup.android.ustopwatch.fragments.StopwatchCustomVectorView
-        android:id="@+id/swview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/counter_text"
-        android:layout_marginTop="5dp"
-        android:layout_weight="1"
-        app:watchType="type_stopwatch" />
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center">
 
-        <TextView
-            android:id="@+id/counter_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:fontFamily="sans-serif-light"
-            android:minLines="2"
-            android:text="@string/default_time"
-            android:textColor="@color/text_grey"
-            android:textSize="@dimen/counter_font"/>
+        <com.geekyouup.android.ustopwatch.fragments.StopwatchCustomVectorView
+            android:id="@+id/swview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            app:watchType="type_stopwatch" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/resetfab"
@@ -49,13 +35,23 @@
             android:id="@+id/laptimefab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@id/resetfab"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:layout_margin="16dp"
             android:clickable="true"
             app:backgroundTint="@color/background"
             app:srcCompat="@drawable/ic_add_lap_24dp" />
 
-
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/counter_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center"
+        android:text="@string/default_time"
+        android:textColor="@color/text_grey"
+        android:textSize="@dimen/counter_font" />
 </LinearLayout>

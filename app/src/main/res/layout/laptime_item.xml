@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="fill_parent"
-android:layout_height="80dp"
-android:orientation="horizontal"
-android:gravity="center"
-android:paddingTop="10dp"
-android:paddingBottom="10dp">
-<TextView
-    android:id="@+id/laptime_text"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical|right"
-    android:textSize="@dimen/med_font"
-    android:textColor="@color/white"
-    android:text="00:00:00.000"
-    android:fontFamily="sans-serif-light"/>
+    android:layout_width="fill_parent"
+    android:layout_height="80dp"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp">
 
-    <ImageView android:id="@+id/laptime_divider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:background="@drawable/laptime_divider_grey"
-            android:layout_marginLeft="22dp"
-            android:layout_marginRight="22dp"/>
-<TextView
-    android:id="@+id/laptime_text2"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical|right"
-    android:textSize="@dimen/med_font"
-    android:textColor="@color/text_grey"
-    android:fontFamily="sans-serif-light"
-    android:text="00:00:00.000"
+    <TextView
+        android:id="@+id/laptime_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center_vertical|right"
+        android:text="00:00:00.000"
+        android:textColor="@color/white"
+        android:textSize="@dimen/med_font" />
+
+    <ImageView
+        android:id="@+id/laptime_divider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="22dp"
+        android:background="@drawable/laptime_divider_grey"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:id="@+id/laptime_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center_vertical|right"
+        android:text="00:00:00.000"
+        android:textColor="@color/text_grey"
+        android:textSize="@dimen/med_font"
 
         />
 </LinearLayout>

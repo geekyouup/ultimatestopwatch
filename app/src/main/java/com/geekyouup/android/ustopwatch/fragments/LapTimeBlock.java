@@ -12,18 +12,15 @@ public class LapTimeBlock {
 
     ArrayList<Double> mLapTimes;
 
-    public LapTimeBlock()
-    {
+    public LapTimeBlock() {
         mLapTimes = new ArrayList<Double>();
     }
 
-    public void addLapTime(Double lapTime)
-    {
+    public void addLapTime(Double lapTime) {
         mLapTimes.add(lapTime);
     }
 
-    public ArrayList<Double> getLapTimes()
-    {
+    public ArrayList<Double> getLapTimes() {
         return mLapTimes;
     }
 

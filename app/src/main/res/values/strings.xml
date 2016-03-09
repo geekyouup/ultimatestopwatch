@@ -2,30 +2,30 @@
 <resources>
     <string name="app_name">Ultimate Stopwatch</string>
     <string name="app_name_caps">Stopwatch</string>
-	<string name="message_stopped">Stopped</string>
-	<string name="timer_title">Set Countdown Timer</string>
-	<string name="timer_start">OK</string>
-	<string name="timer_cancel">Cancel</string>
-	
-	<string name="save_time">save time</string>
-	<string name="splittimes">Split Times</string>
-	<string name="lap_time_recorded">Lap Time Recorded</string>
-	<string name="delete">Delete</string>
-	<string name="stopwatch">STOPWATCH</string>
-	<string name="countdown">COUNTDOWN</string>
+    <string name="message_stopped">Stopped</string>
+    <string name="timer_title">Set Countdown Timer</string>
+    <string name="timer_start">OK</string>
+    <string name="timer_cancel">Cancel</string>
+
+    <string name="save_time">save time</string>
+    <string name="splittimes">Split Times</string>
+    <string name="lap_time_recorded">Lap Time Recorded</string>
+    <string name="delete">Delete</string>
+    <string name="stopwatch">STOPWATCH</string>
+    <string name="countdown">COUNTDOWN</string>
     <string name="laptimes">LAP TIMES</string>
 
     <string name="hours">Hours</string>
-	<string name="mins">Mins</string>
-	<string name="secs">Secs</string>
+    <string name="mins">Mins</string>
+    <string name="secs">Secs</string>
     <string name="play_store_uri">http://play.google.com/store/apps/details?id=com.geekyouup.android.ustopwatch</string>
-	<string name="countdown_complete">Countdown Complete!</string>
-	<string name="default_time">00:00:00.000</string>
-	<string name="_0">0</string>
+    <string name="countdown_complete">Countdown Complete!</string>
+    <string name="default_time">00:00:00.000</string>
+    <string name="_0">0</string>
 
-	<string name="times">Times</string>
-	<string name="reset_button">Reset Button</string>
-	<string name="clear_laps">Clear Laps</string>
+    <string name="times">Times</string>
+    <string name="reset_button">Reset Button</string>
+    <string name="clear_laps">Clear Laps</string>
     <string name="info">Info</string>
     <string name="settings">Settings</string>
     <string name="clearlaps">Clear all laps</string>

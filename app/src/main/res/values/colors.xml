@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="white">#ffffffff</color>
+    <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>
     <color name="text_grey">#ff666666</color>
     <color name="text_light_grey">#ff888888</color>
@@ -23,7 +23,7 @@
     <color name="blue_button_text_disabled">#6EADDF</color>
 
     <color name="button_text_grey">#999999</color>
-	<color name="pressed_uswred">#CC82171c</color>
+    <color name="pressed_uswred">#CC82171c</color>
     <color name="pressed_theme_usw">#CC3f3f3e</color>
 
     <color name="ripple_stopwatch">#cccccc</color>

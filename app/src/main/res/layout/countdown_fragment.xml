@@ -25,16 +25,16 @@
         android:layout_marginBottom="45dp"
         app:watchType="type_countdown" />
 
-    <android.support.design.widget.FloatingActionButton android:id="@+id/resetfab"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/resetfab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        app:backgroundTint="@color/blue_button_bg"
-        app:srcCompat="@drawable/ic_set_countdown_time_24dp"
+        android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
-        />
+        app:backgroundTint="@color/blue_button_bg"
+        app:srcCompat="@drawable/ic_set_countdown_time_24dp" />
 
 </RelativeLayout>

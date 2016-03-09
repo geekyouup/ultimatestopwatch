@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<dimen name="frame_padding">1dip</dimen>
-	<dimen name="small_font">16dp</dimen>
-	<dimen name="med_font">28dp</dimen>
-	<dimen name="counter_font">80sp</dimen>
+    <dimen name="frame_padding">1dip</dimen>
+    <dimen name="small_font">16dp</dimen>
+    <dimen name="med_font">28dp</dimen>
+    <dimen name="counter_font">80sp</dimen>
 </resources>

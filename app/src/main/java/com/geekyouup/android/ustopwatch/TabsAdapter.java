@@ -10,11 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
+
 import java.util.ArrayList;
 
 public class TabsAdapter extends FragmentPagerAdapter {
     private final ArrayList<TabInfo> mTabs = new ArrayList<TabInfo>();
-    private int mCurrentTab = 0;
     private AppCompatActivity mAppCompatActivity;
 
     static final class TabInfo {

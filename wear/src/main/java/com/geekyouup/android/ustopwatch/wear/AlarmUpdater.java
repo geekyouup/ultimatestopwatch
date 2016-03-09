@@ -17,7 +17,7 @@ public class AlarmUpdater {
     public static final String INTENT_EXTRA_LAUNCH_COUNTDOWN = "launch_countdown";
 
 	/*public static void cancelCountdownAlarm(Context context)
-	{
+    {
 		try
 		{
 			AlarmManager alarmMan = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -98,16 +98,14 @@ public class AlarmUpdater {
 		public IBinder onBind(Intent arg0) {return null;}
     }*/
 
-    public static void showChronometerNotification(Context context, long startTime)
-    {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-        {
+    public static void showChronometerNotification(Context context, long startTime) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             // The PendingIntent to launch our activity if the user selects this notification
-            Intent launcher = new Intent(context,WearActivity.class);
+            Intent launcher = new Intent(context, WearActivity.class);
             launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0,launcher,PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, launcher, PendingIntent.FLAG_ONE_SHOT);
 
-            Notification notification =  new NotificationCompat.Builder(context)
+            Notification notification = new NotificationCompat.Builder(context)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setWhen(System.currentTimeMillis() - startTime)
                     .setSmallIcon(R.drawable.notification_icon)
@@ -144,12 +142,11 @@ public class AlarmUpdater {
         }
     }  */
 
-    public static void cancelChronometerNotification(Context context)
-    {
-        try
-        {
+    public static void cancelChronometerNotification(Context context) {
+        try {
             ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.stopwatch_fragment);
             //((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancel(R.layout.countdown_fragment);
-        }catch(Exception ignored){}
+        } catch (Exception ignored) {
+        }
     }
 }

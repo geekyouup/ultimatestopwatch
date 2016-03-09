@@ -4,8 +4,9 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <fragment android:name="com.geekyouup.android.ustopwatch.wear.fragments.StopwatchFragment"
+    <fragment
         android:id="@+id/stopwatch_fragment_round"
+        android:name="com.geekyouup.android.ustopwatch.wear.fragments.StopwatchFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/stopwatch_fragment" />

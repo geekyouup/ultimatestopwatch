@@ -28,6 +28,7 @@
     <style name="TimeTextDarkThemeLight">
         <item name="android:textColor">#ffffff</item>
     </style>
+
     <style name="TimeTextDarkThemeDark">
         <item name="android:textColor">#6f6f6f</item>
     </style>

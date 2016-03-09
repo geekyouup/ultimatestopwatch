@@ -17,12 +17,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.*;
 import android.widget.*;
 import android.support.v4.app.Fragment;
+
 import com.geekyouup.android.ustopwatch.*;
+
 import android.graphics.Rect;
 
 public class CountdownFragment extends Fragment {
 
-	private StopwatchCustomVectorView mCountdownView;
+    private StopwatchCustomVectorView mCountdownView;
     private double mCurrentTimeMillis;
 
     private FloatingActionButton mResetFAB;
@@ -45,7 +47,7 @@ public class CountdownFragment extends Fragment {
     public static final String MSG_REQUEST_TIME_PICKER = "msg_request_time_picker";
     public static final String MSG_COUNTDOWN_COMPLETE = "msg_countdown_complete";
     public static final String MSG_APP_RESUMING = "msg_app_resuming";
-    private int mLastSecondTicked =0;
+    private int mLastSecondTicked = 0;
 
     //countdown picker dialog variables
     private boolean mDialogOnScreen = false;
@@ -53,12 +55,12 @@ public class CountdownFragment extends Fragment {
     private static int mMinsValue = 0;
     private static int mSecsValue = 0;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         mSoundManager = SoundManager.getInstance(getContext());
 
-		View cdView = inflater.inflate(R.layout.countdown_fragment, null);
+        View cdView = inflater.inflate(R.layout.countdown_fragment, null);
         mCountdownView = (StopwatchCustomVectorView) cdView.findViewById(R.id.cdview);
         mTimerText = (TextView) cdView.findViewById(R.id.time_counter);
         mTimerText.setOnTouchListener(new View.OnTouchListener() {
@@ -71,7 +73,7 @@ public class CountdownFragment extends Fragment {
 
         //resetFAB has 2 states, if stopped it is a time picker, else it is reset
         mResetFAB = (FloatingActionButton) cdView.findViewById(R.id.resetfab);
-        if(!isRunning() && isReset)
+        if (!isRunning() && isReset)
             mResetFAB.setImageResource(R.drawable.ic_set_countdown_time_24dp);
         else
             mResetFAB.setImageResource(R.drawable.ic_countdown_reset_24dp);
@@ -79,7 +81,7 @@ public class CountdownFragment extends Fragment {
         mResetFAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isReset) reset();
+                if (!isReset) reset();
                 else requestTimeDialog();
 
                 mSoundManager.stopEndlessAlarm();
@@ -88,26 +90,26 @@ public class CountdownFragment extends Fragment {
         });
 
         return cdView;
-	}
-	
-	@Override
-	public void onPause() {
-		super.onPause();
-		SharedPreferences settings = getContext().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
-		SharedPreferences.Editor editor = settings.edit();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences settings = getContext().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean(PREF_IS_RUNNING, mRunningState);
-		mCountdownView.saveState(editor);
+        mCountdownView.saveState(editor);
         editor.putInt(KEY_LAST_HOUR, mLastHour);
-        editor.putInt(KEY_LAST_MIN,mLastMin);
+        editor.putInt(KEY_LAST_MIN, mLastMin);
         editor.putInt(KEY_LAST_SEC, mLastSec);
-		editor.commit();
+        editor.commit();
 
         mCountdownView.stop();
-	}
-	
-	@Override
-	public void onResume() {
-		super.onResume();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         // cancel next alarm if there is one, and clear notification bar
         AlarmUpdater.cancelCountdownAlarm(getContext());
 
@@ -116,47 +118,43 @@ public class CountdownFragment extends Fragment {
             public void handleMessage(Message m) {
                 if (m.getData().getBoolean(MSG_REQUEST_TIME_PICKER, false)) {
                     requestTimeDialog();
-                } else if(m.getData().getBoolean(MSG_COUNTDOWN_COMPLETE, false))
-                {
+                } else if (m.getData().getBoolean(MSG_COUNTDOWN_COMPLETE, false)) {
                     boolean appResuming = m.getData().getBoolean(MSG_APP_RESUMING, false);
-                    if(!appResuming)
-                    {
+                    if (!appResuming) {
                         mSoundManager.playSound(SoundManager.SOUND_COUNTDOWN_ALARM, SettingsActivity.isEndlessAlarm());
 
-                        if(SettingsActivity.isVibrate() && getActivity()!=null){
+                        if (SettingsActivity.isVibrate() && getActivity() != null) {
                             Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                             vibrator.vibrate(1000);
                         }
                     }
 
                     reset(!appResuming && SettingsActivity.isEndlessAlarm());
-                } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME,false)) {
+                } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_UPDATE_COUNTER_TIME, false)) {
                     mCurrentTimeMillis = m.getData().getDouble(
                             UltimateStopwatchActivity.MSG_NEW_TIME_DOUBLE);
 
                     //If we've crossed into a new second then make the tick sound
-                    int currentSecond = (int) mCurrentTimeMillis/1000;
-                    if(currentSecond> mLastSecondTicked)
-                    {
+                    int currentSecond = (int) mCurrentTimeMillis / 1000;
+                    if (currentSecond > mLastSecondTicked) {
                         mSoundManager.doTick();
                     }
                     mLastSecondTicked = currentSecond;
 
 
                     setTime(mCurrentTimeMillis);
-                } else if(m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE,false))
-                {
-                    if(isRunning()) isReset=false;
+                } else if (m.getData().getBoolean(UltimateStopwatchActivity.MSG_STATE_CHANGE, false)) {
+                    if (isRunning()) isReset = false;
                     setUIState();
                 }
             }
         });
 
-		SharedPreferences settings = getContext().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
-        mLastHour=settings.getInt(KEY_LAST_HOUR,0);
-        mLastMin=settings.getInt(KEY_LAST_MIN,0);
-        mLastSec=settings.getInt(KEY_LAST_SEC,0);
-        mRunningState = settings.getBoolean(PREF_IS_RUNNING,false);
+        SharedPreferences settings = getContext().getSharedPreferences(COUNTDOWN_PREFS, Context.MODE_PRIVATE);
+        mLastHour = settings.getInt(KEY_LAST_HOUR, 0);
+        mLastMin = settings.getInt(KEY_LAST_MIN, 0);
+        mLastSec = settings.getInt(KEY_LAST_SEC, 0);
+        mRunningState = settings.getBoolean(PREF_IS_RUNNING, false);
         mCountdownView.restoreState(settings);
         mCurrentTimeMillis = mCountdownView.getWatchTime();
 
@@ -168,65 +166,64 @@ public class CountdownFragment extends Fragment {
         paint.setTextSize(getResources().getDimension(R.dimen.counter_font));// have this the same as your text size
         String text = "-00:00:00.000";
         paint.getTextBounds(text, 0, text.length(), bounds);
-        int text_width =  bounds.width();
+        int text_width = bounds.width();
         int width = getResources().getDisplayMetrics().widthPixels;
-        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_LANDSCAPE) width = width/2;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            width = width / 2;
 
-        mTimerText.setPadding((width-text_width)/2,0,0,0);
-	}
+        mTimerText.setPadding((width - text_width) / 2, 0, 0, 0);
+    }
 
     public void reset(boolean endlessAlarmSounding) {
         mCountdownView.setTime(mLastHour, mLastMin, mLastSec, true);
-        isReset=true;
+        isReset = true;
         setUIState();
     }
 
-	public void reset() {
-		reset(false);
-	}
+    public void reset() {
+        reset(false);
+    }
 
     public void setTime(int hour, int minute, int seconds) {
-        mLastHour=hour;
-        mLastMin=minute;
-        mLastSec=seconds;
-        mCountdownView.setTime(hour, minute, seconds,false);
+        mLastHour = hour;
+        mLastMin = minute;
+        mLastSec = seconds;
+        mCountdownView.setTime(hour, minute, seconds, false);
         setUIState();
     }
 
     private void setTime(double millis) {
-        if(mTimerText!=null) {
-             mTimerText.setText(TimeUtils.createStyledSpannableString(getContext(), millis,false));
+        if (mTimerText != null) {
+            mTimerText.setText(TimeUtils.createStyledSpannableString(getContext(), millis, false));
         }
     }
 
     public boolean isRunning() {
-        return (mCountdownView!=null && mCountdownView.isRunning());
+        return (mCountdownView != null && mCountdownView.isRunning());
     }
 
     private void setUIState() {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
 
-        if(!isRunning() && isReset){
+        if (!isRunning() && isReset) {
             mResetFAB.setImageResource(R.drawable.ic_set_countdown_time_24dp);
-        }else {
+        } else {
             mResetFAB.setImageResource(R.drawable.ic_countdown_reset_24dp);
-            if(stateChanged)
+            if (stateChanged)
                 mSoundManager.playSound(isRunning() ? SoundManager.SOUND_START : SoundManager.SOUND_STOP);
         }
     }
 
     public void requestTimeDialog() {
-        if(mDialogOnScreen) return;
+        if (mDialogOnScreen) return;
 
-        if(mHoursValue==0) mHoursValue=mLastHour;
-        if(mMinsValue==0) mMinsValue=mLastMin;
-        if(mSecsValue==0) mSecsValue=mLastSec;
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB)
-        {
+        if (mHoursValue == 0) mHoursValue = mLastHour;
+        if (mMinsValue == 0) mMinsValue = mLastMin;
+        if (mSecsValue == 0) mSecsValue = mLastSec;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
             requestAPI11TimeDialog();
-        }else
-        {
+        } else {
             requestPreAPI11TimeDialog();
         }
     }
@@ -239,7 +236,7 @@ public class CountdownFragment extends Fragment {
 
         ContextThemeWrapper wrapper = new ContextThemeWrapper(getContext(), R.style.Theme_AppCompat);
         final LayoutInflater inflater = (LayoutInflater) wrapper.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View ll = inflater.inflate(R.layout.countdown_picker,null);
+        View ll = inflater.inflate(R.layout.countdown_picker, null);
 
         final NumberPicker npHours = (NumberPicker) ll.findViewById(R.id.numberPickerHours);
         npHours.setMaxValue(99);
@@ -266,7 +263,7 @@ public class CountdownFragment extends Fragment {
                         setTime(mHoursValue, mMinsValue, mSecsValue);
                     }
                 });
-        mSelectTime.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.timer_cancel),
+        mSelectTime.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.timer_cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mDialogOnScreen = false;
@@ -286,26 +283,28 @@ public class CountdownFragment extends Fragment {
     private void requestPreAPI11TimeDialog() {
         Context context = getContext();
         //stop stacking of dialogs
-        if(mDialogOnScreen) return;
+        if (mDialogOnScreen) return;
 
         LayoutInflater inflator = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View ll = TimeUtils.createTimeSelectDialogLayout(context, inflator,mHoursValue,mMinsValue,mSecsValue);
+        View ll = TimeUtils.createTimeSelectDialogLayout(context, inflator, mHoursValue, mMinsValue, mSecsValue);
 
         AlertDialog mSelectTime = new AlertDialog.Builder(context).create();
         mSelectTime.setView(ll);
         mSelectTime.setTitle(getString(R.string.timer_title));
-        mSelectTime.setButton(AlertDialog.BUTTON_POSITIVE,getString(R.string.timer_start), new DialogInterface.OnClickListener(){
+        mSelectTime.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.timer_start), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                mDialogOnScreen=false;
+                mDialogOnScreen = false;
                 mHoursValue = TimeUtils.getDlgHours();
                 mMinsValue = TimeUtils.getDlgMins();
                 mSecsValue = TimeUtils.getDlgSecs();
                 setTime(mHoursValue, mMinsValue, mSecsValue);
-            }});
-        mSelectTime.setButton(AlertDialog.BUTTON_NEGATIVE,getString(R.string.timer_cancel), new DialogInterface.OnClickListener(){
+            }
+        });
+        mSelectTime.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.timer_cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                mDialogOnScreen=false;
-            }});
+                mDialogOnScreen = false;
+            }
+        });
 
         mSelectTime.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -315,7 +314,7 @@ public class CountdownFragment extends Fragment {
         });
         mSelectTime.show();
 
-        mDialogOnScreen=true;
+        mDialogOnScreen = true;
     }
 
 }

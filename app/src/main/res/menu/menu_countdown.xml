@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/menu_settings"
-          android:title="@string/settings"
-          app:showAsAction="never" />
-    <item android:id="@+id/menu_audiotoggle"
-          android:title="Audio Toggle"
-          app:showAsAction="ifRoom"
-          app:icon="@drawable/ic_volume_black_24dp"/>
+    <item
+        android:id="@+id/menu_settings"
+        android:title="@string/settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menu_audiotoggle"
+        android:title="Audio Toggle"
+        app:icon="@drawable/ic_volume_black_24dp"
+        app:showAsAction="ifRoom" />
 </menu>

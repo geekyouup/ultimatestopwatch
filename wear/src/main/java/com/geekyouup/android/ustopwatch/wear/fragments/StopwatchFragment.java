@@ -49,7 +49,8 @@ public class StopwatchFragment extends Fragment {
         try {
             if (isRunning() && mCurrentTimeMillis > 0)
                 AlarmUpdater.showChronometerNotification(getActivity(), (long) mCurrentTimeMillis);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         mStopwatchView.stop();
     }
@@ -70,7 +71,7 @@ public class StopwatchFragment extends Fragment {
 
                 } else if (m.getData().getBoolean(WearActivity.MSG_STATE_CHANGE, false)) {
                     setUIState();
-                }else if (m.getData().getBoolean(WearActivity.MSG_RESET, false)) {
+                } else if (m.getData().getBoolean(WearActivity.MSG_RESET, false)) {
                     reset();
                 }
             }
@@ -82,7 +83,7 @@ public class StopwatchFragment extends Fragment {
         SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         mRunningState = settings.getBoolean(PREF_IS_RUNNING, false);
         mStopwatchView.restoreState(settings);
-       // ((UltimateStopwatchActivity) getActivity()).registerStopwatchFragment(this);
+        // ((UltimateStopwatchActivity) getActivity()).registerStopwatchFragment(this);
 
         //center the timer text in a fixed position, stops wiggling numbers
         Paint paint = new Paint();
@@ -93,9 +94,10 @@ public class StopwatchFragment extends Fragment {
         paint.getTextBounds(counterText, 0, counterText.length(), bounds);
         int text_width = bounds.width();
         int width = getResources().getDisplayMetrics().widthPixels;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) width = width / 2;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            width = width / 2;
 
-       // mTimerText.setPadding((width - text_width) / 2, 0, 0, 0);
+        // mTimerText.setPadding((width - text_width) / 2, 0, 0, 0);
     }
 
     public void startStop() {
@@ -106,18 +108,18 @@ public class StopwatchFragment extends Fragment {
     private void setUIState() {
         boolean stateChanged = (mRunningState != isRunning());
         mRunningState = isRunning();
-       // mResetButton.setEnabled(mRunningState || (mCurrentTimeMillis != 0));
+        // mResetButton.setEnabled(mRunningState || (mCurrentTimeMillis != 0));
         //mSaveLapTimeButton.setEnabled(mRunningState || (mCurrentTimeMillis != 0));
 
-       // if (isAdded()) mStartButton.setText(mRunningState ? getString(R.string.pause) : getString(R.string.start));
-  }
+        // if (isAdded()) mStartButton.setText(mRunningState ? getString(R.string.pause) : getString(R.string.start));
+    }
 
     public void reset() {
         mStopwatchView.setTime(0, 0, 0, true);
 
-       // mResetButton.setEnabled(false);
+        // mResetButton.setEnabled(false);
         //mSaveLapTimeButton.setEnabled(false);
-       // mStartButton.setText(getString(R.string.start));
+        // mStartButton.setText(getString(R.string.start));
     }
 
     private void setTime(final double millis) {

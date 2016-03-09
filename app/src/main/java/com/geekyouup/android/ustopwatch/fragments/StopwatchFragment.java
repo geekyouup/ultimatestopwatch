@@ -6,11 +6,9 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
-import android.view.MotionEvent;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
+
 import com.geekyouup.android.ustopwatch.*;
 
 import android.content.Context;
@@ -56,7 +54,7 @@ public class StopwatchFragment extends Fragment {
 
         //show/hide the Lap Time button depending on state
         mLaptimeFAB = (FloatingActionButton) swView.findViewById(R.id.laptimefab);
-        if(!SettingsActivity.isLaptimerEnabled()) mLaptimeFAB.setVisibility(View.INVISIBLE);
+        if (!SettingsActivity.isLaptimerEnabled()) mLaptimeFAB.setVisibility(View.INVISIBLE);
         else {
             mLaptimeFAB.setVisibility(View.VISIBLE);
             mLaptimeFAB.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +83,8 @@ public class StopwatchFragment extends Fragment {
         try {
             if (isRunning() && mCurrentTimeMillis > 0)
                 AlarmUpdater.showChronometerNotification(getActivity(), (long) mCurrentTimeMillis);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         mStopwatchView.stop();
     }
@@ -130,7 +129,8 @@ public class StopwatchFragment extends Fragment {
         paint.getTextBounds(counterText, 0, counterText.length(), bounds);
         int text_width = bounds.width();
         int width = getResources().getDisplayMetrics().widthPixels;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) width = width / 2;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            width = width / 2;
 
         mTimerText.setPadding((width - text_width) / 2, 0, 0, 0);
     }
@@ -149,7 +149,7 @@ public class StopwatchFragment extends Fragment {
     }
 
     public void reset() {
-        mStopwatchView.setTime(0,0,0,true);
+        mStopwatchView.setTime(0, 0, 0, true);
         mSoundManager.playSound(SoundManager.SOUND_RESET);
     }
 

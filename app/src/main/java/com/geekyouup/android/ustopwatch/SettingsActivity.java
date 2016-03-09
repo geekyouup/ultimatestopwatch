@@ -11,8 +11,8 @@ import android.widget.CompoundButton;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private static boolean isTicking=false;
-    private static boolean isLaptimerEnabled=false;
+    private static boolean isTicking = false;
+    private static boolean isLaptimerEnabled = false;
     private static boolean isEndlessAlarm = false;
     private static boolean isVibrate = true;
     private static boolean isAnimating = true;
@@ -22,7 +22,9 @@ public class SettingsActivity extends AppCompatActivity {
     private static final String KEY_ANIMATING = "key_animations_on";
     private static final String KEY_LAP_TIMER = "key_laptimer_on";
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,8 +77,8 @@ public class SettingsActivity extends AppCompatActivity {
         mSwitchSoundTicking.setChecked(isTicking);
         mSwitchVibrate.setChecked(isVibrate);
 
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
-                && !((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).hasVibrator()){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
+                && !((Vibrator) getSystemService(Context.VIBRATOR_SERVICE)).hasVibrator()) {
             mSwitchVibrate.setChecked(false);
             mSwitchVibrate.setEnabled(false);
         }
@@ -99,13 +101,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     //Called from parent Activity to ensure all settings are always loaded
-    public static void loadSettings(SharedPreferences prefs)
-    {
+    public static void loadSettings(SharedPreferences prefs) {
         isLaptimerEnabled = prefs.getBoolean(KEY_LAP_TIMER, false);
-        isTicking = prefs.getBoolean(KEY_TICKING,false);
-        isEndlessAlarm = prefs.getBoolean(KEY_ENDLESS_ALARM,false);
-        isVibrate = prefs.getBoolean(KEY_VIBRATE,false);
-        isAnimating = prefs.getBoolean(KEY_ANIMATING,true);
+        isTicking = prefs.getBoolean(KEY_TICKING, false);
+        isEndlessAlarm = prefs.getBoolean(KEY_ENDLESS_ALARM, false);
+        isVibrate = prefs.getBoolean(KEY_VIBRATE, false);
+        isAnimating = prefs.getBoolean(KEY_ANIMATING, true);
     }
 
     public static boolean isTicking() {
@@ -120,11 +121,11 @@ public class SettingsActivity extends AppCompatActivity {
         return isVibrate;
     }
 
-    public static boolean isAnimating(){
+    public static boolean isAnimating() {
         return isAnimating;
     }
 
-    public static boolean isLaptimerEnabled(){
+    public static boolean isLaptimerEnabled() {
         return isLaptimerEnabled;
     }
 

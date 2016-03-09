@@ -23,7 +23,6 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.geekyouup.android.ustopwatch.AlarmUpdater;
 import com.geekyouup.android.ustopwatch.R;
@@ -72,8 +71,8 @@ public class StopwatchCustomVectorView extends View {
 
     //bitmaps
     private Bitmap mWatchBackground;
-    private float mWatchBMPMarginTop=0;
-    private float mWatchBMPMarginLeft=0;
+    private float mWatchBMPMarginTop = 0;
+    private float mWatchBMPMarginLeft = 0;
 
     //metrics
     private static final int FULL_CANVAS_SIZE = 1000; //basing the custom view on a 1000x1000px canvas and scaling as needed
@@ -83,25 +82,25 @@ public class StopwatchCustomVectorView extends View {
     private static final float FULL_60TH_1_DASH_HEIGHT = 50;
     private static final float FULL_60TH_2_DASH_HEIGHT = 50;
     private static final float FULL_60TH_3_DASH_HEIGHT = 40;
-    private static final float FULL_PATTERN_CIRCLE_RADIUS =FULL_WATCHFACE_OUTER_RADIUS-FULL_60TH_1_DASH_HEIGHT-18;
+    private static final float FULL_PATTERN_CIRCLE_RADIUS = FULL_WATCHFACE_OUTER_RADIUS - FULL_60TH_1_DASH_HEIGHT - 18;
     private static final float FULL_PATTERN_CIRCLE_SOLID_THICKNESS = 18;
     private static final float FULL_PATTERN_CIRCLE_DASH_THICKNESS = 12;
-    private static final float FULL_100TH_OUTER_RADIUS = FULL_PATTERN_CIRCLE_RADIUS-30;
-    private static final float FULL_100TH_OUTER_DIAMETER = FULL_100TH_OUTER_RADIUS*2;
+    private static final float FULL_100TH_OUTER_RADIUS = FULL_PATTERN_CIRCLE_RADIUS - 30;
+    private static final float FULL_100TH_OUTER_DIAMETER = FULL_100TH_OUTER_RADIUS * 2;
     private static final float FULL_100th_1_DASH_HEIGHT = 40;
     private static final float FULL_100th_2_DASH_HEIGHT = 20;
     private static final float FULL_60th_NUMERALS_SIZE = 50;
-    private static final float FULL_60TH_NUMERALS_RADIUS = FULL_WATCHFACE_OUTER_RADIUS+FULL_60th_NUMERALS_SIZE-10; //-10 for kerning
+    private static final float FULL_60TH_NUMERALS_RADIUS = FULL_WATCHFACE_OUTER_RADIUS + FULL_60th_NUMERALS_SIZE - 10; //-10 for kerning
     private static final float FULL_100th_NUMERALS_SIZE = 30;
-    private static final float FULL_100TH_NUMERALS_RADIUS = FULL_100TH_OUTER_RADIUS-FULL_100th_1_DASH_HEIGHT-FULL_100th_NUMERALS_SIZE;
+    private static final float FULL_100TH_NUMERALS_RADIUS = FULL_100TH_OUTER_RADIUS - FULL_100th_1_DASH_HEIGHT - FULL_100th_NUMERALS_SIZE;
     private static final float FULL_NAMEPLATE_Y = 600;
     private static final float FULL_NAMEPLATE_X = 451;
-    private static final float FULL_NAMEPLATE_WIDTH=98;//114;
-    private static final float FULL_NAMEPLATE_HEIGHT=116;//135;
-    private static final float FULL_MINS_CENTER_Y=345;
+    private static final float FULL_NAMEPLATE_WIDTH = 98;//114;
+    private static final float FULL_NAMEPLATE_HEIGHT = 116;//135;
+    private static final float FULL_MINS_CENTER_Y = 345;
     private static final float FULL_MINS_CIRCLE_RADIUS = 94;
-    private static final float FULL_MINS_DASH_HEIGHT=10;
-    private static final float FULL_MINS_NUMERALS_RADIUS = FULL_MINS_CIRCLE_RADIUS-FULL_MINS_DASH_HEIGHT*2.5f;
+    private static final float FULL_MINS_DASH_HEIGHT = 10;
+    private static final float FULL_MINS_NUMERALS_RADIUS = FULL_MINS_CIRCLE_RADIUS - FULL_MINS_DASH_HEIGHT * 2.5f;
     private static final float FULL_MINS_NUMERALS_SIZE = 20;
     private static final float FULL_SECHAND_HALFBASEWIDTH = 10;
     private static final float FULL_MINHAND_HALFBASEWIDTH = 5;
@@ -129,7 +128,7 @@ public class StopwatchCustomVectorView extends View {
     //pass back messages to UI thread
     private Handler mHandler;
 
-    public static final boolean IS_HONEYCOMB_OR_ABOVE= Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    public static final boolean IS_HONEYCOMB_OR_ABOVE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
     public StopwatchCustomVectorView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -156,18 +155,18 @@ public class StopwatchCustomVectorView extends View {
             setClickable(true);
         }
 
-        COLOR_BACKGROUND = res.getColor(mIsStopwatch?R.color.stopwatch_background:R.color.countdown_background);
-        COLOR_HANDS = mIsStopwatch?Color.BLACK:Color.WHITE;
-        COLOR_60TH_NUMERALS = mIsStopwatch?Color.rgb(52,52,52):Color.rgb(238,238,238);
-        COLOR_100TH_NUMERALS = mIsStopwatch?Color.rgb(193,103,91):Color.rgb(0,172,228);
-        COLOR_MINS = mIsStopwatch?Color.rgb(85,85,85):Color.rgb(85,85,85);
+        COLOR_BACKGROUND = res.getColor(mIsStopwatch ? R.color.stopwatch_background : R.color.countdown_background);
+        COLOR_HANDS = mIsStopwatch ? Color.BLACK : Color.WHITE;
+        COLOR_60TH_NUMERALS = mIsStopwatch ? Color.rgb(52, 52, 52) : Color.rgb(238, 238, 238);
+        COLOR_100TH_NUMERALS = mIsStopwatch ? Color.rgb(193, 103, 91) : Color.rgb(0, 172, 228);
+        COLOR_MINS = mIsStopwatch ? Color.rgb(85, 85, 85) : Color.rgb(85, 85, 85);
 
-        COLOR_60TH_PRI_DASH = mIsStopwatch?Color.rgb(52,52,52):Color.WHITE;
-        COLOR_60TH_SEC_DASH = mIsStopwatch?Color.rgb(197, 197, 197):Color.rgb(63,63,63);
-        COLOR_100TH_PRI_DASH = mIsStopwatch?Color.rgb(193,103,91):Color.rgb(0,172,228);
-        COLOR_100TH_SEC_DASH = mIsStopwatch?Color.rgb(232,205,200):Color.rgb(96,96,96);
+        COLOR_60TH_PRI_DASH = mIsStopwatch ? Color.rgb(52, 52, 52) : Color.WHITE;
+        COLOR_60TH_SEC_DASH = mIsStopwatch ? Color.rgb(197, 197, 197) : Color.rgb(63, 63, 63);
+        COLOR_100TH_PRI_DASH = mIsStopwatch ? Color.rgb(193, 103, 91) : Color.rgb(0, 172, 228);
+        COLOR_100TH_SEC_DASH = mIsStopwatch ? Color.rgb(232, 205, 200) : Color.rgb(96, 96, 96);
 
-        COLOR_PATTERN_CIRCLE_SOLID = mIsStopwatch?Color.rgb(52,52,52):Color.rgb(112,112,112);
+        COLOR_PATTERN_CIRCLE_SOLID = mIsStopwatch ? Color.rgb(52, 52, 52) : Color.rgb(112, 112, 112);
         COLOR_PATTERN_CIRCLE_DASHED = COLOR_BACKGROUND;
 
     }
@@ -178,18 +177,18 @@ public class StopwatchCustomVectorView extends View {
         float minDim = Math.min(mCanvasHeight, mCanvasWidth);
         mScaleFactor = minDim / FULL_CANVAS_SIZE;
 
-        mWatchBMPMarginTop = (mCanvasHeight-minDim)/2;
-        mWatchBMPMarginLeft = (mCanvasWidth-minDim)/2;
+        mWatchBMPMarginTop = (mCanvasHeight - minDim) / 2;
+        mWatchBMPMarginLeft = (mCanvasWidth - minDim) / 2;
 
-        float watchfaceOuterRadius = FULL_WATCHFACE_OUTER_RADIUS*mScaleFactor;
-        double mClockDiameter = watchfaceOuterRadius*2;
+        float watchfaceOuterRadius = FULL_WATCHFACE_OUTER_RADIUS * mScaleFactor;
+        double mClockDiameter = watchfaceOuterRadius * 2;
 
         mWatchfaceCenterX = mCanvasWidth / 2;
         mWatchfaceCenterY = mCanvasHeight / 2;
-        mMinsCenterY = (int) ((FULL_MINS_CENTER_Y*mScaleFactor)+mWatchBMPMarginTop);
+        mMinsCenterY = (int) ((FULL_MINS_CENTER_Y * mScaleFactor) + mWatchBMPMarginTop);
 
-        float primaryDashWidth = FULL_PRIMARY_DASH_WIDTH*mScaleFactor;
-        float secondaryDashWidth = FULL_SECONDARY_DASH_WIDTH*mScaleFactor;
+        float primaryDashWidth = FULL_PRIMARY_DASH_WIDTH * mScaleFactor;
+        float secondaryDashWidth = FULL_SECONDARY_DASH_WIDTH * mScaleFactor;
 
         mPrimaryDashPaint = new Paint();
         mPrimaryDashPaint.setColor(COLOR_60TH_PRI_DASH);
@@ -263,55 +262,55 @@ public class StopwatchCustomVectorView extends View {
         mLogoTextPaint.setTextAlign(Paint.Align.CENTER);*/
 
         mSecHandVerticies = new float[6];
-        mSecHandVerticies [0] = mWatchfaceCenterX-FULL_SECHAND_HALFBASEWIDTH*mScaleFactor;
-        mSecHandVerticies [1] = mWatchfaceCenterY;
-        mSecHandVerticies [2] = mWatchfaceCenterX+FULL_SECHAND_HALFBASEWIDTH*mScaleFactor;
-        mSecHandVerticies [3] = mWatchfaceCenterY;
-        mSecHandVerticies [4] = mWatchfaceCenterX;
-        mSecHandVerticies [5] = mWatchfaceCenterY-(FULL_WATCHFACE_OUTER_RADIUS-FULL_60TH_3_DASH_HEIGHT)*mScaleFactor;
+        mSecHandVerticies[0] = mWatchfaceCenterX - FULL_SECHAND_HALFBASEWIDTH * mScaleFactor;
+        mSecHandVerticies[1] = mWatchfaceCenterY;
+        mSecHandVerticies[2] = mWatchfaceCenterX + FULL_SECHAND_HALFBASEWIDTH * mScaleFactor;
+        mSecHandVerticies[3] = mWatchfaceCenterY;
+        mSecHandVerticies[4] = mWatchfaceCenterX;
+        mSecHandVerticies[5] = mWatchfaceCenterY - (FULL_WATCHFACE_OUTER_RADIUS - FULL_60TH_3_DASH_HEIGHT) * mScaleFactor;
 
         mMinHandVerticies = new float[6];
-        mMinHandVerticies [0] = mWatchfaceCenterX-FULL_MINHAND_HALFBASEWIDTH*mScaleFactor;
-        mMinHandVerticies [1] = mMinsCenterY;
-        mMinHandVerticies [2] = mWatchfaceCenterX+FULL_MINHAND_HALFBASEWIDTH*mScaleFactor;
-        mMinHandVerticies [3] = mMinsCenterY;
-        mMinHandVerticies [4] = mWatchfaceCenterX;
-        mMinHandVerticies [5] = mMinsCenterY-(FULL_MINS_CIRCLE_RADIUS)*mScaleFactor;
+        mMinHandVerticies[0] = mWatchfaceCenterX - FULL_MINHAND_HALFBASEWIDTH * mScaleFactor;
+        mMinHandVerticies[1] = mMinsCenterY;
+        mMinHandVerticies[2] = mWatchfaceCenterX + FULL_MINHAND_HALFBASEWIDTH * mScaleFactor;
+        mMinHandVerticies[3] = mMinsCenterY;
+        mMinHandVerticies[4] = mWatchfaceCenterX;
+        mMinHandVerticies[5] = mMinsCenterY - (FULL_MINS_CIRCLE_RADIUS) * mScaleFactor;
 
         //draw the watchface
-        mWatchBackground = Bitmap.createBitmap((int)minDim,(int)minDim,Bitmap.Config.ARGB_8888);
+        mWatchBackground = Bitmap.createBitmap((int) minDim, (int) minDim, Bitmap.Config.ARGB_8888);
 
         Canvas canvas = new Canvas(mWatchBackground);
         drawWatchface(canvas);
     }
 
     //assumed that the incoming canvas is square
-    private void drawWatchface(Canvas canvas){
+    private void drawWatchface(Canvas canvas) {
         int canvasWidth = canvas.getWidth();
         int canvasHeight = canvas.getHeight();
 
         float canvasCenter = canvasWidth / 2.0f;
         float watchfaceOuterRadius = FULL_WATCHFACE_OUTER_RADIUS * mScaleFactor;
-        float watchfaceDiameter = watchfaceOuterRadius*2.0f;
-        float pri60thDashHeight = FULL_60TH_1_DASH_HEIGHT*mScaleFactor;
-        float sec60thDashHeight = FULL_60TH_2_DASH_HEIGHT*mScaleFactor;
-        float ter60thDashHeight = FULL_60TH_3_DASH_HEIGHT*mScaleFactor;
-        float yOffset60thCircle = (canvasHeight-watchfaceDiameter)/2.0f+pri60thDashHeight;
-        float yOffset100thCircle = (canvasHeight-(FULL_100TH_OUTER_DIAMETER*mScaleFactor))/2.0f;
-        float pri100thDashHeight = FULL_100th_1_DASH_HEIGHT*mScaleFactor;
-        float sec100thDashHeight = FULL_100th_2_DASH_HEIGHT*mScaleFactor;
-        float patternCircleRadius = FULL_PATTERN_CIRCLE_RADIUS *mScaleFactor;
-        float text60thHalfHeight = FULL_60th_NUMERALS_SIZE*mScaleFactor/3; //one third height lines up better
-        float text60thRadius = FULL_60TH_NUMERALS_RADIUS*mScaleFactor;
-        float text100thRadius = FULL_100TH_NUMERALS_RADIUS*mScaleFactor;
-        float text100thHalfHeight = FULL_100th_NUMERALS_SIZE*mScaleFactor/2;
+        float watchfaceDiameter = watchfaceOuterRadius * 2.0f;
+        float pri60thDashHeight = FULL_60TH_1_DASH_HEIGHT * mScaleFactor;
+        float sec60thDashHeight = FULL_60TH_2_DASH_HEIGHT * mScaleFactor;
+        float ter60thDashHeight = FULL_60TH_3_DASH_HEIGHT * mScaleFactor;
+        float yOffset60thCircle = (canvasHeight - watchfaceDiameter) / 2.0f + pri60thDashHeight;
+        float yOffset100thCircle = (canvasHeight - (FULL_100TH_OUTER_DIAMETER * mScaleFactor)) / 2.0f;
+        float pri100thDashHeight = FULL_100th_1_DASH_HEIGHT * mScaleFactor;
+        float sec100thDashHeight = FULL_100th_2_DASH_HEIGHT * mScaleFactor;
+        float patternCircleRadius = FULL_PATTERN_CIRCLE_RADIUS * mScaleFactor;
+        float text60thHalfHeight = FULL_60th_NUMERALS_SIZE * mScaleFactor / 3; //one third height lines up better
+        float text60thRadius = FULL_60TH_NUMERALS_RADIUS * mScaleFactor;
+        float text100thRadius = FULL_100TH_NUMERALS_RADIUS * mScaleFactor;
+        float text100thHalfHeight = FULL_100th_NUMERALS_SIZE * mScaleFactor / 2;
 
         //minutes
-        float minsCircleRadius = FULL_MINS_CIRCLE_RADIUS*mScaleFactor;
-        float minsCenterY = FULL_MINS_CENTER_Y*mScaleFactor;
-        float minsDashHeight = FULL_MINS_DASH_HEIGHT*mScaleFactor;
-        float textMinsRadius = FULL_MINS_NUMERALS_RADIUS*mScaleFactor;
-        float textMinsHalfHeigh = FULL_MINS_NUMERALS_SIZE*mScaleFactor/3;
+        float minsCircleRadius = FULL_MINS_CIRCLE_RADIUS * mScaleFactor;
+        float minsCenterY = FULL_MINS_CENTER_Y * mScaleFactor;
+        float minsDashHeight = FULL_MINS_DASH_HEIGHT * mScaleFactor;
+        float textMinsRadius = FULL_MINS_NUMERALS_RADIUS * mScaleFactor;
+        float textMinsHalfHeigh = FULL_MINS_NUMERALS_SIZE * mScaleFactor / 3;
 
         /*
         float logoTextY = FULL_NAMEPLATE_Y*mScaleFactor;
@@ -325,43 +324,43 @@ public class StopwatchCustomVectorView extends View {
 
         //draw the logo
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.outHeight=(int) (FULL_NAMEPLATE_HEIGHT*mScaleFactor);
-        options.outWidth= (int) (FULL_NAMEPLATE_WIDTH*mScaleFactor);
+        options.outHeight = (int) (FULL_NAMEPLATE_HEIGHT * mScaleFactor);
+        options.outWidth = (int) (FULL_NAMEPLATE_WIDTH * mScaleFactor);
 
         Bitmap watchLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo, null);
-        watchLogo = Bitmap.createScaledBitmap(watchLogo,(int) (FULL_NAMEPLATE_WIDTH*mScaleFactor),(int) (FULL_NAMEPLATE_HEIGHT*mScaleFactor), true);
+        watchLogo = Bitmap.createScaledBitmap(watchLogo, (int) (FULL_NAMEPLATE_WIDTH * mScaleFactor), (int) (FULL_NAMEPLATE_HEIGHT * mScaleFactor), true);
 
-        canvas.drawBitmap( watchLogo, FULL_NAMEPLATE_X*mScaleFactor,FULL_NAMEPLATE_Y*mScaleFactor, null);
+        canvas.drawBitmap(watchLogo, FULL_NAMEPLATE_X * mScaleFactor, FULL_NAMEPLATE_Y * mScaleFactor, null);
 
         //draw the minutes
-        canvas.drawCircle(canvasCenter,minsCenterY,minsCircleRadius,mMinsCirclePaint);
+        canvas.drawCircle(canvasCenter, minsCenterY, minsCircleRadius, mMinsCirclePaint);
         //draw the minute ticks
         canvas.save();
-        for(int a=0;a<360;a+=12) {
+        for (int a = 0; a < 360; a += 12) {
             //draw the 60ths etc.. lines
-            canvas.drawLine(canvasCenter, minsCenterY-minsCircleRadius, canvasCenter, minsCenterY-minsCircleRadius+minsDashHeight, mMinsCirclePaint);
+            canvas.drawLine(canvasCenter, minsCenterY - minsCircleRadius, canvasCenter, minsCenterY - minsCircleRadius + minsDashHeight, mMinsCirclePaint);
             canvas.rotate(12, canvasCenter, minsCenterY);
         }
         canvas.restore();
 
         //draw the minutes numerals
-        for(int a=0;a<6;a++){
-            double xPos = canvasCenter + Math.cos(Math.toRadians(a*60-30)) * textMinsRadius;
-            double yPos = minsCenterY + Math.sin(Math.toRadians(a*60-30)) * textMinsRadius + textMinsHalfHeigh;
-            int numeral = (a+1)*5;
-            canvas.drawText((numeral<10?" ":"")+numeral,(float) xPos,(float) yPos,mMinsNumeralsPaint);
+        for (int a = 0; a < 6; a++) {
+            double xPos = canvasCenter + Math.cos(Math.toRadians(a * 60 - 30)) * textMinsRadius;
+            double yPos = minsCenterY + Math.sin(Math.toRadians(a * 60 - 30)) * textMinsRadius + textMinsHalfHeigh;
+            int numeral = (a + 1) * 5;
+            canvas.drawText((numeral < 10 ? " " : "") + numeral, (float) xPos, (float) yPos, mMinsNumeralsPaint);
         }
 
         //draw the clock face
         canvas.save();
-        for(int a=0;a<360;a+=2) {
+        for (int a = 0; a < 360; a += 2) {
             //draw the 60ths etc.. lines
-            if(a%30==0) {//+60,+70,+90
-                canvas.drawLine(canvasCenter, yOffset60thCircle-pri60thDashHeight, canvasCenter, yOffset60thCircle, mPrimaryDashPaint);
-            }else if(a%6==0){
-                canvas.drawLine(canvasCenter, yOffset60thCircle-sec60thDashHeight, canvasCenter, yOffset60thCircle, mSecondaryDashPaint);
-            }else if(a%2==0){
-                canvas.drawLine(canvasCenter, yOffset60thCircle-ter60thDashHeight, canvasCenter, yOffset60thCircle, mTertiaryDashPaint);
+            if (a % 30 == 0) {//+60,+70,+90
+                canvas.drawLine(canvasCenter, yOffset60thCircle - pri60thDashHeight, canvasCenter, yOffset60thCircle, mPrimaryDashPaint);
+            } else if (a % 6 == 0) {
+                canvas.drawLine(canvasCenter, yOffset60thCircle - sec60thDashHeight, canvasCenter, yOffset60thCircle, mSecondaryDashPaint);
+            } else if (a % 2 == 0) {
+                canvas.drawLine(canvasCenter, yOffset60thCircle - ter60thDashHeight, canvasCenter, yOffset60thCircle, mTertiaryDashPaint);
             }
 
             canvas.rotate(2, canvasCenter, canvasCenter);
@@ -374,30 +373,30 @@ public class StopwatchCustomVectorView extends View {
 
         //draw the 100ths lines
         canvas.save();
-        for(int a=0;a<200;a++) {
+        for (int a = 0; a < 200; a++) {
             if (a % 10 == 0) {
-                canvas.drawLine(canvasCenter, yOffset100thCircle, canvasCenter, yOffset100thCircle+pri100thDashHeight, m100thsPrimaryDashPaint);
-            } else if (a%2==0){
-                canvas.drawLine(canvasCenter, yOffset100thCircle, canvasCenter, yOffset100thCircle+sec100thDashHeight, m100thsPrimaryDashPaint);
+                canvas.drawLine(canvasCenter, yOffset100thCircle, canvasCenter, yOffset100thCircle + pri100thDashHeight, m100thsPrimaryDashPaint);
+            } else if (a % 2 == 0) {
+                canvas.drawLine(canvasCenter, yOffset100thCircle, canvasCenter, yOffset100thCircle + sec100thDashHeight, m100thsPrimaryDashPaint);
             } else {
-                canvas.drawLine(canvasCenter, yOffset100thCircle, canvasCenter, yOffset100thCircle+sec100thDashHeight, m100thsSecondaryDashPaint);
+                canvas.drawLine(canvasCenter, yOffset100thCircle, canvasCenter, yOffset100thCircle + sec100thDashHeight, m100thsSecondaryDashPaint);
             }
             canvas.rotate(1.8f, canvasCenter, canvasCenter);//200ths
         }
         canvas.restore();
 
         //draw the 60ths numerals
-        for(int a=0;a<360;a+=30){
+        for (int a = 0; a < 360; a += 30) {
             double xPos = canvasCenter + Math.cos(Math.toRadians(a)) * text60thRadius;
             double yPos = canvasCenter + Math.sin(Math.toRadians(a)) * text60thRadius + text60thHalfHeight;
-            int numeral = ((a/6+15)%60);
-            if(numeral == 0) numeral=60;
-            canvas.drawText((numeral<10?" ":"")+numeral,(float) xPos,(float) yPos,mClockNumeralsPaint);
+            int numeral = ((a / 6 + 15) % 60);
+            if (numeral == 0) numeral = 60;
+            canvas.drawText((numeral < 10 ? " " : "") + numeral, (float) xPos, (float) yPos, mClockNumeralsPaint);
         }
 
         //draw the 100ths numerals
-        for(int a=0;a<10;a++){
-            if(a==2 || a==7) continue; //no text at 0 or 50
+        for (int a = 0; a < 10; a++) {
+            if (a == 2 || a == 7) continue; //no text at 0 or 50
 
             double xPos = canvasCenter + Math.cos(Math.toRadians(a * 36 + 18)) * text100thRadius;
             double yPos = canvasCenter + Math.sin(Math.toRadians(a * 36 + 18)) * text100thRadius + text100thHalfHeight;
@@ -407,12 +406,12 @@ public class StopwatchCustomVectorView extends View {
 
     }
 
-    private void drawFilledTriangle(Canvas canvas, float[] verticies, Paint p){
+    private void drawFilledTriangle(Canvas canvas, float[] verticies, Paint p) {
         Path path = new Path();
-        path.moveTo(verticies[0] , verticies[1]);
-        path.lineTo(verticies[2],verticies[3]);
-        path.lineTo(verticies[4],verticies[5]);
-        canvas.drawPath(path,p);
+        path.moveTo(verticies[0], verticies[1]);
+        path.lineTo(verticies[2], verticies[3]);
+        path.lineTo(verticies[4], verticies[5]);
+        canvas.drawPath(path, p);
     }
 
     @Override
@@ -430,21 +429,21 @@ public class StopwatchCustomVectorView extends View {
         super.onDraw(canvas);
 
         //draw the watch background
-        canvas.drawBitmap(mWatchBackground,mWatchBMPMarginLeft,mWatchBMPMarginTop,null);
+        canvas.drawBitmap(mWatchBackground, mWatchBMPMarginLeft, mWatchBMPMarginTop, null);
 
         // draw the mins hands with its current rotatiom
         canvas.save();
         canvas.rotate((float) Math.toDegrees(mMinsAngle), mWatchfaceCenterX, mMinsCenterY);
-        drawFilledTriangle(canvas,mMinHandVerticies,mWatchhandsPaint);
+        drawFilledTriangle(canvas, mMinHandVerticies, mWatchhandsPaint);
         canvas.restore();
-        canvas.drawCircle(mWatchfaceCenterX,mMinsCenterY,FULL_MINHAND_HALFBASEWIDTH*2*mScaleFactor,mWatchhandsPaint);
+        canvas.drawCircle(mWatchfaceCenterX, mMinsCenterY, FULL_MINHAND_HALFBASEWIDTH * 2 * mScaleFactor, mWatchhandsPaint);
 
         // Draw the secs hand with its current rotation
         canvas.save();
         canvas.rotate((float) Math.toDegrees(mSecsAngle), mWatchfaceCenterX, mWatchfaceCenterY);
-        drawFilledTriangle(canvas,mSecHandVerticies,mWatchhandsPaint);
+        drawFilledTriangle(canvas, mSecHandVerticies, mWatchhandsPaint);
         canvas.restore();
-        canvas.drawCircle(mWatchfaceCenterX,mWatchfaceCenterY,FULL_SECHAND_HALFBASEWIDTH*2*mScaleFactor,mWatchhandsPaint);
+        canvas.drawCircle(mWatchfaceCenterX, mWatchfaceCenterY, FULL_SECHAND_HALFBASEWIDTH * 2 * mScaleFactor, mWatchhandsPaint);
     }
 
     //set the time on the stopwatch/countdown face, animating the hands if resettings countdown
@@ -484,7 +483,7 @@ public class StopwatchCustomVectorView extends View {
         final float toMinsAngle = shortestAngleToDestination(mMinsAngle, twoPI * ((minutes > 30 ? minutes - 30 : minutes) / 30f + seconds / 1800f), resetting);
 
         float maxAngleChange = Math.max(Math.abs(mSecsAngle - toSecsAngle), Math.abs(toMinsAngle - mMinsAngle));
-        long duration = (long) (maxAngleChange/twoPI * 1000)+250;
+        long duration = (long) (maxAngleChange / twoPI * 1000) + 250;
 
         FastOutSlowInInterpolator fosiInterp = new FastOutSlowInInterpolator();
         final ValueAnimator secsAnimation = ValueAnimator.ofFloat(mSecsAngle, toSecsAngle);
@@ -561,8 +560,7 @@ public class StopwatchCustomVectorView extends View {
         public void run() {
             updateWatchState(false);
 
-            if(mIsRunning)
-            {
+            if (mIsRunning) {
                 invalidate();
                 removeCallbacks(this);
                 ViewCompat.postOnAnimation(StopwatchCustomVectorView.this, this);
@@ -644,7 +642,7 @@ public class StopwatchCustomVectorView extends View {
         mIsRunning = true;
 
         //vibrate
-        if(SettingsActivity.isVibrate()){
+        if (SettingsActivity.isVibrate()) {
             Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
             v.vibrate(20);
         }
@@ -657,7 +655,7 @@ public class StopwatchCustomVectorView extends View {
         mIsRunning = false;
 
         //vibrate
-        if(SettingsActivity.isVibrate()){
+        if (SettingsActivity.isVibrate()) {
             Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
             v.vibrate(20);
         }

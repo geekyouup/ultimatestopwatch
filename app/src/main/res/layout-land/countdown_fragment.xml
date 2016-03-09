@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="horizontal"
-              android:layout_alignParentTop="true"
-              android:background="@color/countdown_background">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_alignParentTop="true"
+    android:background="@color/countdown_background"
+    android:orientation="horizontal">
 
-    <RelativeLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:layout_weight="1"
-                android:background="@color/countdown_background">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/countdown_background">
 
-    <TextView android:id="@+id/time_counter" android:textSize="@dimen/counter_font"
-              android:layout_width="match_parent" android:layout_height="wrap_content"
-              android:text="@string/default_time" android:textColor="@color/text_grey"
-              android:fontFamily="sans-serif-light"
-              android:background="@color/countdown_background"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="50dp"
-              />
+        <TextView
+            android:id="@+id/time_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="50dp"
+            android:background="@color/countdown_background"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/default_time"
+            android:textColor="@color/text_grey"
+            android:textSize="@dimen/counter_font" />
 
-        <android.support.design.widget.FloatingActionButton android:id="@+id/resetfab"
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/resetfab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:layout_margin="16dp"
-            app:backgroundTint="@color/blue_button_bg"
-            app:srcCompat="@drawable/ic_set_countdown_time_24dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            />
-        </RelativeLayout>
+            app:backgroundTint="@color/blue_button_bg"
+            app:srcCompat="@drawable/ic_set_countdown_time_24dp" />
+    </RelativeLayout>
 
     <com.geekyouup.android.ustopwatch.fragments.StopwatchCustomVectorView
-            android:id="@+id/cdview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            app:watchType="type_countdown"/>
+        android:id="@+id/cdview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        app:watchType="type_countdown" />
 </LinearLayout>

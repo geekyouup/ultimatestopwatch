@@ -41,6 +41,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
     private TabsAdapter mTabsAdapter;
     private Menu mMenu;
     private boolean isLapTimesEnabled = false;
+
     /**
      * Called when the activity is first created.
      */
@@ -88,7 +89,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
 
         mTabsAdapter = new TabsAdapter(this);
         mTabsAdapter.addTab(getString(R.string.stopwatch), StopwatchFragment.class, null);
-        if(SettingsActivity.isLaptimerEnabled()) {
+        if (SettingsActivity.isLaptimerEnabled()) {
             mTabsAdapter.addTab(getString(R.string.laptimes), LapTimesFragment.class, null);
         }
         mTabsAdapter.addTab(getString(R.string.countdown), CountdownFragment.class, null);
@@ -149,7 +150,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
         SettingsActivity.loadSettings(settings);
 
         isLapTimesEnabled = SettingsActivity.isLaptimerEnabled();
-        if(isLapTimesEnabled) LapTimeRecorder.getInstance().loadTimes(this);
+        if (isLapTimesEnabled) LapTimeRecorder.getInstance().loadTimes(this);
 
         if (mMenu != null) {
             MenuItem audioButton = mMenu.findItem(R.id.menu_audiotoggle);
@@ -168,7 +169,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
 
         final int currentTab = mViewPager.getCurrentItem();
-        if(SettingsActivity.isLaptimerEnabled()){
+        if (SettingsActivity.isLaptimerEnabled()) {
             switch (currentTab) {
                 case 1:
                     inflater.inflate(R.menu.menu_laptimes, menu);
@@ -181,8 +182,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
                     inflater.inflate(R.menu.menu_stopwatch, menu);
                     break;
             }
-        }else
-        {
+        } else {
             switch (currentTab) {
                 case 1:
                     inflater.inflate(R.menu.menu_countdown, menu);
@@ -220,7 +220,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==INTENT_SETTINGS && isLapTimesEnabled!=SettingsActivity.isLaptimerEnabled()){
+        if (resultCode == INTENT_SETTINGS && isLapTimesEnabled != SettingsActivity.isLaptimerEnabled()) {
             Intent intent = getIntent();
             finish();
             startActivity(intent);

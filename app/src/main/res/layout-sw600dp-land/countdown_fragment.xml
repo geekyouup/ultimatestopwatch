@@ -15,10 +15,10 @@
         android:layout_weight="1"
         android:background="@color/countdown_background"
         android:fontFamily="sans-serif-light"
+        android:gravity="center"
         android:text="@string/default_time"
         android:textColor="@color/text_grey"
-        android:textSize="@dimen/counter_font"
-        android:gravity="center"/>
+        android:textSize="@dimen/counter_font" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_margin="16dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
             app:backgroundTint="@color/blue_button_bg"

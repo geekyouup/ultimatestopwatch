@@ -3,14 +3,18 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '24.0.3'
+
+    // Allows reference to product flavors in your
+    // phone module's build.gradle file
+    publishNonDefault true
 
     defaultConfig {
         applicationId "com.geekyouup.android.ustopwatch"
-        minSdkVersion 20
-        targetSdkVersion 21
-        versionCode 2
-        versionName "1.0"
+        minSdkVersion 23
+        targetSdkVersion 23
+        versionCode 54
+        versionName "8.0.1"
     }
     buildTypes {
         release {
@@ -18,7 +22,15 @@ android {
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
+    }
+    productFlavors {
+        wear1 {
+            // Use the defaultConfig value
+        }
+        wear2 {
+            minSdkVersion 24
+            targetSdkVersion 24
+        }
     }
 }
 

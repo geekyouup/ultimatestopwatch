@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.CompoundButton;
 
@@ -40,13 +39,13 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
 
-        CompoundButton mSwitchSoundTicking = (CompoundButton) findViewById(R.id.settings_seconds_sound);
+        /*CompoundButton mSwitchSoundTicking = (CompoundButton) findViewById(R.id.settings_seconds_sound);
         mSwitchSoundTicking.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isTicking = b;
             }
-        });
+        });*/
 
         CompoundButton mSwitchAnimating = (CompoundButton) findViewById(R.id.settings_animations);
         mSwitchAnimating.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -74,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         mSwitchLaptimer.setChecked(isLaptimerEnabled);
         mSwitchEndlessAlarm.setChecked(isEndlessAlarm);
-        mSwitchSoundTicking.setChecked(isTicking);
+        //mSwitchSoundTicking.setChecked(isTicking);
         mSwitchVibrate.setChecked(isVibrate);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
@@ -92,7 +91,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences settings = getSharedPreferences(UltimateStopwatchActivity.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
 
-        editor.putBoolean(KEY_TICKING, isTicking);
+        //editor.putBoolean(KEY_TICKING, isTicking);
         editor.putBoolean(KEY_ENDLESS_ALARM, isEndlessAlarm);
         editor.putBoolean(KEY_VIBRATE, isVibrate);
         editor.putBoolean(KEY_ANIMATING, isAnimating);
@@ -103,7 +102,7 @@ public class SettingsActivity extends AppCompatActivity {
     //Called from parent Activity to ensure all settings are always loaded
     public static void loadSettings(SharedPreferences prefs) {
         isLaptimerEnabled = prefs.getBoolean(KEY_LAP_TIMER, false);
-        isTicking = prefs.getBoolean(KEY_TICKING, false);
+        //isTicking = prefs.getBoolean(KEY_TICKING, false);
         isEndlessAlarm = prefs.getBoolean(KEY_ENDLESS_ALARM, false);
         isVibrate = prefs.getBoolean(KEY_VIBRATE, false);
         isAnimating = prefs.getBoolean(KEY_ANIMATING, true);

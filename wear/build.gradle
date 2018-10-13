@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion '24.0.3'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     // Allows reference to product flavors in your
     // phone module's build.gradle file
@@ -12,9 +12,9 @@ android {
     defaultConfig {
         applicationId "com.geekyouup.android.ustopwatch"
         minSdkVersion 23
-        targetSdkVersion 23
-        versionCode 54
-        versionName "8.0.1"
+        targetSdkVersion 27
+        versionCode 55
+        versionName "8.0.2"
     }
     buildTypes {
         release {
@@ -29,14 +29,14 @@ android {
         }
         wear2 {
             minSdkVersion 24
-            targetSdkVersion 24
+            targetSdkVersion 27
         }
     }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:support-v4:23.2.0'
+    compile 'com.android.support:support-v4:27.1.1'
     compile 'com.google.android.support:wearable:+'
     compile 'com.google.android.gms:play-services-wearable:+'
 }

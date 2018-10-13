@@ -45,7 +45,7 @@
             android:layout_height="2dp"
             android:background="#EBEBEB" />
 
-        <Switch
+        <!--Switch
             android:id="@+id/settings_seconds_sound"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dp"
-            android:background="#EBEBEB" />
+            android:background="#EBEBEB" /-->
 
         <Switch
             android:id="@+id/settings_animations"

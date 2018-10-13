@@ -46,7 +46,7 @@
             android:layout_height="2dp"
             android:background="#EBEBEB" />
 
-        <CheckBox
+        <!--CheckBox
             android:id="@+id/settings_seconds_sound"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             android:paddingLeft="48dp"
             android:text="@string/settings_sound_secs"
             android:textColor="#222222"
-            android:textSize="16dp" />
+            android:textSize="16dp" /-->
 
         <View
             android:layout_width="fill_parent"

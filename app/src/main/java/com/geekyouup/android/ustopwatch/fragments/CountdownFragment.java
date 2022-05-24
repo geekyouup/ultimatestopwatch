@@ -13,14 +13,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
-import android.support.design.widget.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.*;
 import android.widget.*;
-import android.support.v4.app.Fragment;
 
 import com.geekyouup.android.ustopwatch.*;
 
 import android.graphics.Rect;
+
+import androidx.fragment.app.Fragment;
 
 public class CountdownFragment extends Fragment {
 

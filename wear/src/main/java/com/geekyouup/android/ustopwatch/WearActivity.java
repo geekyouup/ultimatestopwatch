@@ -1,10 +1,7 @@
 package com.geekyouup.android.ustopwatch;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.widget.TextView;
-
-import com.geekyouup.android.ustopwatch.R;
+import androidx.fragment.app.FragmentActivity;
 
 public class WearActivity extends FragmentActivity {
 

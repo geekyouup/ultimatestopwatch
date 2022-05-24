@@ -5,9 +5,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.widget.TextView;
-import android.support.v4.app.Fragment;
 
 import com.geekyouup.android.ustopwatch.*;
 
@@ -18,6 +17,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.fragment.app.Fragment;
 
 
 public class StopwatchFragment extends Fragment {
@@ -54,9 +54,9 @@ public class StopwatchFragment extends Fragment {
 
         //show/hide the Lap Time button depending on state
         mLaptimeFAB = (FloatingActionButton) swView.findViewById(R.id.laptimefab);
-        if (!SettingsActivity.isLaptimerEnabled()) mLaptimeFAB.setVisibility(View.INVISIBLE);
+        if (!SettingsActivity.isLaptimerEnabled()) mLaptimeFAB.hide();
         else {
-            mLaptimeFAB.setVisibility(View.VISIBLE);
+            mLaptimeFAB.show();
             mLaptimeFAB.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

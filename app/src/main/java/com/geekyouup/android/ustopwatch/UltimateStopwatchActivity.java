@@ -8,11 +8,12 @@ import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import com.google.android.material.tabs.TabLayout;
 
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +30,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
     public static final String MSG_STATE_CHANGE = "msg_state_change";
     private static final String KEY_AUDIO_STATE = "key_audio_state";
     private static final String KEY_JUMP_TO_PAGE = "key_start_page";
-    private static final String WAKE_LOCK_KEY = "ustopwatch";
+    private static final String WAKE_LOCK_KEY = "ustopwatch:wl";
     public static final String PREFS_NAME = "USW_PREFS";
     private static final int INTENT_SETTINGS = 0;
 

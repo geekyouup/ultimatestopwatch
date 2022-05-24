@@ -25,7 +25,7 @@
         android:layout_marginBottom="45dp"
         app:watchType="type_countdown" />
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/resetfab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

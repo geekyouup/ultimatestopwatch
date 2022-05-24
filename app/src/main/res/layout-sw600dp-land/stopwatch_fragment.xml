@@ -19,7 +19,7 @@
             android:layout_height="fill_parent"
             app:watchType="type_stopwatch" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/resetfab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
             app:backgroundTint="@color/red_button_bg"
             app:srcCompat="@drawable/ic_reset_stopwatch_24dp" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/laptimefab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

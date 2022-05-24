@@ -3,7 +3,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.3'
 
     // Allows reference to product flavors in your
     // phone module's build.gradle file
@@ -23,20 +22,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    productFlavors {
-        wear1 {
-            // Use the defaultConfig value
-        }
-        wear2 {
-            minSdkVersion 24
-            targetSdkVersion 27
-        }
-    }
+
+    namespace 'com.geekyouup.android.ustopwatch'
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:support-v4:27.1.1'
-    compile 'com.google.android.support:wearable:+'
-    compile 'com.google.android.gms:play-services-wearable:+'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.support:wearable:+'
+    implementation 'com.google.android.gms:play-services-wearable:+'
 }

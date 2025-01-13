@@ -23,7 +23,7 @@ public class AlarmUpdater {
 
             Intent defineIntent = new Intent(context, UpdateService.class);
             defineIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent piWakeUp = PendingIntent.getService(context, 0, defineIntent, PendingIntent.FLAG_NO_CREATE);
+            PendingIntent piWakeUp = PendingIntent.getService(context, 0, defineIntent, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
 
             if (piWakeUp != null) alarmMan.cancel(piWakeUp);
         } catch (Exception ignored) {
@@ -66,7 +66,7 @@ public class AlarmUpdater {
             Intent launcher = new Intent(this, UltimateStopwatchActivity.class);
             launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
             launcher.putExtra(INTENT_EXTRA_LAUNCH_COUNTDOWN, true);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, launcher, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, launcher, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
             // Set the icon, scrolling text and timestamp
             Notification notification = new NotificationCompat.Builder(this)
@@ -102,24 +102,22 @@ public class AlarmUpdater {
     }
 
     public static void showChronometerNotification(Context context, long startTime) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            // The PendingIntent to launch our activity if the user selects this notification
-            Intent launcher = new Intent(context, UltimateStopwatchActivity.class);
-            launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, launcher, PendingIntent.FLAG_ONE_SHOT);
+        // The PendingIntent to launch our activity if the user selects this notification
+        Intent launcher = new Intent(context, UltimateStopwatchActivity.class);
+        launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, launcher, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
-            Notification notification = new NotificationCompat.Builder(context)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setWhen(System.currentTimeMillis() - startTime)
-                    .setSmallIcon(R.drawable.notification_icon)
-                    .setContentIntent(contentIntent)
-                    .setUsesChronometer(true)
-                    .build();
+        Notification notification = new NotificationCompat.Builder(context)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setWhen(System.currentTimeMillis() - startTime)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentIntent(contentIntent)
+                .setUsesChronometer(true)
+                .build();
 
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            // We use a layout id because it is a unique number.  We use it later to cancel.
-            notificationManager.notify(R.layout.stopwatch_fragment, notification);
-        }
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // We use a layout id because it is a unique number.  We use it later to cancel.
+        notificationManager.notify(R.layout.stopwatch_fragment, notification);
     }
 
     /*public static void showCountdownChronometerNotification(Context context, long endTime)

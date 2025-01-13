@@ -2,8 +2,6 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 27
-
     // Allows reference to product flavors in your
     // phone module's build.gradle file
     publishNonDefault true
@@ -11,7 +9,8 @@ android {
     defaultConfig {
         applicationId "com.geekyouup.android.ustopwatch"
         minSdkVersion 23
-        targetSdkVersion 27
+        compileSdk 14
+        targetSdkVersion 33
         versionCode 55
         versionName "8.0.2"
     }

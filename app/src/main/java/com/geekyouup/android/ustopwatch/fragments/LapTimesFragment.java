@@ -87,12 +87,12 @@ public class LapTimesFragment extends ListFragment implements LapTimeListener {
                 public boolean onActionItemClicked(android.view.ActionMode actionMode, android.view.MenuItem menuItem) {
                     // Respond to clicks on the actions in the CAB
                     switch (menuItem.getItemId()) {
-                        case R.id.menu_context_delete:
+                       /* case R.id.menu_context_delete:
                             mLapTimeRecorder.deleteLapTimes(mCheckedItems, ltf);
                             actionMode.finish(); // Action picked, so close the CAB
                             mCheckedItems.clear();
                             mCheckedItems = null;
-                            return true;
+                            return true;*/
                         default:
                             return false;
                     }

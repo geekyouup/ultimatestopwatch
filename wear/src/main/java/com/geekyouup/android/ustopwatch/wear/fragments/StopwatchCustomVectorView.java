@@ -1,7 +1,6 @@
 package com.geekyouup.android.ustopwatch.wear.fragments;
 
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -429,11 +428,6 @@ public class StopwatchCustomVectorView extends View {
         init();
     }
 
-    @Override
-    public boolean hasOverlappingRendering() {
-        return false;
-    }
-
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -460,26 +454,10 @@ public class StopwatchCustomVectorView extends View {
     public void setTime(final int hours, final int minutes, final int seconds, boolean resetting) {
         mIsRunning = false;
         mLastTime = System.currentTimeMillis();
-        if (IS_HONEYCOMB_OR_ABOVE) {
-            animateWatchToAPI11(hours, minutes, seconds, resetting);
-        } else {
-            //to fix bug #42, now the hands reset even when paused
-            removeCallbacks(animator);
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    //during the animation also roll back the clock time to the current hand times.
-                    mSecsAngle = (twoPI * ((float) seconds / 60.0f)); //ensure the hands have ended at correct position
-                    mMinsAngle = (twoPI * ((float) minutes / 30.0f));
-                    mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
-                    broadcastClockTime(mIsStopwatch ? mDisplayTimeMillis : -mDisplayTimeMillis);
-                    invalidate();
-                }
-            });
-        }
+        animateWatchToAPI11(hours, minutes, seconds, resetting);
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+
     private void animateWatchToAPI11(final int hours, final int minutes, final int seconds, boolean resetting) {
 
         mSecsAngle = mSecsAngle % twoPI; //avoids more than 1 rotation

@@ -1,12 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 32
-
     defaultConfig {
         applicationId "com.geekyouup.android.ustopwatch"
-        minSdkVersion 14
-        targetSdkVersion 32
+        minSdkVersion 23
+        compileSdk 35
+        targetSdkVersion 35
         versionCode 55
         versionName "8.0.2"
         vectorDrawables.useSupportLibrary = true
@@ -27,5 +26,5 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
-    wearApp project(path: ':wear', configuration: 'wear1Release')
+   // wearApp project(path: ':wear', configuration: 'wear1Release')
 }

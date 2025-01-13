@@ -1,6 +1,5 @@
 package com.geekyouup.android.ustopwatch.fragments;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,7 +7,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -216,26 +214,16 @@ public class CountdownFragment extends Fragment {
         }
     }
 
-    public void requestTimeDialog() {
-        if (mDialogOnScreen) return;
-
-        if (mHoursValue == 0) mHoursValue = mLastHour;
-        if (mMinsValue == 0) mMinsValue = mLastMin;
-        if (mSecsValue == 0) mSecsValue = mLastSec;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-            requestAPI11TimeDialog();
-        } else {
-            requestPreAPI11TimeDialog();
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void requestAPI11TimeDialog() {
+    private void requestTimeDialog() {
         // stop stacking of dialogs
         if (mDialogOnScreen)
             return;
 
-        ContextThemeWrapper wrapper = new ContextThemeWrapper(getContext(), R.style.Theme_AppCompat);
+        if (mHoursValue == 0) mHoursValue = mLastHour;
+        if (mMinsValue == 0) mMinsValue = mLastMin;
+        if (mSecsValue == 0) mSecsValue = mLastSec;
+
+        ContextThemeWrapper wrapper = new ContextThemeWrapper(getContext(), androidx.appcompat.R.style.Theme_AppCompat);
         final LayoutInflater inflater = (LayoutInflater) wrapper.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View ll = inflater.inflate(R.layout.countdown_picker, null);
 
@@ -281,7 +269,7 @@ public class CountdownFragment extends Fragment {
         mDialogOnScreen = true;
     }
 
-    private void requestPreAPI11TimeDialog() {
+    /*private void requestPreAPI11TimeDialog() {
         Context context = getContext();
         //stop stacking of dialogs
         if (mDialogOnScreen) return;
@@ -316,6 +304,6 @@ public class CountdownFragment extends Fragment {
         mSelectTime.show();
 
         mDialogOnScreen = true;
-    }
+    }*/
 
 }

@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.geekyouup.android.ustopwatch.R;
@@ -99,24 +98,22 @@ public class AlarmUpdater {
     }*/
 
     public static void showChronometerNotification(Context context, long startTime) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            // The PendingIntent to launch our activity if the user selects this notification
-            Intent launcher = new Intent(context, WearActivity.class);
-            launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, launcher, PendingIntent.FLAG_ONE_SHOT);
+        // The PendingIntent to launch our activity if the user selects this notification
+        Intent launcher = new Intent(context, WearActivity.class);
+        launcher.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, launcher, PendingIntent.FLAG_ONE_SHOT);
 
-            Notification notification = new NotificationCompat.Builder(context)
-                    .setContentTitle(context.getString(R.string.app_name))
-                    .setWhen(System.currentTimeMillis() - startTime)
-                    .setSmallIcon(R.drawable.notification_icon)
-                    .setContentIntent(contentIntent)
-                    .setUsesChronometer(true)
-                    .build();
+        Notification notification = new NotificationCompat.Builder(context)
+                .setContentTitle(context.getString(R.string.app_name))
+                .setWhen(System.currentTimeMillis() - startTime)
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentIntent(contentIntent)
+                .setUsesChronometer(true)
+                .build();
 
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            // We use a layout id because it is a unique number.  We use it later to cancel.
-            notificationManager.notify(R.layout.stopwatch_fragment, notification);
-        }
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // We use a layout id because it is a unique number.  We use it later to cancel.
+        notificationManager.notify(R.layout.stopwatch_fragment, notification);
     }
 
     /*public static void showCountdownChronometerNotification(Context context, long endTime)

@@ -128,8 +128,6 @@ public class StopwatchCustomVectorView extends View {
     //pass back messages to UI thread
     private Handler mHandler;
 
-    public static final boolean IS_HONEYCOMB_OR_ABOVE = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-
     public StopwatchCustomVectorView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -451,27 +449,9 @@ public class StopwatchCustomVectorView extends View {
     public void setTime(final int hours, final int minutes, final int seconds, boolean resetting) {
         mIsRunning = false;
         mLastTime = System.currentTimeMillis();
-        if (SettingsActivity.isAnimating() && IS_HONEYCOMB_OR_ABOVE) {
-            animateWatchToAPI11(hours, minutes, seconds, resetting);
-        } else {
-            //to fix bug #42, now the hands reset even when paused
-            removeCallbacks(animator);
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    //during the animation also roll back the clock time to the current hand times.
-                    mSecsAngle = (twoPI * ((float) seconds / 60.0f)); //ensure the hands have ended at correct position
-                    mMinsAngle = (twoPI * ((float) minutes / 30.0f));
-                    mDisplayTimeMillis = hours * 3600000 + minutes * 60000 + seconds * 1000;
-                    broadcastClockTime(mIsStopwatch ? mDisplayTimeMillis : -mDisplayTimeMillis);
-                    invalidate();
-                }
-            });
-        }
+        animateWatchToAPI11(hours, minutes, seconds, resetting);
     }
 
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void animateWatchToAPI11(final int hours, final int minutes, final int seconds, boolean resetting) {
 
         mSecsAngle = mSecsAngle % twoPI; //avoids more than 1 rotation

@@ -15,6 +15,7 @@
   -->
 
 <resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"/>
 
     <!-- Time Counter Spannable Styles -->
     <style name="TimeTextLight">

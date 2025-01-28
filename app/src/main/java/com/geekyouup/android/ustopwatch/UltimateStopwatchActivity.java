@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import com.google.android.material.tabs.TabLayout;
@@ -17,6 +18,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.MenuInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.geekyouup.android.ustopwatch.fragments.*;
 
@@ -49,6 +51,7 @@ public class UltimateStopwatchActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.main);
 
         getWindow().setBackgroundDrawable(null);
